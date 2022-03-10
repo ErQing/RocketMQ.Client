@@ -1,0 +1,69 @@
+﻿using System;
+using System.Text;
+
+namespace RocketMQ.Client
+{
+    public class DataVersion : RemotingSerializable
+    {
+        public ulong timestamp { get; set; } = Sys.currentTimeMillisUnsigned();
+        public AtomicLong counter { get; } = new AtomicLong(0);
+
+        public void assignNewOne(DataVersion dataVersion)
+        {
+            this.timestamp = dataVersion.timestamp;
+            this.counter.set(dataVersion.counter.get());
+        }
+
+        public void nextVersion()
+        {
+            this.timestamp = Sys.currentTimeMillisUnsigned();
+            this.counter.incrementAndGet();
+        }
+        public override bool Equals(Object o)
+        {
+            if (this == o)
+                return true;
+            if (o == null || GetType() != o.GetType())
+                return false;
+
+            DataVersion that = (DataVersion)o;
+
+            if (timestamp != that.timestamp)
+            {
+                return false;
+            }
+
+            if (counter != null && that.counter != null)
+            {
+                return counter.longValue() == that.counter.longValue();
+            }
+
+            return (null == counter) && (null == that.counter);
+        }
+
+        /// <summary>
+        /// use ulong instead >>> or <<<
+        /// https://stackoverflow.com/questions/1880172/equivalent-of-java-triple-shift-operator-in-c
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            int result = (int)(timestamp ^ (timestamp >> 32)); //ulong
+            if (null != counter)
+            {
+                long l = counter.get();
+                result = 31 * result + (int)(l ^ (l >> 32)); //ulong
+            }
+            return result;
+        }
+
+        public override String ToString()
+        {
+            StringBuilder sb = new StringBuilder("DataVersion[");
+            sb.Append("timestamp=").Append(timestamp);
+            sb.Append(", counter=").Append(counter);
+            sb.Append(']');
+            return sb.ToString();
+        }
+    }
+}

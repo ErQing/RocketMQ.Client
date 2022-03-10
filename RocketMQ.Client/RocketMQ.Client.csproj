@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<OutputPath>..\_Debug</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<OutputPath>..\_Release</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DotNetty.Codecs" Version="0.7.2" />
+		<PackageReference Include="DotNetty.Common" Version="0.7.2" />
+		<PackageReference Include="DotNetty.Handlers" Version="0.7.2" />
+		<PackageReference Include="DotNetty.Transport" Version="0.7.2" />
+		<PackageReference Include="NLog" Version="4.7.14" />
+		<PackageReference Include="Quartz" Version="3.3.3" />
+	</ItemGroup>
+
+</Project>
