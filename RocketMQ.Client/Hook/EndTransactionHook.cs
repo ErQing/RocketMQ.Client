@@ -8,7 +8,7 @@ namespace RocketMQ.Client
 {
     public interface EndTransactionHook
     {
-        String hookName();
+        string hookName();
 
         void endTransaction(EndTransactionContext context);
     }

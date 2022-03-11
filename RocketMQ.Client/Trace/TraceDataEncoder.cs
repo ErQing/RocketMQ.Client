@@ -153,7 +153,7 @@ namespace RocketMQ.Client
             {
                 case TraceType.Pub:
                     {
-                        TraceBean bean = ctx.getTraceBeans().get(0);
+                        TraceBean bean = ctx.getTraceBeans().Get(0);
                         //append the content of context and traceBean to transferBean's TransData
                         sb.Append(ctx.getTraceType()).Append(TraceConstants.CONTENT_SPLITOR)//
                             .Append(ctx.getTimeStamp()).Append(TraceConstants.CONTENT_SPLITOR)//
@@ -204,7 +204,7 @@ namespace RocketMQ.Client
                     break;
                 case TraceType.EndTransaction:
                     {
-                        TraceBean bean = ctx.getTraceBeans().get(0);
+                        TraceBean bean = ctx.getTraceBeans().Get(0);
                         sb.Append(ctx.getTraceType()).Append(TraceConstants.CONTENT_SPLITOR)//
                             .Append(ctx.getTimeStamp()).Append(TraceConstants.CONTENT_SPLITOR)//
                             .Append(ctx.getRegionId()).Append(TraceConstants.CONTENT_SPLITOR)//
@@ -232,7 +232,7 @@ namespace RocketMQ.Client
                 {
                     String[] keys = bean.getKeys().Split(MessageConst.KEY_SEPARATOR);
                     //transferBean.getTransKey().addAll(Arrays.asList(keys));
-                    transferBean.getTransKey().addAll(keys);
+                    transferBean.getTransKey().AddAll(keys);
                 }
             }
             return transferBean;

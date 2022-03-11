@@ -9,7 +9,7 @@ namespace RocketMQ.Client
     public class UpdateGlobalWhiteAddrsConfigRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String globalWhiteAddrs { get; set; }
+        public string globalWhiteAddrs { get; set; }
 
         public void checkFields()
         {

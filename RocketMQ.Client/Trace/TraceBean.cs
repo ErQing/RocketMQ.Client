@@ -8,7 +8,7 @@ namespace RocketMQ.Client
 {
     public class TraceBean
     {
-        private static readonly String LOCAL_ADDRESS = UtilAll.ipToIPv4Str(UtilAll.getIP());
+        private static readonly string LOCAL_ADDRESS = UtilAll.ipToIPv4Str(UtilAll.getIP());
         private string topic = "";
         private string msgId = "";
         private string offsetMsgId = "";
@@ -21,7 +21,7 @@ namespace RocketMQ.Client
         private int bodyLength;
         private MessageType msgType;
         private LocalTransactionState transactionState;
-        private String transactionId;
+        private string transactionId;
         private bool fromTransactionCheck;
 
         public MessageType getMsgType()
@@ -36,7 +36,7 @@ namespace RocketMQ.Client
         }
 
 
-        public String getOffsetMsgId()
+        public string getOffsetMsgId()
         {
             return offsetMsgId;
         }
@@ -47,7 +47,7 @@ namespace RocketMQ.Client
             this.offsetMsgId = offsetMsgId;
         }
 
-        public String getTopic()
+        public string getTopic()
         {
             return topic;
         }
@@ -59,7 +59,7 @@ namespace RocketMQ.Client
         }
 
 
-        public String getMsgId()
+        public string getMsgId()
         {
             return msgId;
         }
@@ -71,7 +71,7 @@ namespace RocketMQ.Client
         }
 
 
-        public String getTags()
+        public string getTags()
         {
             return tags;
         }
@@ -83,7 +83,7 @@ namespace RocketMQ.Client
         }
 
 
-        public String getKeys()
+        public string getKeys()
         {
             return keys;
         }
@@ -95,7 +95,7 @@ namespace RocketMQ.Client
         }
 
 
-        public String getStoreHost()
+        public string getStoreHost()
         {
             return storeHost;
         }
@@ -107,7 +107,7 @@ namespace RocketMQ.Client
         }
 
 
-        public String getClientHost()
+        public string getClientHost()
         {
             return clientHost;
         }
@@ -164,7 +164,7 @@ namespace RocketMQ.Client
             this.transactionState = transactionState;
         }
 
-        public String getTransactionId()
+        public string getTransactionId()
         {
             return transactionId;
         }

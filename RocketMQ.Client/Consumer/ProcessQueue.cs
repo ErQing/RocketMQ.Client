@@ -125,10 +125,10 @@ namespace RocketMQ.Client
                     //this.treeMapLock.readLock().lockInterruptibly();
                     try
                     {
-                        if (!msgTreeMap.isEmpty())
+                        if (!msgTreeMap.IsEmpty())
                         {
-                            String consumeStartTimeStamp = MessageAccessor.getConsumeStartTimeStamp(msgTreeMap.First().Value);
-                            if (StringUtils.isNotEmpty(consumeStartTimeStamp) && 
+                            string consumeStartTimeStamp = MessageAccessor.getConsumeStartTimeStamp(msgTreeMap.First().Value);
+                            if (Str.isNotEmpty(consumeStartTimeStamp) && 
                                 Sys.currentTimeMillis() - long.Parse(consumeStartTimeStamp) > pushConsumer.getConsumeTimeout() * 60 * 1000)
                             {
                                 msg = msgTreeMap.First().Value;
@@ -149,8 +149,8 @@ namespace RocketMQ.Client
                         this.treeMapLock.ExitReadLock();
                     }
                 }
-                //catch (InterruptedException e)
-                catch (Exception e)
+                catch (ThreadInterruptedException e)
+                //catch (Exception e)
                 {
                     log.Error("getExpiredMsg exception", e.ToString());
                 }
@@ -167,7 +167,7 @@ namespace RocketMQ.Client
                         try
                         {
                             //if (!msgTreeMap.isEmpty() && msg.getQueueOffset() == msgTreeMap.firstKey())
-                            if (!msgTreeMap.isEmpty() && msg.getQueueOffset() == msgTreeMap.First().Key)
+                            if (!msgTreeMap.IsEmpty() && msg.getQueueOffset() == msgTreeMap.First().Key)
                             {
                                 try
                                 {
@@ -185,8 +185,8 @@ namespace RocketMQ.Client
                             treeMapLock.ExitWriteLock();
                         }
                     }
-                    //catch (InterruptedException e)
-                    catch (Exception e)
+                    catch (ThreadInterruptedException e)
+                    //catch (Exception e)
                     {
                         log.Error("getExpiredMsg exception", e.ToString());
                     }
@@ -210,26 +210,26 @@ namespace RocketMQ.Client
                     int validMsgCnt = 0;
                     foreach (MessageExt msg in msgs)
                     {
-                        MessageExt old = msgTreeMap.put(msg.getQueueOffset(), msg);
+                        MessageExt old = msgTreeMap.Put(msg.getQueueOffset(), msg);
                         if (null == old)
                         {
                             validMsgCnt++;
                             this.QueueOffsetMax = msg.getQueueOffset();
-                            msgSize.addAndGet(msg.getBody().Length);
+                            msgSize.AddAndGet(msg.getBody().Length);
                         }
                     }
-                    msgCount.addAndGet(validMsgCnt);
+                    msgCount.AddAndGet(validMsgCnt);
 
-                    if (!msgTreeMap.isEmpty() && !this.consuming)
+                    if (!msgTreeMap.IsEmpty() && !this.consuming)
                     {
                         dispatchToConsume = true;
                         this.consuming = true;
                     }
 
-                    if (!msgs.isEmpty())
+                    if (!msgs.IsEmpty())
                     {
-                        MessageExt messageExt = msgs.get(msgs.Count - 1);
-                        String property = messageExt.getProperty(MessageConst.PROPERTY_MAX_OFFSET);
+                        MessageExt messageExt = msgs.Get(msgs.Count - 1);
+                        string property = messageExt.getProperty(MessageConst.PROPERTY_MAX_OFFSET);
                         if (property != null)
                         {
                             long accTotal = long.Parse(property) - messageExt.getQueueOffset();
@@ -246,8 +246,8 @@ namespace RocketMQ.Client
                     treeMapLock.ExitWriteLock();
                 }
             }
-            //catch (InterruptedException e)
-            catch (Exception e)
+            catch (ThreadInterruptedException e)
+            //catch (Exception e)
             {
                 log.Error("putMessage exception", e.ToString());
             }
@@ -263,7 +263,7 @@ namespace RocketMQ.Client
                 //this.treeMapLock.readLock().lockInterruptibly();
                 try
                 {
-                    if (!this.msgTreeMap.isEmpty())
+                    if (!this.msgTreeMap.IsEmpty())
                     {
                         //return this.msgTreeMap.lastKey() - this.msgTreeMap.firstKey();
                         return this.msgTreeMap.Last().Key - this.msgTreeMap.First().Key;
@@ -275,8 +275,8 @@ namespace RocketMQ.Client
                     treeMapLock.ExitReadLock();
                 }
             }
-            //catch (InterruptedException e)
-            catch (Exception e)
+            catch (ThreadInterruptedException e)
+           // catch (Exception e)
             {
                 log.Error("getMaxSpan exception", e.ToString());
             }
@@ -295,21 +295,21 @@ namespace RocketMQ.Client
                 this.LastConsumeTimestamp = now;
                 try
                 {
-                    if (!msgTreeMap.isEmpty())
+                    if (!msgTreeMap.IsEmpty())
                     {
                         result = this.QueueOffsetMax + 1;
                         int removedCnt = 0;
                         foreach (MessageExt msg in msgs)
                         {
-                            MessageExt prev = msgTreeMap.remove(msg.getQueueOffset());
+                            MessageExt prev = msgTreeMap.JavaRemove(msg.getQueueOffset());
                             if (prev != null)
                             {
                                 removedCnt--;
-                                msgSize.addAndGet(0 - msg.getBody().Length);
+                                msgSize.AddAndGet(0 - msg.getBody().Length);
                             }
                         }
-                        msgCount.addAndGet(removedCnt);
-                        if (!msgTreeMap.isEmpty())
+                        msgCount.AddAndGet(removedCnt);
+                        if (!msgTreeMap.IsEmpty())
                         {
                             result = msgTreeMap.First().Key;
                         }
@@ -372,7 +372,7 @@ namespace RocketMQ.Client
                 //this.treeMapLock.writeLock().lockInterruptibly();
                 try
                 {
-                    this.msgTreeMap.putAll(this.consumingMsgOrderlyTreeMap);
+                    this.msgTreeMap.PutAll(this.consumingMsgOrderlyTreeMap);
                     this.consumingMsgOrderlyTreeMap.Clear();
                 }
                 finally
@@ -381,8 +381,8 @@ namespace RocketMQ.Client
                     treeMapLock.ExitWriteLock();
                 }
             }
-            //catch (InterruptedException e)
-            catch (Exception e)
+            catch (ThreadInterruptedException e)
+            //catch (Exception e)
             {
                 log.Error("rollback exception", e.ToString());
             }
@@ -397,10 +397,10 @@ namespace RocketMQ.Client
                 try
                 {
                     long offset = this.consumingMsgOrderlyTreeMap.Last().Key;
-                    msgCount.addAndGet(0 - consumingMsgOrderlyTreeMap.Count);
+                    msgCount.AddAndGet(0 - consumingMsgOrderlyTreeMap.Count);
                     foreach (MessageExt msg in this.consumingMsgOrderlyTreeMap.Values)
                     {
-                        msgSize.addAndGet(0 - msg.getBody().Length);
+                        msgSize.AddAndGet(0 - msg.getBody().Length);
                     }
                     this.consumingMsgOrderlyTreeMap.Clear();
                     if (offset != 0) //???if (offset != null)
@@ -414,8 +414,8 @@ namespace RocketMQ.Client
                     treeMapLock.ExitWriteLock();
                 }
             }
-            //catch (InterruptedException e)
-            catch (Exception e)
+            catch (ThreadInterruptedException e)
+            //catch (Exception e)
             {
                 log.Error("commit exception", e.ToString());
             }
@@ -433,8 +433,8 @@ namespace RocketMQ.Client
                 {
                     foreach (MessageExt msg in msgs)
                     {
-                        this.consumingMsgOrderlyTreeMap.remove(msg.getQueueOffset());
-                        this.msgTreeMap.put(msg.getQueueOffset(), msg);
+                        consumingMsgOrderlyTreeMap.JavaRemove(msg.getQueueOffset());
+                        this.msgTreeMap.Put(msg.getQueueOffset(), msg);
                     }
                 }
                 finally
@@ -443,8 +443,8 @@ namespace RocketMQ.Client
                     treeMapLock.ExitWriteLock();
                 }
             }
-            //catch (InterruptedException e)
-            catch (Exception e)
+            catch (ThreadInterruptedException e)
+            //catch (Exception e)
             {
                 log.Error("makeMessageToCosumeAgain exception", e.ToString());
             }
@@ -461,16 +461,16 @@ namespace RocketMQ.Client
                 this.LastConsumeTimestamp = now;
                 try
                 {
-                    if (!this.msgTreeMap.isEmpty())
+                    if (!this.msgTreeMap.IsEmpty())
                     {
                         for (int i = 0; i < batchSize; i++)
                         {
-                            var entry = this.msgTreeMap.pollFirstEntry();
+                            var entry = this.msgTreeMap.PollFirstEntry();
                             //if (entry != null)
                             if (!entry.Equals(default))
                             {
                                 result.Add(entry.Value);
-                                consumingMsgOrderlyTreeMap.put(entry.Key, entry.Value);
+                                consumingMsgOrderlyTreeMap.Put(entry.Key, entry.Value);
                             }
                             else
                             {
@@ -479,7 +479,7 @@ namespace RocketMQ.Client
                         }
                     }
 
-                    if (result.isEmpty())
+                    if (result.IsEmpty())
                     {
                         consuming = false;
                     }
@@ -490,8 +490,8 @@ namespace RocketMQ.Client
                     treeMapLock.ExitWriteLock();
                 }
             }
-            //catch (InterruptedException e)
-            catch (Exception e)
+            catch (ThreadInterruptedException e)
+            //catch (Exception e)
             {
                 log.Error("take Messages exception", e.ToString());
             }
@@ -507,7 +507,7 @@ namespace RocketMQ.Client
                 //this.treeMapLock.readLock().lockInterruptibly();
                 try
                 {
-                    return !this.msgTreeMap.isEmpty();
+                    return !this.msgTreeMap.IsEmpty();
                 }
                 finally
                 {
@@ -515,8 +515,8 @@ namespace RocketMQ.Client
                     treeMapLock.ExitReadLock();
                 }
             }
-            //catch (InterruptedException e)
-            catch (Exception e)
+            catch (ThreadInterruptedException e)
+            //catch (Exception e)
             {
             }
 
@@ -533,8 +533,8 @@ namespace RocketMQ.Client
                 {
                     this.msgTreeMap.Clear();
                     this.consumingMsgOrderlyTreeMap.Clear();
-                    this.msgCount.set(0);
-                    this.msgSize.set(0);
+                    this.msgCount.Set(0);
+                    this.msgSize.Set(0);
                     this.QueueOffsetMax = 0L;
                 }
                 finally
@@ -543,8 +543,8 @@ namespace RocketMQ.Client
                     treeMapLock.ExitWriteLock();
                 }
             }
-            //catch (InterruptedException e)
-            catch (Exception e)
+            catch (ThreadInterruptedException e)
+            //catch (Exception e)
             {
                 log.Error("rollback exception", e.ToString());
             }
@@ -557,12 +557,12 @@ namespace RocketMQ.Client
 
         public long getTryUnlockTimes()
         {
-            return this.tryUnlockTimes.get();
+            return this.tryUnlockTimes.Get();
         }
 
         public void incTryUnlockTimes()
         {
-            this.tryUnlockTimes.incrementAndGet();
+            this.tryUnlockTimes.IncrementAndGet();
         }
 
         public void fillProcessQueueInfo(ProcessQueueInfo info)
@@ -571,15 +571,15 @@ namespace RocketMQ.Client
             {
                 treeMapLock.EnterReadLock();
                 //this.treeMapLock.readLock().lockInterruptibly();
-                if (!this.msgTreeMap.isEmpty())
+                if (!this.msgTreeMap.IsEmpty())
                 {
                     info.setCachedMsgMinOffset(this.msgTreeMap.First().Key);
                     info.setCachedMsgMaxOffset(this.msgTreeMap.First().Key);
                     info.setCachedMsgCount(this.msgTreeMap.Count);
-                    info.setCachedMsgSizeInMiB((int)(this.msgSize.get() / (1024 * 1024)));
+                    info.setCachedMsgSizeInMiB((int)(this.msgSize.Get() / (1024 * 1024)));
                 }
 
-                if (!this.consumingMsgOrderlyTreeMap.isEmpty())
+                if (!this.consumingMsgOrderlyTreeMap.IsEmpty())
                 {
                     info.setTransactionMsgMinOffset(this.consumingMsgOrderlyTreeMap.First().Key);
                     info.setTransactionMsgMaxOffset(this.consumingMsgOrderlyTreeMap.First().Key);
@@ -587,7 +587,7 @@ namespace RocketMQ.Client
                 }
 
                 info.setLocked(this.locked);
-                info.setTryUnlockTimes(this.tryUnlockTimes.get());
+                info.setTryUnlockTimes(this.tryUnlockTimes.Get());
                 info.setLastLockTimestamp(this.LastLockTimestamp);
 
                 info.setDroped(this.dropped);

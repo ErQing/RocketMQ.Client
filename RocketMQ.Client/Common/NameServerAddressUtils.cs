@@ -9,15 +9,15 @@ namespace RocketMQ.Client
 {
     public class NameServerAddressUtils
     {
-        public static readonly String INSTANCE_PREFIX = "MQ_INST_";
-        public static readonly String INSTANCE_REGEX = INSTANCE_PREFIX + "\\w+_\\w+";
-        public static readonly String ENDPOINT_PREFIX = "(\\w+://|)";
+        public static readonly string INSTANCE_PREFIX = "MQ_INST_";
+        public static readonly string INSTANCE_REGEX = INSTANCE_PREFIX + "\\w+_\\w+";
+        public static readonly string ENDPOINT_PREFIX = "(\\w+://|)";
         //public static readonly Pattern NAMESRV_ENDPOINT_PATTERN = Pattern.compile("^http://.*");
         //public static readonly Pattern INST_ENDPOINT_PATTERN = Pattern.compile("^" + ENDPOINT_PREFIX + INSTANCE_REGEX + "\\..*");
         public static readonly Regex NAMESRV_ENDPOINT_PATTERN = new Regex("^http://.*");
         public static readonly Regex INST_ENDPOINT_PATTERN = new Regex("^" + ENDPOINT_PREFIX + INSTANCE_REGEX + "\\..*");
 
-        public static String getNameServerAddresses()
+        public static string getNameServerAddresses()
         {
             //System.Environment.SetEnvironmentVariable("Test1", "Value1");
             return Sys.getProperty(MixAll.NAMESRV_ADDR_PROPERTY, Sys.getenv(MixAll.NAMESRV_ADDR_ENV));
@@ -29,7 +29,7 @@ namespace RocketMQ.Client
             //return INST_ENDPOINT_PATTERN.matcher(endpoint).matches();
         }
 
-        public static String parseInstanceIdFromEndpoint(String endpoint)
+        public static string parseInstanceIdFromEndpoint(String endpoint)
         {
             if (string.IsNullOrEmpty(endpoint))
             {
@@ -39,7 +39,7 @@ namespace RocketMQ.Client
             return endpoint.JavaSubstring(endpoint.LastIndexOf("/") + 1, endpoint.IndexOf('.'));
         }
 
-        public static String getNameSrvAddrFromNamesrvEndpoint(String nameSrvEndpoint)
+        public static string getNameSrvAddrFromNamesrvEndpoint(String nameSrvEndpoint)
         {
             if (string.IsNullOrEmpty(nameSrvEndpoint))
             {

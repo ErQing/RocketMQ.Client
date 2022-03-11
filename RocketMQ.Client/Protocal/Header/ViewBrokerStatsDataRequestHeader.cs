@@ -9,9 +9,9 @@ namespace RocketMQ.Client//.Protocal.Header
     public class ViewBrokerStatsDataRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String statsName { get; set; }
+        public string statsName { get; set; }
         [CFNotNull]
-        public String statsKey { get; set; }
+        public string statsKey { get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException

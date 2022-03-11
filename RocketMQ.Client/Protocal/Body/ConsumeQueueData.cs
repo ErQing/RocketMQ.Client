@@ -11,11 +11,11 @@ namespace RocketMQ.Client
         public long physicOffset { get; set; }
         public int physicSize { get; set; }
         public long tagsCode { get; set; }
-        public String extendDataJson { get; set; }
-        public String bitMap { get; set; }
+        public string extendDataJson { get; set; }
+        public string bitMap { get; set; }
         public bool eval { get; set; }
-        public String msg { get; set; }
-        public override String ToString()
+        public string msg { get; set; }
+        public override string ToString()
         {
             return "ConsumeQueueData{" +
                 "physicOffset=" + physicOffset +

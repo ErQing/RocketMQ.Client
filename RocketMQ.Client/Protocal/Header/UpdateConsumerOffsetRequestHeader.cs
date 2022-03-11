@@ -9,9 +9,9 @@ namespace RocketMQ.Client
     public class UpdateConsumerOffsetRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String consumerGroup { get; set; }
+        public string consumerGroup { get; set; }
         [CFNotNull]
-        public String topic { get; set; }
+        public string topic { get; set; }
         [CFNotNull]
         public int queueId { get; set; }
         [CFNotNull]

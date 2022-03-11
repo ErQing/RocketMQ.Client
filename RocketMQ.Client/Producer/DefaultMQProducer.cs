@@ -14,30 +14,38 @@ namespace RocketMQ.Client
         //private readonly InternalLogger log = ClientLogger.getLog();
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
-        private readonly HashSet<int> retryResponseCodes = null; //??? TODO
-    //    private readonly HashSet<int> retryResponseCodes = new CopyOnWriteArraySet<int>(Array.asList(
-    //        ResponseCode.TOPIC_NOT_EXIST,
-    //        ResponseCode.SERVICE_NOT_AVAILABLE,
-    //        ResponseCode.SYSTEM_ERROR,
-    //        ResponseCode.NO_PERMISSION,
-    //        ResponseCode.NO_BUYER_ID,
-    //        ResponseCode.NOT_IN_CURRENT_UNIT
-    //));
+        //    private readonly HashSet<int> retryResponseCodes = new CopyOnWriteArraySet<int>(Array.asList(
+        //        ResponseCode.TOPIC_NOT_EXIST,
+        //        ResponseCode.SERVICE_NOT_AVAILABLE,
+        //        ResponseCode.SYSTEM_ERROR,
+        //        ResponseCode.NO_PERMISSION,
+        //        ResponseCode.NO_BUYER_ID,
+        //        ResponseCode.NOT_IN_CURRENT_UNIT
+        //));
 
-        /**
-         * Producer group conceptually aggregates all producer instances of exactly same role, which is particularly
-         * important when transactional messages are involved. </p>
-         *
-         * For non-transactional messages, it does not matter as long as it's unique per process. </p>
-         *
-         * See {@linktourl http://rocketmq.apache.org/docs/core-concept/} for more discussion.
-         */
-        private String producerGroup;
+        //CopyOnWriteArraySet是为了线程安全，但此处没有任何地方对该容器进行修改
+        //可以直接使用HashSet，如果后续版本有修改，需修改实现方式 //???
+        private readonly HashSet<int> retryResponseCodes = new HashSet<int>() { ResponseCode.TOPIC_NOT_EXIST,
+                                                                         ResponseCode.SERVICE_NOT_AVAILABLE,
+                                                                         ResponseCode.SYSTEM_ERROR,
+                                                                         ResponseCode.NO_PERMISSION,
+                                                                         ResponseCode.NO_BUYER_ID,
+                                                                         ResponseCode.NOT_IN_CURRENT_UNIT };
+
+            /**
+             * Producer group conceptually aggregates all producer instances of exactly same role, which is particularly
+             * important when transactional messages are involved. </p>
+             *
+             * For non-transactional messages, it does not matter as long as it's unique per process. </p>
+             *
+             * See {@linktourl http://rocketmq.apache.org/docs/core-concept/} for more discussion.
+             */
+        private string producerGroup;
 
         /**
          * Just for testing or demo program
          */
-        private String createTopicKey = TopicValidator.AUTO_CREATE_TOPIC_KEY_TOPIC;
+        private string createTopicKey = TopicValidator.AUTO_CREATE_TOPIC_KEY_TOPIC;
 
         /**
          * Number of queues to create per default topic.
@@ -88,7 +96,7 @@ namespace RocketMQ.Client
          */
         public DefaultMQProducer() : this(null, MixAll.DEFAULT_PRODUCER_GROUP, null)
         {
-
+            
         }
 
         /**
@@ -120,7 +128,7 @@ namespace RocketMQ.Client
          * @param customizedTraceTopic The name value of message trace topic.If you don't config,you can use the default
          * trace topic name.
          */
-        public DefaultMQProducer(String producerGroup, RPCHook rpcHook, bool enableMsgTrace, String customizedTraceTopic)
+        public DefaultMQProducer(String producerGroup, RPCHook rpcHook, bool enableMsgTrace, string customizedTraceTopic)
             : this(null, producerGroup, rpcHook, enableMsgTrace, customizedTraceTopic)
         {
 
@@ -132,7 +140,7 @@ namespace RocketMQ.Client
          * @param namespace Namespace for this MQ Producer instance.
          * @param producerGroup Producer group, see the name-sake field.
          */
-        public DefaultMQProducer(String nameSpace, String producerGroup) : this(nameSpace, producerGroup, null)
+        public DefaultMQProducer(String nameSpace, string producerGroup) : this(nameSpace, producerGroup, null)
         {
 
         }
@@ -155,7 +163,7 @@ namespace RocketMQ.Client
          * @param producerGroup Producer group, see the name-sake field.
          * @param rpcHook RPC hook to execute per each remoting command execution.
          */
-        public DefaultMQProducer(String nameSpace, String producerGroup, RPCHook rpcHook)
+        public DefaultMQProducer(String nameSpace, string producerGroup, RPCHook rpcHook)
         {
             this.nameSpace = nameSpace;
             this.producerGroup = producerGroup;
@@ -181,7 +189,7 @@ namespace RocketMQ.Client
          * @param customizedTraceTopic The name value of message trace topic.If you don't config,you can use the default
          * trace topic name.
          */
-        public DefaultMQProducer(String producerGroup, bool enableMsgTrace, String customizedTraceTopic)
+        public DefaultMQProducer(String producerGroup, bool enableMsgTrace, string customizedTraceTopic)
                 : this(null, producerGroup, null, enableMsgTrace, customizedTraceTopic)
         {
 
@@ -198,8 +206,8 @@ namespace RocketMQ.Client
          * @param customizedTraceTopic The name value of message trace topic.If you don't config,you can use the default
          * trace topic name.
          */
-        public DefaultMQProducer(String nameSpace, String producerGroup, RPCHook rpcHook,
-            bool enableMsgTrace, String customizedTraceTopic)
+        public DefaultMQProducer(String nameSpace, string producerGroup, RPCHook rpcHook,
+            bool enableMsgTrace, string customizedTraceTopic)
         {
             this.nameSpace = nameSpace;
             this.producerGroup = producerGroup;
@@ -737,7 +745,7 @@ namespace RocketMQ.Client
         //@Deprecated
         //@Override
         [Obsolete]
-        public void createTopic(String key, String newTopic, int queueNum)
+        public void createTopic(String key, string newTopic, int queueNum)
         {
             createTopic(key, withNamespace(newTopic), queueNum, 0);
         }
@@ -755,7 +763,7 @@ namespace RocketMQ.Client
         //@Deprecated
         //@Override
         [Obsolete]
-        public void createTopic(String key, String newTopic, int queueNum, int topicSysFlag)
+        public void createTopic(String key, string newTopic, int queueNum, int topicSysFlag)
         {
             this.defaultMQProducerImpl.createTopic(key, withNamespace(newTopic), queueNum, topicSysFlag);
         }
@@ -862,7 +870,7 @@ namespace RocketMQ.Client
         //@Deprecated
         //@Override
         [Obsolete]
-        public QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end)
+        public QueryResult queryMessage(String topic, string key, int maxNum, long begin, long end)
         {
             return this.defaultMQProducerImpl.queryMessage(withNamespace(topic), key, maxNum, begin, end);
         }
@@ -883,7 +891,7 @@ namespace RocketMQ.Client
         //@Deprecated
         //@Override
         [Obsolete]
-        public MessageExt viewMessage(String topic, String msgId)
+        public MessageExt viewMessage(String topic, string msgId)
         {
             try
             {
@@ -988,10 +996,10 @@ namespace RocketMQ.Client
          *
          * @param responseCode response code, {@link ResponseCode}
          */
-        public void addRetryResponseCode(int responseCode)
-        {
-            this.retryResponseCodes.Add(responseCode);
-        }
+        //public void addRetryResponseCode(int responseCode)
+        //{
+        //    this.retryResponseCodes.Add(responseCode);
+        //}
 
         ///<exception cref="MQClientException"/>
         private MessageBatch batch(ICollection<Message> msgs)
@@ -1016,7 +1024,7 @@ namespace RocketMQ.Client
             return msgBatch;
         }
 
-        public String getProducerGroup()
+        public string getProducerGroup()
         {
             return producerGroup;
         }
@@ -1026,7 +1034,7 @@ namespace RocketMQ.Client
             this.producerGroup = producerGroup;
         }
 
-        public String getCreateTopicKey()
+        public string getCreateTopicKey()
         {
             return createTopicKey;
         }

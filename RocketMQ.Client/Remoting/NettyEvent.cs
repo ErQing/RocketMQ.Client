@@ -6,10 +6,10 @@ namespace RocketMQ.Client
     public class NettyEvent
     {
         private readonly NettyEventType type;
-        private readonly String remoteAddr;
+        private readonly string remoteAddr;
         private readonly IChannel channel;
 
-        public NettyEvent(NettyEventType type, String remoteAddr, IChannel channel)
+        public NettyEvent(NettyEventType type, string remoteAddr, IChannel channel)
         {
             this.type = type;
             this.remoteAddr = remoteAddr;
@@ -21,7 +21,7 @@ namespace RocketMQ.Client
             return type;
         }
 
-        public String getRemoteAddr()
+        public string getRemoteAddr()
         {
             return remoteAddr;
         }
@@ -31,7 +31,7 @@ namespace RocketMQ.Client
             return channel;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "NettyEvent [type=" + type + ", remoteAddr=" + remoteAddr + ", channel=" + channel + "]";
         }

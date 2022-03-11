@@ -51,7 +51,7 @@ namespace RocketMQ.Client
             this.msgFoundList = msgFoundList;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "PullResult [pullStatus=" + pullStatus + ", nextBeginOffset=" + nextBeginOffset
                 + ", minOffset=" + minOffset + ", maxOffset=" + maxOffset + ", msgFoundList="

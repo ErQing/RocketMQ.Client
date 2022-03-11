@@ -2,9 +2,9 @@
 {
     public enum MessageModel
     {
-        UNKNOWN,
         BROADCASTING,
-        CLUSTERING
+        CLUSTERING,
+        UNKNOWN  //永远放在最后
         /**
          * broadcast
          */

@@ -6,7 +6,7 @@ namespace RocketMQ.Client
     {
         public static readonly int CURRENT_VERSION = (int)Version.V4_9_3;
 
-        public static String getVersionDesc(int value)
+        public static string getVersionDesc(int value)
         {
             if (value >= (int)Version.HIGHER_VERSION)
             {

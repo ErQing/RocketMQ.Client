@@ -4,7 +4,7 @@ namespace RocketMQ.Client
 {
     public interface SendMessageHook
     {
-        String hookName();
+        string hookName();
 
         void sendMessageBefore(SendMessageContext context);
 

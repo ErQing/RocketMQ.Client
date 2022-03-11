@@ -39,7 +39,7 @@ namespace RocketMQ.Client//.Consumer
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
-        PullResult pull(MessageQueue mq, String subExpression, long offset, int maxNums) ;
+        PullResult pull(MessageQueue mq, string subExpression, long offset, int maxNums) ;
 
         /**
          * Pulling the messages in the specified timeout
@@ -50,7 +50,7 @@ namespace RocketMQ.Client//.Consumer
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
-        PullResult pull(MessageQueue mq, String subExpression, long offset, int maxNums, long timeout) ;
+        PullResult pull(MessageQueue mq, string subExpression, long offset, int maxNums, long timeout) ;
 
         /**
          * Pulling the messages, not blocking
@@ -95,7 +95,7 @@ namespace RocketMQ.Client//.Consumer
         ///<exception cref="MQClientException"/>
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
-        void pull(MessageQueue mq, String subExpression, long offset, int maxNums,
+        void pull(MessageQueue mq, string subExpression, long offset, int maxNums,
             PullCallback pullCallback);
 
         /**
@@ -104,7 +104,7 @@ namespace RocketMQ.Client//.Consumer
         ///<exception cref="MQClientException"/>
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
-        void pull(MessageQueue mq, String subExpression, long offset, int maxNums,
+        void pull(MessageQueue mq, string subExpression, long offset, int maxNums,
             PullCallback pullCallback, long timeout);
 
         /**
@@ -134,7 +134,7 @@ namespace RocketMQ.Client//.Consumer
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQBrokerException"/>
-        PullResult pullBlockIfNotFound(MessageQueue mq, String subExpression,
+        PullResult pullBlockIfNotFound(MessageQueue mq, string subExpression,
             long offset, int maxNums);
 
         /**
@@ -143,7 +143,7 @@ namespace RocketMQ.Client//.Consumer
         ///<exception cref="MQClientException"/>
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
-        void pullBlockIfNotFound(MessageQueue mq, String subExpression, long offset,
+        void pullBlockIfNotFound(MessageQueue mq, string subExpression, long offset,
             int maxNums, PullCallback pullCallback);
 
         /**
@@ -177,6 +177,6 @@ namespace RocketMQ.Client//.Consumer
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQBrokerException"/>
-        void sendMessageBack(MessageExt msg, int delayLevel, String brokerName, String consumerGroup);
+        void sendMessageBack(MessageExt msg, int delayLevel, string brokerName, string consumerGroup);
     }
 }

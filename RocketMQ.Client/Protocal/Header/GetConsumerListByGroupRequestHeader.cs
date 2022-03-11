@@ -9,7 +9,7 @@ namespace RocketMQ.Client
     public class GetConsumerListByGroupRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String consumerGroup { get; set; }
+        public string consumerGroup { get; set; }
 
         public void checkFields() { }       
     }

@@ -8,15 +8,15 @@ namespace RocketMQ.Client
 {
     public class EndTransactionContext
     {
-        private String producerGroup;
+        private string producerGroup;
         private Message message;
-        private String brokerAddr;
-        private String msgId;
-        private String transactionId;
+        private string brokerAddr;
+        private string msgId;
+        private string transactionId;
         private LocalTransactionState transactionState;
         private bool fromTransactionCheck;
 
-        public String getProducerGroup()
+        public string getProducerGroup()
         {
             return producerGroup;
         }
@@ -36,7 +36,7 @@ namespace RocketMQ.Client
             this.message = message;
         }
 
-        public String getBrokerAddr()
+        public string getBrokerAddr()
         {
             return brokerAddr;
         }
@@ -46,7 +46,7 @@ namespace RocketMQ.Client
             this.brokerAddr = brokerAddr;
         }
 
-        public String getMsgId()
+        public string getMsgId()
         {
             return msgId;
         }
@@ -56,7 +56,7 @@ namespace RocketMQ.Client
             this.msgId = msgId;
         }
 
-        public String getTransactionId()
+        public string getTransactionId()
         {
             return transactionId;
         }

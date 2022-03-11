@@ -5,7 +5,7 @@ namespace RocketMQ.Client
     public class EndTransactionRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String producerGroup { get; set; }
+        public string producerGroup { get; set; }
         [CFNotNull]
         public long tranStateTableOffset { get; set; }
         [CFNotNull]
@@ -19,9 +19,9 @@ namespace RocketMQ.Client
         public bool fromTransactionCheck { get; set; } = false;
 
         [CFNotNull]
-        public String msgId { get; set; }
+        public string msgId { get; set; }
 
-        public String transactionId { get; set; }
+        public string transactionId { get; set; }
 
         public void checkFields() 
         {
@@ -43,7 +43,7 @@ namespace RocketMQ.Client
             throw new RemotingCommandException("commitOrRollback field wrong");
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "EndTransactionRequestHeader{" +
                 "producerGroup='" + producerGroup + '\'' +

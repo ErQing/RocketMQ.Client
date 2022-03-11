@@ -40,7 +40,7 @@ namespace RocketMQ.Client
 
         //public static T decode<T>(byte[] data, Class<T> classOfT)
         //{
-        //    String json = new String(data, CHARSET_UTF8);
+        //    string json = new String(data, CHARSET_UTF8);
         //    return fromJson(json, classOfT);
         //}
         public static T decode<T>(byte[] data)
@@ -60,12 +60,12 @@ namespace RocketMQ.Client
             return JSON.parseObject<T>(json);
         }
 
-        public String toJson()
+        public string toJson()
         {
             return toJson(false);
         }
 
-        public String toJson(bool prettyFormat)
+        public string toJson(bool prettyFormat)
         {
             return toJson(this, prettyFormat);
         }

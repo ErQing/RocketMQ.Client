@@ -54,7 +54,7 @@ namespace RocketMQ.Client
             //this.faultItemTable.remove(name);
         }
 
-        public String pickOneAtLeast()
+        public string pickOneAtLeast()
         {
             //Enumeration<FaultItem> elements = this.faultItemTable.elements();
             //List<FaultItem> tmpList = new LinkedList<FaultItem>();
@@ -68,7 +68,7 @@ namespace RocketMQ.Client
             {
                 //Collections.shuffle(tmpList);
                 //Collections.sort(tmpList);
-                tmpList.shuffle();
+                tmpList = tmpList.Shuffle();  //???
                 tmpList.Sort();
 
                 int half = tmpList.Count / 2;
@@ -86,7 +86,7 @@ namespace RocketMQ.Client
             return null;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "LatencyFaultToleranceImpl{" +
                 "faultItemTable=" + faultItemTable +
@@ -96,25 +96,25 @@ namespace RocketMQ.Client
 
         class FaultItem : IComparable<FaultItem>
         {
-            private readonly String name;
-            private /*volatile*/ ulong currentLatency;   //不要直接使用此属性读写
-            public ulong CurrentLatency
+            private readonly string name;
+            private /*volatile*/ long currentLatency;   //不要直接使用此属性读写
+            public long CurrentLatency
             {
                 get { return Volatile.Read(ref currentLatency); }
             }
             public void SetCurrentLatency(long val)
             {
-                Volatile.Write(ref currentLatency, (ulong)val);
+                Volatile.Write(ref currentLatency, val);
             }
 
-            private /*volatile*/ ulong startTimestamp; //不要直接使用此属性读写
-            public ulong StartTimestamp
+            private /*volatile*/ long startTimestamp; //不要直接使用此属性读写
+            public long StartTimestamp
             {
                 get{ return Volatile.Read(ref startTimestamp); }
             }
             public void SetStartTimestamp(long val)
             {
-                Volatile.Write(ref startTimestamp, (ulong)val);
+                Volatile.Write(ref startTimestamp, val);
             }
 
             public FaultItem(String name)
@@ -152,14 +152,16 @@ namespace RocketMQ.Client
 
             public bool isAvailable()
             {
-                return (Sys.currentTimeMillisUnsigned() - startTimestamp) >= 0;
+                return (Sys.currentTimeMillis() - startTimestamp) >= 0;
             }
 
             public override int GetHashCode()
             {
                 int result = getName() != null ? getName().GetHashCode() : 0;
-                result = 31 * result + (int)(CurrentLatency ^ (CurrentLatency >> 32));  //ulong
-                result = 31 * result + (int)(StartTimestamp ^ (StartTimestamp >> 32)); //ulong
+                //result = 31 * result + (int)(CurrentLatency ^ (CurrentLatency >>> 32));  //ulong
+                //result = 31 * result + (int)(StartTimestamp ^ (StartTimestamp >>> 32)); //ulong
+                result = 31 * result + (int)(CurrentLatency ^ (CurrentLatency.UnsignedRightShift(32)));  
+                result = 31 * result + (int)(StartTimestamp ^ (StartTimestamp.UnsignedRightShift(32))); 
                 return result;
             }
 
@@ -180,7 +182,7 @@ namespace RocketMQ.Client
 
             }
 
-            public override String ToString()
+            public override string ToString()
             {
                 return "FaultItem{" +
                     "name='" + name + '\'' +
@@ -189,7 +191,7 @@ namespace RocketMQ.Client
                     '}';
             }
 
-            public String getName()
+            public string getName()
             {
                 return name;
             }

@@ -33,7 +33,7 @@ namespace RocketMQ.Client
 
         public MQClientInstance getOrCreateMQClientInstance(ClientConfig clientConfig, RPCHook rpcHook)
         {
-            String clientId = clientConfig.buildMQClientId();
+            string clientId = clientConfig.buildMQClientId();
             //TODO 双重判断解决多线程问题？？？？
             //MQClientInstance instance = this.factoryTable.get(clientId);
             //if (null == instance)

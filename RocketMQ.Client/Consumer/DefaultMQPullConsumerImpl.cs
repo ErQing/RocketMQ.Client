@@ -38,13 +38,13 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum)
+        public void createTopic(String key, string newTopic, int queueNum)
         {
             createTopic(key, newTopic, queueNum, 0);
         }
 
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum, int topicSysFlag)
+        public void createTopic(String key, string newTopic, int queueNum, int topicSysFlag)
         {
             this.isRunning();
             this.mQClientFactory.getMQAdminImpl().createTopic(key, newTopic, queueNum, topicSysFlag);
@@ -118,7 +118,7 @@ namespace RocketMQ.Client
             HashSet<MessageQueue> resultQueues = new HashSet<MessageQueue>();
             foreach (MessageQueue messageQueue in queueSet)
             {
-                String userTopic = NamespaceUtil.withoutNamespace(messageQueue.getTopic(),
+                string userTopic = NamespaceUtil.withoutNamespace(messageQueue.getTopic(),
                     this.defaultMQPullConsumer.getNamespace());
                 resultQueues.Add(new MessageQueue(userTopic, messageQueue.getBrokerName(), messageQueue.getQueueId()));
             }
@@ -150,7 +150,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
-        public PullResult pull(MessageQueue mq, String subExpression, long offset, int maxNums)
+        public PullResult pull(MessageQueue mq, string subExpression, long offset, int maxNums)
         {
             return pull(mq, subExpression, offset, maxNums, this.defaultMQPullConsumer.getConsumerPullTimeoutMillis());
         }
@@ -159,7 +159,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
-        public PullResult pull(MessageQueue mq, String subExpression, long offset, int maxNums, long timeout)
+        public PullResult pull(MessageQueue mq, string subExpression, long offset, int maxNums, long timeout)
         {
             SubscriptionData subscriptionData = getSubscriptionData(mq, subExpression);
             return this.pullSyncImpl(mq, subscriptionData, offset, maxNums, false, timeout);
@@ -185,7 +185,7 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="MQClientException"/>
-        private SubscriptionData getSubscriptionData(MessageQueue mq, String subExpression)
+        private SubscriptionData getSubscriptionData(MessageQueue mq, string subExpression)
         {
 
             if (null == mq)
@@ -271,7 +271,7 @@ namespace RocketMQ.Client
             this.pullAPIWrapper.processPullResult(mq, pullResult, subscriptionData);
             //If namespace is not null , reset Topic without namespace.
             this.resetTopic(pullResult.getMsgFoundList());
-            if (!this.consumeMessageHookList.isEmpty())
+            if (!this.consumeMessageHookList.IsEmpty())
             {
                 ConsumeMessageContext consumeMessageContext = null;
                 consumeMessageContext = new ConsumeMessageContext();
@@ -313,7 +313,7 @@ namespace RocketMQ.Client
                 try
                 {
                     SubscriptionData subscriptionData = FilterAPI.buildSubscriptionData(topic, SubscriptionData.SUB_ALL);
-                    this.rebalanceImpl.subscriptionInner.putIfAbsent(topic, subscriptionData);
+                    this.rebalanceImpl.subscriptionInner.PutIfAbsent(topic, subscriptionData);
                 }
                 catch (Exception ignore)
                 {
@@ -328,14 +328,14 @@ namespace RocketMQ.Client
         }
 
         //@Override
-        public String groupName()
+        public string groupName()
         {
             return this.defaultMQPullConsumer.getConsumerGroup();
         }
 
         public void executeHookBefore(ConsumeMessageContext context)
         {
-            if (!this.consumeMessageHookList.isEmpty())
+            if (!this.consumeMessageHookList.IsEmpty())
             {
                 foreach (ConsumeMessageHook hook in this.consumeMessageHookList)
                 {
@@ -352,7 +352,7 @@ namespace RocketMQ.Client
 
         public void executeHookAfter(ConsumeMessageContext context)
         {
-            if (!this.consumeMessageHookList.isEmpty())
+            if (!this.consumeMessageHookList.IsEmpty())
             {
                 foreach (ConsumeMessageHook hook in this.consumeMessageHookList)
                 {
@@ -483,17 +483,17 @@ namespace RocketMQ.Client
             ConsumerRunningInfo info = new ConsumerRunningInfo();
 
             Properties prop = MixAll.object2Properties(this.defaultMQPullConsumer);
-            prop.put(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP, Str.valueOf(this.consumerStartTimestamp));
+            prop.Put(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP, Str.valueOf(this.consumerStartTimestamp));
             info.properties = prop;
 
-            info.subscriptionSet.addAll(this.subscriptions());
+            info.subscriptionSet.AddAll(this.subscriptions());
             return info;
         }
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
-        public void pull(MessageQueue mq, String subExpression, long offset, int maxNums, PullCallback pullCallback)
+        public void pull(MessageQueue mq, string subExpression, long offset, int maxNums, PullCallback pullCallback)
         {
             pull(mq, subExpression, offset, maxNums, pullCallback, this.defaultMQPullConsumer.getConsumerPullTimeoutMillis());
         }
@@ -501,7 +501,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQClientException"/>
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
-        public void pull(MessageQueue mq, String subExpression, long offset, int maxNums, PullCallback pullCallback,
+        public void pull(MessageQueue mq, string subExpression, long offset, int maxNums, PullCallback pullCallback,
         long timeout)
         {
             SubscriptionData subscriptionData = getSubscriptionData(mq, subExpression);
@@ -611,7 +611,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
-        public PullResult pullBlockIfNotFound(MessageQueue mq, String subExpression, long offset, int maxNums)
+        public PullResult pullBlockIfNotFound(MessageQueue mq, string subExpression, long offset, int maxNums)
         {
             SubscriptionData subscriptionData = getSubscriptionData(mq, subExpression);
             return this.pullSyncImpl(mq, subscriptionData, offset, maxNums, true, this.getDefaultMQPullConsumer().getConsumerPullTimeoutMillis());
@@ -625,7 +625,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQClientException"/>
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
-        public void pullBlockIfNotFound(MessageQueue mq, String subExpression, long offset, int maxNums,
+        public void pullBlockIfNotFound(MessageQueue mq, string subExpression, long offset, int maxNums,
     PullCallback pullCallback)
         {
             SubscriptionData subscriptionData = getSubscriptionData(mq, subExpression);
@@ -635,7 +635,7 @@ namespace RocketMQ.Client
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end)
+        public QueryResult queryMessage(String topic, string key, int maxNum, long begin, long end)
         {
             this.isRunning();
             return this.mQClientFactory.getMQAdminImpl().queryMessage(topic, key, maxNum, begin, end);
@@ -643,7 +643,7 @@ namespace RocketMQ.Client
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public MessageExt queryMessageByUniqKey(String topic, String uniqKey)
+        public MessageExt queryMessageByUniqKey(String topic, string uniqKey)
         {
             this.isRunning();
             return this.mQClientFactory.getMQAdminImpl().queryMessageByUniqKey(topic, uniqKey);
@@ -660,7 +660,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public void sendMessageBack(MessageExt msg, int delayLevel, String brokerName)
+        public void sendMessageBack(MessageExt msg, int delayLevel, string brokerName)
         {
             sendMessageBack(msg, delayLevel, brokerName, this.defaultMQPullConsumer.getConsumerGroup());
         }
@@ -678,11 +678,11 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public void sendMessageBack(MessageExt msg, int delayLevel, String brokerName, String consumerGroup)
+        public void sendMessageBack(MessageExt msg, int delayLevel, string brokerName, string consumerGroup)
         {
             try
             {
-                String brokerAddr = (null != brokerName) ? this.mQClientFactory.findBrokerAddressInPublish(brokerName)
+                string brokerAddr = (null != brokerName) ? this.mQClientFactory.findBrokerAddressInPublish(brokerName)
                     : RemotingHelper.parseSocketAddressAddr(msg.getStoreHost());
 
                 if (UtilAll.isBlank(consumerGroup))
@@ -698,7 +698,7 @@ namespace RocketMQ.Client
                 log.Error("sendMessageBack Exception, " + this.defaultMQPullConsumer.getConsumerGroup(), e.ToString());
 
                 Message newMsg = new Message(MixAll.getRetryTopic(this.defaultMQPullConsumer.getConsumerGroup()), msg.getBody());
-                String originMsgId = MessageAccessor.getOriginMessageId(msg);
+                string originMsgId = MessageAccessor.getOriginMessageId(msg);
                 MessageAccessor.setOriginMessageId(newMsg, UtilAll.isBlank(originMsgId) ? msg.getMsgId() : originMsgId);
                 newMsg.setFlag(msg.getFlag());
                 MessageAccessor.setProperties(newMsg, msg.getProperties());

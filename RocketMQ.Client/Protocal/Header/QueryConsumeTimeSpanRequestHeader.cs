@@ -9,9 +9,9 @@ namespace RocketMQ.Client//.Protocal.Header
     public class QueryConsumeTimeSpanRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String topic { get; set; }
+        public string topic { get; set; }
         [CFNotNull]
-        public String group { get; set; }
+        public string group { get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException

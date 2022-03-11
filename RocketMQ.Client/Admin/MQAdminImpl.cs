@@ -30,13 +30,13 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum)
+        public void createTopic(String key, string newTopic, int queueNum)
         {
             createTopic(key, newTopic, queueNum, 0);
         }
 
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum, int topicSysFlag)
+        public void createTopic(String key, string newTopic, int queueNum, int topicSysFlag)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace RocketMQ.Client
                 Validators.isSystemTopic(newTopic);
                 TopicRouteData topicRouteData = this.mQClientFactory.getMQClientAPIImpl().getTopicRouteInfoFromNameServer(key, timeoutMillis);
                 List<BrokerData> brokerDataList = topicRouteData.brokerDatas;
-                if (brokerDataList != null && !brokerDataList.isEmpty())
+                if (brokerDataList != null && !brokerDataList.IsEmpty())
                 {
                     //Collections.sort(brokerDataList);
                     brokerDataList.Sort();
@@ -138,7 +138,7 @@ namespace RocketMQ.Client
             List<MessageQueue> resultQueues = new List<MessageQueue>();
             foreach (MessageQueue queue in messageQueueList)
             {
-                String userTopic = NamespaceUtil.withoutNamespace(queue.getTopic(), this.mQClientFactory.getClientConfig().getNamespace());
+                string userTopic = NamespaceUtil.withoutNamespace(queue.getTopic(), this.mQClientFactory.getClientConfig().getNamespace());
                 resultQueues.Add(new MessageQueue(userTopic, queue.getBrokerName(), queue.getQueueId()));
             }
 
@@ -154,7 +154,7 @@ namespace RocketMQ.Client
                 if (topicRouteData != null)
                 {
                     HashSet<MessageQueue> mqList = MQClientInstance.topicRouteData2TopicSubscribeInfo(topic, topicRouteData);
-                    if (!mqList.isEmpty())
+                    if (!mqList.IsEmpty())
                     {
                         return mqList;
                     }
@@ -177,7 +177,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQClientException"/>
         public long searchOffset(MessageQueue mq, long timestamp)
         {
-            String brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
+            string brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
             if (null == brokerAddr)
             {
                 this.mQClientFactory.updateTopicRouteInfoFromNameServer(mq.getTopic());
@@ -203,7 +203,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQClientException"/>
         public long maxOffset(MessageQueue mq)
         {
-            String brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
+            string brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
             if (null == brokerAddr)
             {
                 this.mQClientFactory.updateTopicRouteInfoFromNameServer(mq.getTopic());
@@ -227,7 +227,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQClientException"/>
         public long minOffset(MessageQueue mq)
         {
-            String brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
+            string brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
             if (null == brokerAddr)
             {
                 this.mQClientFactory.updateTopicRouteInfoFromNameServer(mq.getTopic());
@@ -252,7 +252,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQClientException"/>
         public long earliestMsgStoreTime(MessageQueue mq)
         {
-            String brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
+            string brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
             if (null == brokerAddr)
             {
                 this.mQClientFactory.updateTopicRouteInfoFromNameServer(mq.getTopic());
@@ -280,7 +280,7 @@ namespace RocketMQ.Client
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
         public MessageExt viewMessage(
-        String msgId)
+        string msgId)
         {
 
             MessageId messageId = null;
@@ -298,7 +298,7 @@ namespace RocketMQ.Client
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end)
+        public QueryResult queryMessage(String topic, string key, int maxNum, long begin, long end)
         {
 
             return queryMessage(topic, key, maxNum, begin, end, false);
@@ -306,7 +306,7 @@ namespace RocketMQ.Client
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public QueryResult queryMessageByUniqKey(String topic, String uniqKey, int maxNum, long begin, long end)
+        public QueryResult queryMessageByUniqKey(String topic, string uniqKey, int maxNum, long begin, long end)
         {
 
             return queryMessage(topic, uniqKey, maxNum, begin, end, true);
@@ -314,7 +314,7 @@ namespace RocketMQ.Client
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public MessageExt queryMessageByUniqKey(String topic, String uniqKey)
+        public MessageExt queryMessageByUniqKey(String topic, string uniqKey)
         {
 
             QueryResult qr = queryMessageByUniqKey(topic, uniqKey, 32,
@@ -322,7 +322,7 @@ namespace RocketMQ.Client
             if (qr != null && qr.getMessageList() != null && qr.getMessageList().Count > 0)
             {
                 //return qr.getMessageList()[0];
-                return qr.getMessageList().getFirst();
+                return qr.getMessageList().GetFirst();
             }
             else
             {
@@ -332,7 +332,7 @@ namespace RocketMQ.Client
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        protected QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end, bool isUniqKey)
+        protected QueryResult queryMessage(String topic, string key, int maxNum, long begin, long end, bool isUniqKey)
         {
             TopicRouteData topicRouteData = this.mQClientFactory.getAnExistTopicRouteData(topic);
             if (null == topicRouteData)
@@ -346,14 +346,14 @@ namespace RocketMQ.Client
                 List<String> brokerAddrs = new List<String>();
                 foreach (BrokerData brokerData in topicRouteData.brokerDatas)
                 {
-                    String addr = brokerData.selectBrokerAddr();
+                    string addr = brokerData.selectBrokerAddr();
                     if (addr != null)
                     {
                         brokerAddrs.Add(addr);
                     }
                 }
 
-                if (!brokerAddrs.isEmpty())
+                if (!brokerAddrs.IsEmpty())
                 {
                     //CountDownLatch countDownLatch = new CountDownLatch(brokerAddrs.Count);
                     CountdownEvent countDownLatch = new CountdownEvent(brokerAddrs.Count);
@@ -495,8 +495,8 @@ namespace RocketMQ.Client
                             }
                             else
                             {
-                                String keys = msgExt.getKeys();
-                                String msgTopic = msgExt.getTopic();
+                                string keys = msgExt.getKeys();
+                                string msgTopic = msgExt.getTopic();
                                 if (keys != null)
                                 {
                                     bool matched = false;
@@ -538,7 +538,7 @@ namespace RocketMQ.Client
                         }
                     }
 
-                    if (!messageList.isEmpty())
+                    if (!messageList.IsEmpty())
                     {
                         return new QueryResult(indexLastUpdateTimestamp, messageList);
                     }

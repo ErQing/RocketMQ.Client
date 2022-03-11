@@ -25,7 +25,7 @@ namespace RocketMQ.Client
             return messageList;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "QueryResult [indexLastUpdateTimestamp=" + indexLastUpdateTimestamp + ", messageList="
                 + messageList + "]";

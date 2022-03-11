@@ -7,22 +7,22 @@ namespace RocketMQ.Client
     {
         public readonly static string SUB_ALL = "*";
         public bool classFilterMode { get; set; } = false;
-        public String topic { get; set; }
-        public String subString { get; set; }
+        public string topic { get; set; }
+        public string subString { get; set; }
         public HashSet<String> tagsSet { get; set; } = new HashSet<String>();
         public HashSet<int> codeSet { get; set; } = new HashSet<int>();
         public long subVersion { get; set; } = Sys.currentTimeMillis();
-        public String expressionType { get; set; } = ExpressionType.TAG;
+        public string expressionType { get; set; } = ExpressionType.TAG;
 
         //@JSONField(serialize = false)
-        public String filterClassSource { get; set; }
+        public string filterClassSource { get; set; }
 
         public SubscriptionData()
         {
 
         }
 
-        public SubscriptionData(String topic, String subString)
+        public SubscriptionData(String topic, string subString)
         {
             //super();
             this.topic = topic;
@@ -92,7 +92,7 @@ namespace RocketMQ.Client
             return true;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "SubscriptionData [classFilterMode=" + classFilterMode + ", topic=" + topic + ", subString="
                 + subString + ", tagsSet=" + tagsSet + ", codeSet=" + codeSet + ", subVersion=" + subVersion
@@ -101,8 +101,8 @@ namespace RocketMQ.Client
 
         public int CompareTo(SubscriptionData other)
         {
-            String thisValue = this.topic + "@" + this.subString;
-            String otherValue = other.topic + "@" + other.subString;
+            string thisValue = this.topic + "@" + this.subString;
+            string otherValue = other.topic + "@" + other.subString;
             return thisValue.CompareTo(otherValue);
         }
 

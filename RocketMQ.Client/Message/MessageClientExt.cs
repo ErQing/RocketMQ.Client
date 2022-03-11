@@ -9,7 +9,7 @@ namespace RocketMQ.Client
     public class MessageClientExt : MessageExt
     {
 
-        public String getOffsetMsgId()
+        public string getOffsetMsgId()
         {
             return base.getMsgId();
         }
@@ -19,9 +19,9 @@ namespace RocketMQ.Client
             base.setMsgId(offsetMsgId);
         }
 
-        public override String getMsgId()
+        public override string getMsgId()
         {
-            String uniqID = MessageClientIDSetter.getUniqID(this);
+            string uniqID = MessageClientIDSetter.getUniqID(this);
             if (uniqID == null)
             {
                 return this.getOffsetMsgId();

@@ -5,11 +5,11 @@ namespace RocketMQ.Client
     public class GetConsumerStatusRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String topic { get; set; }
+        public string topic { get; set; }
         [CFNotNull]
-        public String group { get; set; }
+        public string group { get; set; }
         [CFNullable]
-        public String clientAddr { get; set; }
+        public string clientAddr { get; set; }
 
         public void checkFields() { }
     }

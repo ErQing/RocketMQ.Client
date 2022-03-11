@@ -4,7 +4,7 @@ namespace RocketMQ.Client
 {
     public class QueueData : IComparable<QueueData>
     {
-        public String brokerName{ get; set; }
+        public string brokerName{ get; set; }
         public int readQueueNums{ get; set; }
         public int writeQueueNums{ get; set; }
         public int perm{ get; set; }
@@ -48,7 +48,7 @@ namespace RocketMQ.Client
             return true;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "QueueData [brokerName=" + brokerName + ", readQueueNums=" + readQueueNums
                 + ", writeQueueNums=" + writeQueueNums + ", perm=" + perm + ", topicSysFlag=" + topicSysFlag

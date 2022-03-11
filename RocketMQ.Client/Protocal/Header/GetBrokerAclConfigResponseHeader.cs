@@ -9,18 +9,18 @@ namespace RocketMQ.Client
     public class GetBrokerAclConfigResponseHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String version { get; set; }
+        public string version { get; set; }
 
-        public String allAclFileVersion { get; set; }
-
-        [CFNotNull]
-        public String brokerName { get; set; }
+        public string allAclFileVersion { get; set; }
 
         [CFNotNull]
-        public String brokerAddr { get; set; }
+        public string brokerName { get; set; }
 
         [CFNotNull]
-        public String clusterName { get; set; }
+        public string brokerAddr { get; set; }
+
+        [CFNotNull]
+        public string clusterName { get; set; }
 
         public void checkFields() { }
         

@@ -5,7 +5,7 @@ namespace RocketMQ.Client
     public class MQClientException : Exception
     {
         private int responseCode;
-        private String errorMessage;
+        private string errorMessage;
 
         public MQClientException(String errorMessage, Exception cause) 
             : base(FAQUrl.attachDefaultURL(errorMessage), cause)
@@ -14,7 +14,7 @@ namespace RocketMQ.Client
             this.errorMessage = errorMessage;
         }
 
-        public MQClientException(int responseCode, String errorMessage)
+        public MQClientException(int responseCode, string errorMessage)
             : base(FAQUrl.attachDefaultURL("CODE: " + responseCode + "  DESC: " + errorMessage))
         {
             this.responseCode = responseCode;
@@ -32,7 +32,7 @@ namespace RocketMQ.Client
             return this;
         }
 
-        public String getErrorMessage()
+        public string getErrorMessage()
         {
             return errorMessage;
         }

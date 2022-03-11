@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RocketMQ.Client
 {
@@ -27,15 +24,33 @@ namespace RocketMQ.Client
         public static T ToEnum<T>(this string value, T defaultValue) where T : struct
         {
             if (string.IsNullOrEmpty(value))
-            {
                 return defaultValue;
-            }
-            return Enum.TryParse<T>(value, true, out T result) ? result : defaultValue;
+            return Enum.TryParse(value, true, out T result) ? result : defaultValue;
         }
 
+        /// <summary>
+        /// str==null or str.length()==0
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static bool isEmpty(this string str)
         {
             return string.IsNullOrEmpty(str);
+        }
+
+        /// <summary>
+        /// str==null or str.length()==0 or str = "   "
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static bool isBlank(string str)
+        {
+            return string.IsNullOrWhiteSpace(str);
+        }
+
+        public static bool isNotEmpty(string str)
+        {
+            return !isEmpty(str);
         }
 
         public static byte[] getBytes(this string str, Encoding charSet)

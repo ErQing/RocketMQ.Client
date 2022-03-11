@@ -6,7 +6,7 @@ namespace RocketMQ.Client
     public class NamespaceUtil
     {
         public static readonly char NAMESPACE_SEPARATOR = '%';
-        public static readonly String STRING_BLANK = "";
+        public static readonly string STRING_BLANK = "";
         public static readonly int RETRY_PREFIX_LENGTH = MixAll.RETRY_GROUP_TOPIC_PREFIX.Length;
         public static readonly int DLQ_PREFIX_LENGTH = MixAll.DLQ_GROUP_TOPIC_PREFIX.Length;
 
@@ -18,7 +18,7 @@ namespace RocketMQ.Client
          * @param resourceWithNamespace, topic/groupId with namespace.
          * @return topic/groupId without namespace.
          */
-        public static String withoutNamespace(String resourceWithNamespace)
+        public static string withoutNamespace(String resourceWithNamespace)
         {
             if (string.IsNullOrEmpty(resourceWithNamespace) || isSystemResource(resourceWithNamespace))
             {
@@ -35,11 +35,11 @@ namespace RocketMQ.Client
                 stringBuilder.Append(MixAll.DLQ_GROUP_TOPIC_PREFIX);
             }
 
-            String resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resourceWithNamespace);
+            string resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resourceWithNamespace);
             int index = resourceWithoutRetryAndDLQ.IndexOf(NAMESPACE_SEPARATOR);
             if (index > 0)
             {
-                String resourceWithoutNamespace = resourceWithoutRetryAndDLQ.Substring(index + 1);
+                string resourceWithoutNamespace = resourceWithoutRetryAndDLQ.Substring(index + 1);
                 return stringBuilder.Append(resourceWithoutNamespace).ToString();
             }
 
@@ -57,14 +57,14 @@ namespace RocketMQ.Client
          * @param namespace, namespace to be unpacked.
          * @return topic/groupId without namespace.
          */
-        public static String withoutNamespace(String resourceWithNamespace, String nameSpace)
+        public static string withoutNamespace(String resourceWithNamespace, string nameSpace)
         {
             if (string.IsNullOrEmpty(resourceWithNamespace) || string.IsNullOrEmpty(nameSpace))
             {
                 return resourceWithNamespace;
             }
 
-            String resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resourceWithNamespace);
+            string resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resourceWithNamespace);
             if (resourceWithoutRetryAndDLQ.StartsWith(nameSpace + NAMESPACE_SEPARATOR))
             {
                 return withoutNamespace(resourceWithNamespace);
@@ -73,7 +73,7 @@ namespace RocketMQ.Client
             return resourceWithNamespace;
         }
 
-        public static String wrapNamespace(String nameSpace, String resourceWithOutNamespace)
+        public static string wrapNamespace(String nameSpace, string resourceWithOutNamespace)
         {
             if (string.IsNullOrEmpty(nameSpace) || string.IsNullOrEmpty(resourceWithOutNamespace))
             {
@@ -85,7 +85,7 @@ namespace RocketMQ.Client
                 return resourceWithOutNamespace;
             }
 
-            String resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resourceWithOutNamespace);
+            string resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resourceWithOutNamespace);
             StringBuilder stringBuilder = new StringBuilder();
 
             if (isRetryTopic(resourceWithOutNamespace))
@@ -102,19 +102,19 @@ namespace RocketMQ.Client
 
         }
 
-        public static bool isAlreadyWithNamespace(String resource, String nameSpace)
+        public static bool isAlreadyWithNamespace(String resource, string nameSpace)
         {
             if (string.IsNullOrEmpty(nameSpace) || string.IsNullOrEmpty(resource) || isSystemResource(resource))
             {
                 return false;
             }
 
-            String resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resource);
+            string resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resource);
 
             return resourceWithoutRetryAndDLQ.StartsWith(nameSpace + NAMESPACE_SEPARATOR);
         }
 
-        public static String wrapNamespaceAndRetry(String nameSpace, String consumerGroup)
+        public static string wrapNamespaceAndRetry(String nameSpace, string consumerGroup)
         {
             if (string.IsNullOrEmpty(consumerGroup))
             {
@@ -127,19 +127,19 @@ namespace RocketMQ.Client
                 .ToString();
         }
 
-        public static String getNamespaceFromResource(String resource)
+        public static string getNamespaceFromResource(String resource)
         {
             if (string.IsNullOrEmpty(resource) || isSystemResource(resource))
             {
                 return STRING_BLANK;
             }
-            String resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resource);
+            string resourceWithoutRetryAndDLQ = withOutRetryAndDLQ(resource);
             int index = resourceWithoutRetryAndDLQ.IndexOf(NAMESPACE_SEPARATOR);
 
             return index > 0 ? resourceWithoutRetryAndDLQ.JavaSubstring(0, index) : STRING_BLANK;
         }
 
-        private static String withOutRetryAndDLQ(String originalResource)
+        private static string withOutRetryAndDLQ(String originalResource)
         {
             if (string.IsNullOrEmpty(originalResource))
             {

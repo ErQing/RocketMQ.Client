@@ -46,5 +46,11 @@ namespace RocketMQ.Client
         {
             throw new NotImplementedException();
         }
+
+        public int GetWaitingCount()
+        {
+            return worker.GetWaitingCount();
+        }
+
     }
 }

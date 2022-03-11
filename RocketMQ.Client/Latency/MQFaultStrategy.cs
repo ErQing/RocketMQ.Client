@@ -47,7 +47,7 @@ namespace RocketMQ.Client
             this.sendLatencyFaultEnable = sendLatencyFaultEnable;
         }
 
-        public MessageQueue selectOneMessageQueue(TopicPublishInfo tpInfo, String lastBrokerName)
+        public MessageQueue selectOneMessageQueue(TopicPublishInfo tpInfo, string lastBrokerName)
         {
             if (this.sendLatencyFaultEnable)
             {
@@ -64,7 +64,7 @@ namespace RocketMQ.Client
                             return mq;
                     }
 
-                    String notBestBroker = latencyFaultTolerance.pickOneAtLeast();
+                    string notBestBroker = latencyFaultTolerance.pickOneAtLeast();
                     int writeQueueNums = tpInfo.getQueueIdByBroker(notBestBroker);
                     if (writeQueueNums > 0)
                     {

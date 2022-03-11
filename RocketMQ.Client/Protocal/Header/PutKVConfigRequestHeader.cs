@@ -9,11 +9,11 @@ namespace RocketMQ.Client//.Protocal.Header
     public class PutKVConfigRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String nameSpace{ get; set; }
+        public string nameSpace{ get; set; }
         [CFNotNull]
-        public String key{ get; set; }
+        public string key{ get; set; }
         [CFNotNull]
-        public String value{ get; set; }
+        public string value{ get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException

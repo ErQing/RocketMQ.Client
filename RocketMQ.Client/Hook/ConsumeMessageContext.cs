@@ -12,9 +12,9 @@ namespace RocketMQ.Client
         private string status;
         private object mqTraceContext;
         private Dictionary<String, String> props;
-        private String nameSpace;
+        private string nameSpace;
 
-        public String getConsumerGroup()
+        public string getConsumerGroup()
         {
             return consumerGroup;
         }
@@ -74,7 +74,7 @@ namespace RocketMQ.Client
             this.props = props;
         }
 
-        public String getStatus()
+        public string getStatus()
         {
             return status;
         }
@@ -84,7 +84,7 @@ namespace RocketMQ.Client
             this.status = status;
         }
 
-        public String getNamespace()
+        public string getNamespace()
         {
             return nameSpace;
         }

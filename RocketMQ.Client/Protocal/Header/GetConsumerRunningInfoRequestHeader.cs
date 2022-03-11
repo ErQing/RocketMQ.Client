@@ -5,9 +5,9 @@ namespace RocketMQ.Client
     public class GetConsumerRunningInfoRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String consumerGroup { get; set; }
+        public string consumerGroup { get; set; }
         [CFNotNull]
-        public String clientId { get; set; }
+        public string clientId { get; set; }
         [CFNullable]
         public bool jstackEnable { get; set; }
 

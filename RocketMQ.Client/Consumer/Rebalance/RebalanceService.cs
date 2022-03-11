@@ -3,12 +3,9 @@
     public class RebalanceService : ServiceThread
     {
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
-        private static long waitInterval =
-        long.Parse(Sys.getProperty("rocketmq.client.rebalance.waitInterval", "20000"));
+        private static int waitInterval = int.Parse(Sys.getProperty("rocketmq.client.rebalance.waitInterval", "20000"));
         //private final InternalLogger log = ClientLogger.getLog();
         private readonly MQClientInstance mqClientFactory;
-
-        protected override Model ExecuteModel => Model.Looping;
 
         public RebalanceService(MQClientInstance mqClientFactory)
         {

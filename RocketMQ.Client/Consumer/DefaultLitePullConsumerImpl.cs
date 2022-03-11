@@ -35,9 +35,9 @@ namespace RocketMQ.Client
             NONE, SUBSCRIBE, ASSIGN
         }
 
-        private static readonly String NOT_RUNNING_EXCEPTION_MESSAGE = "The consumer not running, please start it first.";
+        private static readonly string NOT_RUNNING_EXCEPTION_MESSAGE = "The consumer not running, please start it first.";
 
-        private static readonly String SUBSCRIPTION_CONFLICT_EXCEPTION_MESSAGE = "Subscribe and assign are mutually exclusive.";
+        private static readonly string SUBSCRIPTION_CONFLICT_EXCEPTION_MESSAGE = "Subscribe and assign are mutually exclusive.";
         /**
          * the type of subscription
          */
@@ -65,7 +65,8 @@ namespace RocketMQ.Client
         private AssignedMessageQueue assignedMessageQueue = new AssignedMessageQueue();
 
         //private readonly BlockingQueue<ConsumeRequest> consumeRequestCache = new LinkedBlockingQueue<ConsumeRequest>();
-        private readonly LinkedBlockingQueue<ConsumeRequest> consumeRequestCache = new LinkedBlockingQueue<ConsumeRequest>();
+        //private readonly LinkedBlockingQueue<ConsumeRequest> consumeRequestCache = new LinkedBlockingQueue<ConsumeRequest>();
+        private readonly BlockingQueue<ConsumeRequest> consumeRequestCache = BlockingQueue<ConsumeRequest>.Create();
 
         //private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
         private ScheduledExecutorService scheduledThreadPoolExecutor;
@@ -427,7 +428,7 @@ namespace RocketMQ.Client
             foreach (string topic in topicMessageQueueChangeListenerMap.Keys)
             {
                 HashSet<MessageQueue> messageQueues = fetchMessageQueues(topic);
-                messageQueuesForTopic.put(topic, messageQueues);
+                messageQueuesForTopic.Put(topic, messageQueues);
             }
             this.mQClientFactory.checkClientInBroker();
         }
@@ -487,7 +488,7 @@ namespace RocketMQ.Client
                 if (!this.taskTable.ContainsKey(messageQueue))
                 {
                     PullTaskImpl pullTask = new PullTaskImpl(messageQueue);
-                    this.taskTable.put(messageQueue, pullTask);
+                    this.taskTable.Put(messageQueue, pullTask);
                     this.scheduledThreadPoolExecutor.Schedule(pullTask, 0);
                 }
             }
@@ -530,7 +531,7 @@ namespace RocketMQ.Client
         /// <param name="topic"></param>
         /// <param name="subExpression"></param>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void subscribe(String topic, String subExpression)
+        public void subscribe(String topic, string subExpression)
         {
             try
             {
@@ -540,7 +541,7 @@ namespace RocketMQ.Client
                 }
                 setSubscriptionType(SubscriptionType.SUBSCRIBE);
                 SubscriptionData subscriptionData = FilterAPI.buildSubscriptionData(topic, subExpression);
-                this.rebalanceImpl.getSubscriptionInner().put(topic, subscriptionData);
+                this.rebalanceImpl.getSubscriptionInner().Put(topic, subscriptionData);
                 this.defaultLitePullConsumer.setMessageQueueListener(new MessageQueueListenerImpl(this));
                 assignedMessageQueue.setRebalanceImpl(this.rebalanceImpl);
                 if (serviceState == ServiceState.RUNNING)
@@ -577,7 +578,7 @@ namespace RocketMQ.Client
                 }
                 SubscriptionData subscriptionData = FilterAPI.build(topic,
                     messageSelector.getExpression(), messageSelector.getExpressionType());
-                this.rebalanceImpl.getSubscriptionInner().put(topic, subscriptionData);
+                this.rebalanceImpl.getSubscriptionInner().Put(topic, subscriptionData);
                 this.defaultLitePullConsumer.setMessageQueueListener(new MessageQueueListenerImpl(this));
                 assignedMessageQueue.setRebalanceImpl(this.rebalanceImpl);
                 if (serviceState == ServiceState.RUNNING)
@@ -600,7 +601,7 @@ namespace RocketMQ.Client
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void unsubscribe(String topic)
         {
-            this.rebalanceImpl.getSubscriptionInner().remove(topic);
+            this.rebalanceImpl.getSubscriptionInner().JavaRemove(topic);
             removePullTaskCallback(topic);
             assignedMessageQueue.removeAssignedMessageQueue(topic);
         }
@@ -615,7 +616,7 @@ namespace RocketMQ.Client
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void assign(ICollection<MessageQueue> messageQueues)
         {
-            if (messageQueues == null || messageQueues.isEmpty())
+            if (messageQueues == null || messageQueues.IsEmpty())
             {
                 throw new ArgumentException("Message queues can not be null or empty.");
             }
@@ -660,12 +661,12 @@ namespace RocketMQ.Client
                 }
                 long endTime = Sys.currentTimeMillis() + timeout;
 
-                ConsumeRequest consumeRequest = consumeRequestCache.poll(endTime - Sys.currentTimeMillis(), TimeUnit.MILLISECONDS);
+                ConsumeRequest consumeRequest = consumeRequestCache.Poll(endTime - Sys.currentTimeMillis(), TimeUnit.MILLISECONDS);
                 if (endTime - Sys.currentTimeMillis() > 0)
                 {
-                    while (consumeRequest != null && consumeRequest.getProcessQueue().isDropped())
+                    while (consumeRequest != null && (consumeRequest.IsRemoved ||consumeRequest.getProcessQueue().isDropped())) //???
                     {
-                        consumeRequest = consumeRequestCache.poll(endTime - Sys.currentTimeMillis(), TimeUnit.MILLISECONDS);
+                        consumeRequest = consumeRequestCache.Poll(endTime - Sys.currentTimeMillis(), TimeUnit.MILLISECONDS);
                         if (endTime - Sys.currentTimeMillis() <= 0)
                         {
                             break;
@@ -728,22 +729,22 @@ namespace RocketMQ.Client
             {
                 throw new MQClientException("Seek offset illegal, seek offset = " + offset + ", min offset = " + minoffset + ", max offset = " + maxoffset, null);
             }
-            Object objLock = messageQueueLock.fetchLockObject(messageQueue);
+            object objLock = messageQueueLock.fetchLockObject(messageQueue);
             lock(objLock) 
             {
                 clearMessageQueueInCache(messageQueue);
 
-                PullTaskImpl oldPullTaskImpl = this.taskTable.get(messageQueue);
+                PullTaskImpl oldPullTaskImpl = this.taskTable.Get(messageQueue);
                 if (oldPullTaskImpl != null)
                 {
                     oldPullTaskImpl.tryInterrupt();
-                    this.taskTable.remove(messageQueue);
+                    this.taskTable.JavaRemove(messageQueue);
                 }
                 assignedMessageQueue.setSeekOffset(messageQueue, offset);
                 if (!this.taskTable.ContainsKey(messageQueue))
                 {
                     PullTaskImpl pullTask = new PullTaskImpl(messageQueue);
-                    this.taskTable.put(messageQueue, pullTask);
+                    this.taskTable.Put(messageQueue, pullTask);
                     this.scheduledThreadPoolExecutor.Schedule(pullTask, 0);
                 }
             }
@@ -837,8 +838,7 @@ namespace RocketMQ.Client
         {
             try
             {
-                //consumeRequestCache.put(consumeRequest);
-                consumeRequestCache.Enqueue(consumeRequest);
+                consumeRequestCache.Put(consumeRequest);
             }
             catch (Exception e)
             {
@@ -878,6 +878,7 @@ namespace RocketMQ.Client
                 if (entry.getMessageQueue().Equals(messageQueue))
                 {
                     //iter.remove(); //??? TODO
+                    entry.IsRemoved = true;      //c#版本无法删除，所以只能设置标记位
                 }
             }
         }
@@ -932,6 +933,7 @@ namespace RocketMQ.Client
                 this.messageQueue = messageQueue;
             }
 
+            private volatile bool isInterrupted = false;
             public void tryInterrupt()
             {
                 setCancelled(true);
@@ -943,8 +945,9 @@ namespace RocketMQ.Client
                 //{
                 //    currentThread.interrupt();
                 //}
-                if (!currentThread.IsAlive)  //???
+                if (!isInterrupted)  //???
                 {
+                    isInterrupted = true;
                     currentThread.Interrupt();
                 }
             }
@@ -955,6 +958,8 @@ namespace RocketMQ.Client
                 if (!this.isCancelled())
                 {
 
+                    if (currentThread != Thread.CurrentThread) //???
+                        isInterrupted = false;
                     this.currentThread = Thread.CurrentThread;
 
                     if (owner.assignedMessageQueue.isPaused(messageQueue))
@@ -973,6 +978,7 @@ namespace RocketMQ.Client
                         return;
                     }
 
+                    ///TODO 由于clearMessageQueueInCache中未真正删除，次数count可能不正确
                     if ((long)owner.consumeRequestCache.Count * owner.defaultLitePullConsumer.getPullBatchSize() > owner.defaultLitePullConsumer.getPullThresholdForAll())
                     {
                         owner.scheduledThreadPoolExecutor.Schedule(this, PULL_TIME_DELAY_MILLS_WHEN_FLOW_CONTROL);
@@ -984,8 +990,8 @@ namespace RocketMQ.Client
                         return;
                     }
 
-                    long cachedMessageCount = processQueue.getMsgCount().get();
-                    long cachedMessageSizeInMiB = processQueue.getMsgSize().get() / (1024 * 1024);
+                    long cachedMessageCount = processQueue.getMsgCount().Get();
+                    long cachedMessageSizeInMiB = processQueue.getMsgSize().Get() / (1024 * 1024);
 
                     if (cachedMessageCount > owner.defaultLitePullConsumer.getPullThresholdForQueue())
                     {
@@ -1045,10 +1051,10 @@ namespace RocketMQ.Client
                     try
                     {
                         SubscriptionData subscriptionData;
-                        String topic = this.messageQueue.getTopic();
+                        string topic = this.messageQueue.getTopic();
                         if (owner.subscriptionType == SubscriptionType.SUBSCRIBE)
                         {
-                            subscriptionData = owner.rebalanceImpl.getSubscriptionInner().get(topic);
+                            subscriptionData = owner.rebalanceImpl.getSubscriptionInner().Get(topic);
                         }
                         else
                         {
@@ -1066,7 +1072,7 @@ namespace RocketMQ.Client
                                 object objLock = owner.messageQueueLock.fetchLockObject(messageQueue);
                                 lock(objLock)
                                 {
-                                    if (pullResult.getMsgFoundList() != null && !pullResult.getMsgFoundList().isEmpty() && owner.assignedMessageQueue.getSeekOffset(messageQueue) == -1)
+                                    if (pullResult.getMsgFoundList() != null && !pullResult.getMsgFoundList().IsEmpty() && owner.assignedMessageQueue.getSeekOffset(messageQueue) == -1)
                                     {
                                         processQueue.putMessage(pullResult.getMsgFoundList());
                                         owner.submitConsumeRequest(new ConsumeRequest(pullResult.getMsgFoundList(), messageQueue, processQueue));
@@ -1209,7 +1215,7 @@ namespace RocketMQ.Client
             this.offsetStore.updateOffset(mq, offset, false);
         }
 
-        public String groupName()
+        public string groupName()
         {
             return this.defaultLitePullConsumer.getConsumerGroup();
         }
@@ -1232,7 +1238,7 @@ namespace RocketMQ.Client
         public HashSet<SubscriptionData> subscriptions()
         {
             HashSet<SubscriptionData> subSet = new HashSet<SubscriptionData>();
-            subSet.addAll(this.rebalanceImpl.getSubscriptionInner().Values);
+            subSet.AddAll(this.rebalanceImpl.getSubscriptionInner().Values);
             return subSet;
         }
 
@@ -1260,7 +1266,7 @@ namespace RocketMQ.Client
                 {
                     mqs = new HashSet<MessageQueue>();
                     HashSet<MessageQueue> assignedMessageQueue = this.assignedMessageQueue.getAssignedMessageQueues();
-                    mqs.addAll(assignedMessageQueue);
+                    mqs.AddAll(assignedMessageQueue);
                 }
                 this.offsetStore.persistAll(mqs);
             }
@@ -1277,7 +1283,7 @@ namespace RocketMQ.Client
             {
                 if (subTable.ContainsKey(topic))
                 {
-                    this.rebalanceImpl.getTopicSubscribeInfoTable().put(topic, info);
+                    this.rebalanceImpl.getTopicSubscribeInfoTable().Put(topic, info);
                 }
             }
         }
@@ -1306,9 +1312,9 @@ namespace RocketMQ.Client
             ConsumerRunningInfo info = new ConsumerRunningInfo();
 
             Properties prop = MixAll.object2Properties(this.defaultLitePullConsumer);
-            prop.put(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP, this.consumerStartTimestamp.ToString());
+            prop.Put(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP, this.consumerStartTimestamp.ToString());
             info.properties = prop;
-            info.subscriptionSet.addAll(this.subscriptions());
+            info.subscriptionSet.AddAll(this.subscriptions());
             return info;
         }
 
@@ -1342,7 +1348,7 @@ namespace RocketMQ.Client
         {
             foreach (var entry in topicMessageQueueChangeListenerMap)
             {
-                String topic = entry.Key;
+                string topic = entry.Key;
                 TopicMessageQueueChangeListener topicMessageQueueChangeListener = entry.Value;
                 //HashSet<MessageQueue> oldMessageQueues = messageQueuesForTopic.get(topic)
                 messageQueuesForTopic.TryGetValue(topic, out HashSet<MessageQueue> oldMessageQueues);
@@ -1443,6 +1449,7 @@ namespace RocketMQ.Client
             private readonly List<MessageExt> messageExts;
             private readonly MessageQueue messageQueue;
             private readonly ProcessQueue processQueue;
+            public bool IsRemoved { get; set; }
 
             public ConsumeRequest(List<MessageExt> messageExts, MessageQueue messageQueue, ProcessQueue processQueue)
             {

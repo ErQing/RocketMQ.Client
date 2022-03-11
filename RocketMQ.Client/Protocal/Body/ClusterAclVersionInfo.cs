@@ -8,12 +8,12 @@ namespace RocketMQ.Client
 {
     public class ClusterAclVersionInfo : RemotingSerializable
     {
-        public String brokerName { get; set; }
-        public String brokerAddr { get; set; }
+        public string brokerName { get; set; }
+        public string brokerAddr { get; set; }
 
         [Obsolete]//@Deprecated
         public DataVersion aclConfigDataVersion { get; set; }
         public Dictionary<String, DataVersion> allAclConfigDataVersion { get; set; }
-        public String clusterName { get; set; }
+        public string clusterName { get; set; }
     }
 }

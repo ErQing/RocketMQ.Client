@@ -9,12 +9,12 @@ namespace RocketMQ.Client
     public class UnregisterClientRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String clientID{ get; set; }
+        public string clientID{ get; set; }
 
         [CFNullable]
-        public String producerGroup{ get; set; }
+        public string producerGroup{ get; set; }
         [CFNullable]
-        public String consumerGroup{ get; set; }
+        public string consumerGroup{ get; set; }
         public void checkFields() //throws RemotingCommandException
         {
 

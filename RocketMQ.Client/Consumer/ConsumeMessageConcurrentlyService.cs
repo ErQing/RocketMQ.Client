@@ -12,10 +12,10 @@ namespace RocketMQ.Client
         private readonly DefaultMQPushConsumerImpl defaultMQPushConsumerImpl;
         private readonly DefaultMQPushConsumer defaultMQPushConsumer;
         private readonly MessageListenerConcurrently messageListener;
-        private readonly LinkedBlockingQueue<Runnable> consumeRequestQueue;
+        private readonly BlockingQueue<Runnable> consumeRequestQueue;
         //private readonly ThreadPoolExecutor consumeExecutor;
         private readonly ExecutorService consumeExecutor;
-        private readonly String consumerGroup;
+        private readonly string consumerGroup;
 
         private readonly ScheduledExecutorService scheduledExecutorService;
         private readonly ScheduledExecutorService cleanExpireMsgExecutors;
@@ -28,9 +28,10 @@ namespace RocketMQ.Client
 
             this.defaultMQPushConsumer = this.defaultMQPushConsumerImpl.getDefaultMQPushConsumer();
             this.consumerGroup = this.defaultMQPushConsumer.getConsumerGroup();
-            this.consumeRequestQueue = new LinkedBlockingQueue<Runnable>();
+            //this.consumeRequestQueue = new LinkedBlockingQueue<Runnable>();
+            this.consumeRequestQueue = BlockingQueue<Runnable>.Create();
 
-            String consumeThreadPrefix = null;
+            string consumeThreadPrefix = null;
             if (consumerGroup.length() > 100)
             {
                 consumeThreadPrefix = new StringBuilder("ConsumeMessageThread_").Append(consumerGroup.JavaSubstring(0, 100)).Append("_").ToString();
@@ -110,7 +111,7 @@ namespace RocketMQ.Client
         }
 
         //@Override
-        public ConsumeMessageDirectlyResult consumeMessageDirectly(MessageExt msg, String brokerName)
+        public ConsumeMessageDirectlyResult consumeMessageDirectly(MessageExt msg, string brokerName)
         {
             ConsumeMessageDirectlyResult result = new ConsumeMessageDirectlyResult();
             result.order = false;
@@ -197,7 +198,7 @@ namespace RocketMQ.Client
                     {
                         if (total < msgs.Count())
                         {
-                            msgThis.Add(msgs.get(total));
+                            msgThis.Add(msgs.Get(total));
                         }
                         else
                         {
@@ -214,7 +215,7 @@ namespace RocketMQ.Client
                     {
                         for (; total < msgs.Count; total++)
                         {
-                            msgThis.Add(msgs.get(total));
+                            msgThis.Add(msgs.Get(total));
                         }
 
                         this.submitConsumeRequestLater(consumeRequest);
@@ -241,7 +242,7 @@ namespace RocketMQ.Client
         {
             int ackIndex = context.getAckIndex();
 
-            if (consumeRequest.getMsgs().isEmpty())
+            if (consumeRequest.getMsgs().IsEmpty())
                 return;
 
             switch (status)
@@ -270,7 +271,7 @@ namespace RocketMQ.Client
                 case MessageModel.BROADCASTING:
                     for (int i = ackIndex + 1; i < consumeRequest.getMsgs().Count; i++)
                     {
-                        MessageExt msg = consumeRequest.getMsgs().get(i);
+                        MessageExt msg = consumeRequest.getMsgs().Get(i);
                         log.Warn("BROADCASTING, the message consume failed, drop it, {}", msg.ToString());
                     }
                     break;
@@ -278,7 +279,7 @@ namespace RocketMQ.Client
                     List<MessageExt> msgBackFailed = new ArrayList<MessageExt>(consumeRequest.getMsgs().Count);
                     for (int i = ackIndex + 1; i < consumeRequest.getMsgs().Count; i++)
                     {
-                        MessageExt msg = consumeRequest.getMsgs().get(i);
+                        MessageExt msg = consumeRequest.getMsgs().Get(i);
                         bool result = this.sendMessageBack(msg, context);
                         if (!result)
                         {
@@ -287,7 +288,7 @@ namespace RocketMQ.Client
                         }
                     }
 
-                    if (!msgBackFailed.isEmpty())
+                    if (!msgBackFailed.IsEmpty())
                     {
                         //consumeRequest.getMsgs().RemoveAll(msgBackFailed);
                         consumeRequest.getMsgs().RemoveAll(it => msgBackFailed.Contains(it)); //???
@@ -418,7 +419,7 @@ namespace RocketMQ.Client
                 ConsumeReturnType returnType = ConsumeReturnType.SUCCESS;
                 try
                 {
-                    if (msgs != null && !msgs.isEmpty())
+                    if (msgs != null && !msgs.IsEmpty())
                     {
                         foreach (MessageExt msg in msgs)
                         {
@@ -463,7 +464,7 @@ namespace RocketMQ.Client
 
                 if (owner.defaultMQPushConsumerImpl.hasHook())
                 {
-                    consumeMessageContext.getProps().put(MixAll.CONSUME_CONTEXT_TYPE, returnType.name());
+                    consumeMessageContext.getProps().Put(MixAll.CONSUME_CONTEXT_TYPE, returnType.name());
                 }
 
                 if (null == status)

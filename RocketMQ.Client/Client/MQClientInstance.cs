@@ -51,13 +51,13 @@ namespace RocketMQ.Client
         private ServiceState serviceState = ServiceState.CREATE_JUST;
         private Random random = new Random();
 
-        public MQClientInstance(ClientConfig clientConfig, int instanceIndex, String clientId)
+        public MQClientInstance(ClientConfig clientConfig, int instanceIndex, string clientId)
             : this(clientConfig, instanceIndex, clientId, null)
         {
 
         }
 
-        public MQClientInstance(ClientConfig clientConfig, int instanceIndex, String clientId, RPCHook rpcHook)
+        public MQClientInstance(ClientConfig clientConfig, int instanceIndex, string clientId, RPCHook rpcHook)
         {
             this.clientConfig = clientConfig;
             this.instanceIndex = instanceIndex;
@@ -370,7 +370,7 @@ namespace RocketMQ.Client
             }, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
         }
 
-        public String getClientId()
+        public string getClientId()
         {
             return clientId;
         }
@@ -437,7 +437,7 @@ namespace RocketMQ.Client
                     {
                         HashSet<String> lst = impl.getPublishTopicList();
                         //topicList.addAll(lst);
-                        topicList.addAll(lst);
+                        topicList.AddAll(lst);
                     }
                 }
 
@@ -454,7 +454,7 @@ namespace RocketMQ.Client
          * @param namespace
          * @return newOffsetTable
          */
-        public Dictionary<MessageQueue, long> parseOffsetTableFromBroker(Dictionary<MessageQueue, long> offsetTable, String nameSpace)
+        public Dictionary<MessageQueue, long> parseOffsetTableFromBroker(Dictionary<MessageQueue, long> offsetTable, string nameSpace)
         {
             Dictionary<MessageQueue, long> newOffsetTable = new Dictionary<MessageQueue, long>();
             if (UtilAll.isNotEmpty(nameSpace))
@@ -469,7 +469,7 @@ namespace RocketMQ.Client
             else
             {
                 //newOffsetTable.putAll(offsetTable);
-                newOffsetTable.putAll(offsetTable);
+                newOffsetTable.PutAll(offsetTable);
             }
 
             return newOffsetTable;
@@ -482,8 +482,8 @@ namespace RocketMQ.Client
         {
             try
             {
-                    //if (this.lockNamesrv.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS))
-                    if (Monitor.TryEnter(lockNamesrv, TimeSpan.FromMilliseconds(LOCK_TIMEOUT_MILLIS)))
+                //if (this.lockNamesrv.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS))
+                if (Monitor.TryEnter(lockNamesrv, TimeSpan.FromMilliseconds(LOCK_TIMEOUT_MILLIS)))
                     try
                     {
                         ConcurrentDictionary<String, Dictionary<long, String>> updatedTable = new ConcurrentDictionary<String, Dictionary<long, String>>();
@@ -492,7 +492,7 @@ namespace RocketMQ.Client
                         //while (itBrokerTable.hasNext())
                         //{
                         //    Entry<String, HashMap<Long, String>> entry = itBrokerTable.next();
-                        //    String brokerName = entry.getKey();
+                        //    string brokerName = entry.getKey();
                         //    HashMap<Long, String> oneTable = entry.getValue();
 
                         //    HashMap<Long, String> cloneAddrTable = new HashMap<Long, String>();
@@ -502,7 +502,7 @@ namespace RocketMQ.Client
                         //    while (it.hasNext())
                         //    {
                         //        Entry<Long, String> ee = it.next();
-                        //        String addr = ee.getValue();
+                        //        string addr = ee.getValue();
                         //        if (!this.isBrokerAddrExistInTopicRouteTable(addr))
                         //        {
                         //            it.remove();
@@ -526,7 +526,7 @@ namespace RocketMQ.Client
                             string brokerName = entry.Key;
                             Dictionary<long, string> oneTable = entry.Value;
                             Dictionary<long, string> cloneAddrTable = new Dictionary<long, string>();
-                            cloneAddrTable.putAll(oneTable);
+                            cloneAddrTable.PutAll(oneTable);
                             foreach (var item in cloneAddrTable)
                             {
                                 string addr = item.Value;
@@ -536,7 +536,7 @@ namespace RocketMQ.Client
                                     log.Info("the broker addr[{} {}] is offline, remove it", brokerName, addr);
                                 }
                             }
-                            if (cloneAddrTable.isEmpty())
+                            if (cloneAddrTable.IsEmpty())
                             {
                                 //itBrokerTable.remove();
                                 brokerAddrTable.TryRemove(entry.Key, out _);
@@ -544,13 +544,13 @@ namespace RocketMQ.Client
                             }
                             else
                             {
-                                updatedTable.put(brokerName, cloneAddrTable);
+                                updatedTable.Put(brokerName, cloneAddrTable);
                             }
                         }
 
                         if (updatedTable.Count > 0)
                         {
-                            this.brokerAddrTable.putAll(updatedTable);
+                            this.brokerAddrTable.PutAll(updatedTable);
                         }
                     }
                     finally
@@ -572,7 +572,7 @@ namespace RocketMQ.Client
             foreach (var entry in consumerTable)
             {
                 HashSet<SubscriptionData> subscriptionInner = entry.Value.subscriptions();
-                if (subscriptionInner == null || subscriptionInner.isEmpty())
+                if (subscriptionInner == null || subscriptionInner.IsEmpty())
                 {
                     return;
                 }
@@ -585,7 +585,7 @@ namespace RocketMQ.Client
                     }
                     // may need to check one broker every cluster...
                     // assume that the configs of every broker in cluster are the the same.
-                    String addr = findBrokerAddrByTopic(subscriptionData.topic);
+                    string addr = findBrokerAddrByTopic(subscriptionData.topic);
 
                     if (addr != null)
                     {
@@ -707,28 +707,28 @@ namespace RocketMQ.Client
         private void sendHeartbeatToAllBroker()
         {
             HeartbeatData heartbeatData = this.prepareHeartbeatData();
-            bool producerEmpty = heartbeatData.producerDataSet.isEmpty();
-            bool consumerEmpty = heartbeatData.consumerDataSet.isEmpty();
+            bool producerEmpty = heartbeatData.producerDataSet.IsEmpty();
+            bool consumerEmpty = heartbeatData.consumerDataSet.IsEmpty();
             if (producerEmpty && consumerEmpty)
             {
                 log.Warn("sending heartbeat, but no consumer and no producer. [{}]", this.clientId);
                 return;
             }
 
-            if (!this.brokerAddrTable.isEmpty())
+            if (!this.brokerAddrTable.IsEmpty())
             {
                 long times = this.sendHeartbeatTimesTotal.GetAndIncrement();
                 //Iterator<Entry<String, HashMap<Long, String>>> it = this.brokerAddrTable.entrySet().iterator();
                 foreach (var entry in brokerAddrTable)
                 {
-                    String brokerName = entry.Key;
+                    string brokerName = entry.Key;
                     Dictionary<long, String> oneTable = entry.Value;
                     if (oneTable != null)
                     {
                         foreach (var entry1 in oneTable)
                         {
                             long id = entry1.Key;
-                            String addr = entry1.Value;
+                            string addr = entry1.Value;
                             if (addr != null)
                             {
                                 if (consumerEmpty)
@@ -785,10 +785,10 @@ namespace RocketMQ.Client
                     {
                         if (sub.classFilterMode && sub.filterClassSource != null)
                         {
-                            String consumerGroup = consumer.groupName();
-                            String className = sub.subString;
-                            String topic = sub.topic;
-                            String filterClassSource = sub.filterClassSource;
+                            string consumerGroup = consumer.groupName();
+                            string className = sub.subString;
+                            string topic = sub.topic;
+                            string filterClassSource = sub.filterClassSource;
                             try
                             {
                                 this.uploadFilterClassToAllFilterServer(consumerGroup, className, topic, filterClassSource);
@@ -834,7 +834,7 @@ namespace RocketMQ.Client
                         }
                         if (topicRouteData != null)
                         {
-                            TopicRouteData old = this.topicRouteTable.get(topic);
+                            TopicRouteData old = this.topicRouteTable.Get(topic);
                             bool changed = topicRouteDataIsChange(old, topicRouteData);
                             if (!changed)
                             {
@@ -856,7 +856,7 @@ namespace RocketMQ.Client
                                 }
 
                                 // Update Pub info
-                                if (!producerTable.isEmpty())
+                                if (!producerTable.IsEmpty())
                                 {
                                     TopicPublishInfo publishInfo = topicRouteData2TopicPublishInfo(topic, topicRouteData);
                                     publishInfo.setHaveTopicRouterInfo(true);
@@ -872,7 +872,7 @@ namespace RocketMQ.Client
                                 }
 
                                 // Update sub info
-                                if (!consumerTable.isEmpty())
+                                if (!consumerTable.IsEmpty())
                                 {
                                     HashSet<MessageQueue> subscribeInfo = topicRouteData2TopicSubscribeInfo(topic, topicRouteData);
                                     //Iterator<Entry<String, MQConsumerInner>> it = this.consumerTable.entrySet().iterator();
@@ -947,7 +947,7 @@ namespace RocketMQ.Client
                     consumerData.messageModel = impl.messageModel();
                     consumerData.consumeFromWhere = impl.consumeFromWhere();
                     //consumerData.getSubscriptionDataSet().addAll(impl.subscriptions());
-                    consumerData.subscriptionDataSet.addAll(impl.subscriptions());
+                    consumerData.subscriptionDataSet.AddAll(impl.subscriptions());
                     consumerData.unitMode = impl.isUnitMode();
 
                     heartbeatData.consumerDataSet.Add(consumerData);
@@ -989,14 +989,13 @@ namespace RocketMQ.Client
 
         /**
          * This method will be removed in the version 5.0.0,because filterServer was removed,and method
-         * <code>subscribe(final String topic, final MessageSelector messageSelector)</code> is recommended.
+         * <code>subscribe(final string topic, final MessageSelector messageSelector)</code> is recommended.
          */
         ///<exception cref="UnsupportedEncodingException"/>
         [Obsolete]//@Deprecated
-        private void uploadFilterClassToAllFilterServer(String consumerGroup, String fullClassName, String topic, String filterClassSource)
+        private void uploadFilterClassToAllFilterServer(String consumerGroup, string fullClassName, string topic, string filterClassSource)
         {
-            byte[]
-        classBody = null;
+            byte[] classBody = null;
             int classCRC = 0;
             try
             {
@@ -1013,7 +1012,7 @@ namespace RocketMQ.Client
             //TopicRouteData topicRouteData = this.topicRouteTable.get(topic);
             topicRouteTable.TryGetValue(topic, out TopicRouteData topicRouteData);
             if (topicRouteData != null
-                && topicRouteData.filterServerTable != null && !topicRouteData.filterServerTable.isEmpty())
+                && topicRouteData.filterServerTable != null && !topicRouteData.filterServerTable.IsEmpty())
             {
                 //Iterator<Entry<String, List<String>>> it = topicRouteData.getFilterServerTable().entrySet().iterator();
                 var filterServerTable = topicRouteData.filterServerTable;
@@ -1024,12 +1023,9 @@ namespace RocketMQ.Client
                     {
                         try
                         {
-                            this.mQClientAPIImpl.registerMessageFilterClass(fsAddr, consumerGroup, topic, fullClassName, classCRC, classBody,
-                                5000);
-
+                            this.mQClientAPIImpl.registerMessageFilterClass(fsAddr, consumerGroup, topic, fullClassName, classCRC, classBody, 5000);
                             log.Info("register message class filter to {} OK, ConsumerGroup: {} Topic: {} ClassName: {}", fsAddr, consumerGroup,
                                 topic, fullClassName);
-
                         }
                         catch (Exception e)
                         {
@@ -1116,11 +1112,11 @@ namespace RocketMQ.Client
         public void shutdown()
         {
             // Consumer
-            if (!this.consumerTable.isEmpty())
+            if (!this.consumerTable.IsEmpty())
                 return;
 
             // AdminExt
-            if (!this.adminExtTable.isEmpty())
+            if (!this.adminExtTable.IsEmpty())
                 return;
 
             // Producer
@@ -1140,7 +1136,7 @@ namespace RocketMQ.Client
                         this.pullMessageService.shutdown(true);
                         this.scheduledExecutorService.Shutdown();
                         this.mQClientAPIImpl.shutdown();
-                        this.rebalanceService.Shutdown();
+                        this.rebalanceService.shutdown();
 
                         MQClientManager.getInstance().removeClientFactory(this.clientId);
                         log.Info("the client factory [{}] shutdown OK", this.clientId);
@@ -1182,20 +1178,20 @@ namespace RocketMQ.Client
             this.unregisterClient(null, group);
         }
 
-        private void unregisterClient(String producerGroup, String consumerGroup)
+        private void unregisterClient(String producerGroup, string consumerGroup)
         {
             //Iterator<Entry<String, HashMap<Long, String>>> it = this.brokerAddrTable.entrySet().iterator();
             //while (it.hasNext())
             foreach (var entry in brokerAddrTable)
             {
                 //Entry<String, HashMap<Long, String>> entry = it.next();
-                String brokerName = entry.Key;
+                string brokerName = entry.Key;
                 Dictionary<long, String> oneTable = entry.Value;
                 if (oneTable != null)
                 {
                     foreach (var entry1 in oneTable)
                     {
-                        String addr = entry1.Value;
+                        string addr = entry1.Value;
                         if (addr != null)
                         {
                             try
@@ -1310,11 +1306,11 @@ namespace RocketMQ.Client
             return res;
         }
 
-        public String findBrokerAddressInPublish(String brokerName)
+        public string findBrokerAddressInPublish(String brokerName)
         {
             //HashMap<Long/* brokerId */, String/* address */> map = this.brokerAddrTable.get(brokerName);
             brokerAddrTable.TryGetValue(brokerName, out var map);
-            if (map != null && !map.isEmpty())
+            if (map != null && !map.IsEmpty())
             {
                 //return map.get(MixAll.MASTER_ID);
                 map.TryGetValue(MixAll.MASTER_ID, out var res);
@@ -1325,13 +1321,13 @@ namespace RocketMQ.Client
 
         public FindBrokerResult findBrokerAddressInSubscribe(String brokerName, long brokerId, bool onlyThisBroker)
         {
-            String brokerAddr = null;
+            string brokerAddr = null;
             bool slave = false;
             bool found = false;
 
             //HashMap<Long/* brokerId */, String/* address */> map = this.brokerAddrTable.get(brokerName);
             this.brokerAddrTable.TryGetValue(brokerName, out var map);
-            if (map != null && !map.isEmpty())
+            if (map != null && !map.IsEmpty())
             {
                 //brokerAddr = map.get(brokerId);
                 map.TryGetValue(brokerId, out brokerAddr);
@@ -1365,7 +1361,7 @@ namespace RocketMQ.Client
             return null;
         }
 
-        public int findBrokerVersion(String brokerName, String brokerAddr)
+        public int findBrokerVersion(String brokerName, string brokerAddr)
         {
             if (this.brokerVersionTable.ContainsKey(brokerName))
             {
@@ -1378,9 +1374,9 @@ namespace RocketMQ.Client
             return 0;
         }
 
-        public List<String> findConsumerIdList(String topic, String group)
+        public List<String> findConsumerIdList(String topic, string group)
         {
-            String brokerAddr = this.findBrokerAddrByTopic(topic);
+            string brokerAddr = this.findBrokerAddrByTopic(topic);
             if (null == brokerAddr)
             {
                 this.updateTopicRouteInfoFromNameServer(topic);
@@ -1402,13 +1398,13 @@ namespace RocketMQ.Client
             return null;
         }
 
-        public String findBrokerAddrByTopic(String topic)
+        public string findBrokerAddrByTopic(String topic)
         {
-            TopicRouteData topicRouteData = this.topicRouteTable.get(topic);
+            TopicRouteData topicRouteData = this.topicRouteTable.Get(topic);
             if (topicRouteData != null)
             {
                 List<BrokerData> brokers = topicRouteData.brokerDatas;
-                if (!brokers.isEmpty())
+                if (!brokers.IsEmpty())
                 {
                     //int index = random.nextInt(brokers.Count);
                     int index = random.Next(brokers.Count);
@@ -1421,12 +1417,12 @@ namespace RocketMQ.Client
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void resetOffset(String topic, String group, Dictionary<MessageQueue, long> offsetTable)
+        public void resetOffset(String topic, string group, Dictionary<MessageQueue, long> offsetTable)
         {
             DefaultMQPushConsumerImpl consumer = null;
             try
             {
-                MQConsumerInner impl = this.consumerTable.get(group);
+                MQConsumerInner impl = this.consumerTable.Get(group);
                 if (impl != null && impl is DefaultMQPushConsumerImpl)
                 {
                     consumer = (DefaultMQPushConsumerImpl)impl;
@@ -1494,7 +1490,7 @@ namespace RocketMQ.Client
             }
         }
 
-        public Dictionary<MessageQueue, long> getConsumerStatus(String topic, String group)
+        public Dictionary<MessageQueue, long> getConsumerStatus(String topic, string group)
         {
             //MQConsumerInner impl = this.consumerTable.get(group);
             consumerTable.TryGetValue(group, out MQConsumerInner impl);
@@ -1558,7 +1554,7 @@ namespace RocketMQ.Client
             return topicRouteTable;
         }
 
-        public ConsumeMessageDirectlyResult consumeMessageDirectly(MessageExt msg, String consumerGroup, String brokerName)
+        public ConsumeMessageDirectlyResult consumeMessageDirectly(MessageExt msg, string consumerGroup, string brokerName)
         {
             //MQConsumerInner mqConsumerInner = this.consumerTable.get(consumerGroup);
             consumerTable.TryGetValue(consumerGroup, out MQConsumerInner mqConsumerInner);
@@ -1595,10 +1591,10 @@ namespace RocketMQ.Client
                 }
             }
 
-            String nsAddr = strBuilder.ToString();
-            consumerRunningInfo.properties.put(ConsumerRunningInfo.PROP_NAMESERVER_ADDR, nsAddr);
-            consumerRunningInfo.properties.put(ConsumerRunningInfo.PROP_CONSUME_TYPE, mqConsumerInner.consumeType().name());
-            consumerRunningInfo.properties.put(ConsumerRunningInfo.PROP_CLIENT_VERSION,
+            string nsAddr = strBuilder.ToString();
+            consumerRunningInfo.properties.Put(ConsumerRunningInfo.PROP_NAMESERVER_ADDR, nsAddr);
+            consumerRunningInfo.properties.Put(ConsumerRunningInfo.PROP_CONSUME_TYPE, mqConsumerInner.consumeType().name());
+            consumerRunningInfo.properties.Put(ConsumerRunningInfo.PROP_CLIENT_VERSION,
                 MQVersion.getVersionDesc(MQVersion.CURRENT_VERSION));
 
             return consumerRunningInfo;

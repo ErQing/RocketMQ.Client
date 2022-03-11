@@ -8,29 +8,29 @@ namespace RocketMQ.Client
 {
     public class ConsumerRunningInfo : RemotingSerializable
     {
-        public static readonly String PROP_NAMESERVER_ADDR  = "PROP_NAMESERVER_ADDR";
-        public static readonly String PROP_THREADPOOL_CORE_SIZE = "PROP_THREADPOOL_CORE_SIZE";
-        public static readonly String PROP_CONSUME_ORDERLY = "PROP_CONSUMEORDERLY";
-        public static readonly String PROP_CONSUME_TYPE = "PROP_CONSUME_TYPE";
-        public static readonly String PROP_CLIENT_VERSION = "PROP_CLIENT_VERSION";
-        public static readonly String PROP_CONSUMER_START_TIMESTAMP = "PROP_CONSUMER_START_TIMESTAMP";
+        public static readonly string PROP_NAMESERVER_ADDR  = "PROP_NAMESERVER_ADDR";
+        public static readonly string PROP_THREADPOOL_CORE_SIZE = "PROP_THREADPOOL_CORE_SIZE";
+        public static readonly string PROP_CONSUME_ORDERLY = "PROP_CONSUMEORDERLY";
+        public static readonly string PROP_CONSUME_TYPE = "PROP_CONSUME_TYPE";
+        public static readonly string PROP_CLIENT_VERSION = "PROP_CLIENT_VERSION";
+        public static readonly string PROP_CONSUMER_START_TIMESTAMP = "PROP_CONSUMER_START_TIMESTAMP";
 
         public Properties properties { get; set; } = new Properties();
         public TreeSet<SubscriptionData> subscriptionSet { get; set; }
         public TreeMap<MessageQueue, ProcessQueueInfo> mqTable { get; set; }
         public TreeMap<String/* Topic */, ConsumeStatus> statusTable { get; set; }
-        public String jstack { get; set; }
+        public string jstack { get; set; }
 
         public static bool analyzeSubscription(TreeMap<String/* clientId */, ConsumerRunningInfo> criTable)
         {
             ConsumerRunningInfo prev = criTable.First().Value;
             bool push = false;
             {
-                String property = prev.properties.getProperty(ConsumerRunningInfo.PROP_CONSUME_TYPE);
+                string property = prev.properties.getProperty(ConsumerRunningInfo.PROP_CONSUME_TYPE);
 
                 if (property == null)
                 {
-                    property = ((ConsumeType)prev.properties.get(ConsumerRunningInfo.PROP_CONSUME_TYPE)).name();
+                    property = ((ConsumeType)prev.properties.Get(ConsumerRunningInfo.PROP_CONSUME_TYPE)).name();
                 }
                 //push = ConsumeType.valueOf(property) == ConsumeType.CONSUME_PASSIVELY;
                 push = property.ToEnum<ConsumeType>(ConsumeType.UNKNOWN) == ConsumeType.CONSUME_PASSIVELY;
@@ -39,11 +39,11 @@ namespace RocketMQ.Client
             bool startForAWhile = false;
             {
 
-                String property = prev.properties.getProperty(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP);
+                string property = prev.properties.getProperty(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP);
                 if (property == null)
                 {
                     //property = String.valueOf(prev.properties.get(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP));
-                    property = prev.properties.get(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP).ToString();
+                    property = prev.properties.Get(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP).ToString();
                 }
                 startForAWhile = (Sys.currentTimeMillis() - long.Parse(property)) > (1000 * 60 * 2);
             }
@@ -70,7 +70,7 @@ namespace RocketMQ.Client
                     if (prev != null)
                     {
 
-                        if (prev.subscriptionSet.isEmpty())
+                        if (prev.subscriptionSet.IsEmpty())
                         {
                             // Subscription empty!
                             return false;
@@ -87,16 +87,16 @@ namespace RocketMQ.Client
             return true;
         }
 
-        public static String analyzeProcessQueue(String clientId, ConsumerRunningInfo info)
+        public static string analyzeProcessQueue(String clientId, ConsumerRunningInfo info)
         {
             StringBuilder sb = new StringBuilder();
             bool push = false;
             {
-                String property = info.properties.getProperty(ConsumerRunningInfo.PROP_CONSUME_TYPE);
+                string property = info.properties.getProperty(ConsumerRunningInfo.PROP_CONSUME_TYPE);
 
                 if (property == null)
                 {
-                    property = ((ConsumeType)info.properties.get(ConsumerRunningInfo.PROP_CONSUME_TYPE)).name();
+                    property = ((ConsumeType)info.properties.Get(ConsumerRunningInfo.PROP_CONSUME_TYPE)).name();
                 }
                 //push = ConsumeType.valueOf(property) == ConsumeType.CONSUME_PASSIVELY;
                 push = property.ToEnum<ConsumeType>(ConsumeType.UNKNOWN) == ConsumeType.CONSUME_PASSIVELY;
@@ -104,7 +104,7 @@ namespace RocketMQ.Client
 
             bool orderMsg = false;
             {
-                String property = info.properties.getProperty(ConsumerRunningInfo.PROP_CONSUME_ORDERLY);
+                string property = info.properties.getProperty(ConsumerRunningInfo.PROP_CONSUME_ORDERLY);
                 orderMsg = bool.Parse(property);
             }
 
@@ -158,7 +158,7 @@ namespace RocketMQ.Client
             return sb.ToString();
         }      
 
-        public String formatString()
+        public string formatString()
         {
             StringBuilder sb = new StringBuilder();
             {
@@ -181,7 +181,7 @@ namespace RocketMQ.Client
                 foreach(var entry in subscriptionSet)
                 {
                     //SubscriptionData next = it.next();
-                    String item = String.Format("%03d Topic: %-40s ClassFilter: %-8s SubExpression: %s%n",
+                    string item = String.Format("%03d Topic: %-40s ClassFilter: %-8s SubExpression: %s%n",
                         ++i,
                         entry.topic,
                         entry.classFilterMode,
@@ -256,7 +256,7 @@ namespace RocketMQ.Client
                 foreach (var entry in statusTable)
                 {
                     //Entry<String, ConsumeStatus> next = it.next();
-                    String item = String.Format("%-32s  %14.2f %14.2f %14.2f %14.2f %18.2f %25d%n",
+                    string item = String.Format("%-32s  %14.2f %14.2f %14.2f %14.2f %18.2f %25d%n",
                         entry.Key,
                         entry.Value.pullRT,
                         entry.Value.pullTPS,

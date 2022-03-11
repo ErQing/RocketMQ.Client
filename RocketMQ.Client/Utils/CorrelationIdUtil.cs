@@ -8,7 +8,7 @@ namespace RocketMQ.Client
 {
     public class CorrelationIdUtil
     {
-        public static String createCorrelationId()
+        public static string createCorrelationId()
         {
             //return UUID.randomUUID().toString();
             return System.Guid.NewGuid().ToString();

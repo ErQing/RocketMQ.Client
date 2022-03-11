@@ -5,11 +5,11 @@ namespace RocketMQ.Client
     public class SendMessageRequestHeaderV2 : CommandCustomHeader
     {
         [CFNotNull]
-        public String a{ get; set; } // producerGroup;
+        public string a{ get; set; } // producerGroup;
                           [CFNotNull]
-        public String b{ get; set; } // topic;
+        public string b{ get; set; } // topic;
                           [CFNotNull]
-        public String c{ get; set; } // defaultTopic;
+        public string c{ get; set; } // defaultTopic;
                           [CFNotNull]
         public int d{ get; set; } // defaultTopicQueueNums;
                        [CFNotNull]
@@ -21,7 +21,7 @@ namespace RocketMQ.Client
                         [CFNotNull]
         public int h{ get; set; } // flag;
                        [CFNullable]
-        public String i{ get; set; } // properties;
+        public string i{ get; set; } // properties;
                           [CFNullable]
         public int j{ get; set; } // reconsumeTimes;
                        [CFNullable]

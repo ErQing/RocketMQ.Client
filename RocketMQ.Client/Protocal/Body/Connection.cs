@@ -8,8 +8,8 @@ namespace RocketMQ.Client//.Protocal.Body
 {
     public class Connection
     {
-        public String clientId { get; set; }
-        public String clientAddr { get; set; }
+        public string clientId { get; set; }
+        public string clientAddr { get; set; }
         public LanguageCode language { get; set; }
         public int version { get; set; }
     }

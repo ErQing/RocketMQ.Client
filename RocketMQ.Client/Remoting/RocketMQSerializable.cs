@@ -13,7 +13,7 @@ namespace RocketMQ.Client
 
         public static byte[] rocketMQProtocolEncode(RemotingCommand cmd)
         {
-            // String remark
+            // string remark
             byte[] remarkBytes = null;
             int remarkLen = 0;
             if (cmd.getRemark() != null && cmd.getRemark().length() > 0)
@@ -25,7 +25,7 @@ namespace RocketMQ.Client
             // HashMap<String, String> extFields
             byte[] extFieldsBytes = null;
             int extLen = 0;
-            if (cmd.getExtFields() != null && !cmd.getExtFields().isEmpty())
+            if (cmd.getExtFields() != null && !cmd.getExtFields().IsEmpty())
             {
                 extFieldsBytes = mapSerialize(cmd.getExtFields());
                 extLen = extFieldsBytes.Length;
@@ -45,7 +45,7 @@ namespace RocketMQ.Client
             headerBuffer.putInt(cmd.getOpaque());
             // int flag
             headerBuffer.putInt(cmd.getFlag());
-            // String remark
+            // string remark
             if (remarkBytes != null)
             {
                 headerBuffer.putInt(remarkBytes.Length);
@@ -72,7 +72,7 @@ namespace RocketMQ.Client
         public static byte[] mapSerialize(HashMap<String, String> map)
         {
             // keySize+key+valSize+val
-            if (null == map || map.isEmpty())
+            if (null == map || map.IsEmpty())
                 return null;
 
             int totalLength = 0;
@@ -129,7 +129,7 @@ namespace RocketMQ.Client
                 + 4
                 // int flag
                 + 4
-                // String remark
+                // string remark
                 + 4 + remark
                 // HashMap<String, String> extFields
                 + 4 + ext;
@@ -153,7 +153,7 @@ namespace RocketMQ.Client
             cmd.setOpaque(headerBuffer.getInt());
             // int flag
             cmd.setFlag(headerBuffer.getInt());
-            // String remark
+            // string remark
             int remarkLength = headerBuffer.getInt();
             if (remarkLength > 0)
             {
@@ -205,7 +205,7 @@ namespace RocketMQ.Client
                 byteBuffer.get(valContent);
 
                 //map.put(new String(keyContent, CHARSET_UTF8), new String(valContent, CHARSET_UTF8));
-                map.put(CHARSET_UTF8.GetString(keyContent), CHARSET_UTF8.GetString(valContent));
+                map.Put(CHARSET_UTF8.GetString(keyContent), CHARSET_UTF8.GetString(valContent));
             }
             return map;
         }

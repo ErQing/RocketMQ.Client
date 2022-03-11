@@ -5,10 +5,10 @@ namespace RocketMQ.Client
 {
     public class TopicConfig
     {
-        private static readonly String SEPARATOR = " ";
+        private static readonly string SEPARATOR = " ";
         public static int defaultReadQueueNums = 16;
         public static int defaultWriteQueueNums = 16;
-        private String topicName;
+        private string topicName;
         private int readQueueNums = defaultReadQueueNums;
         private int writeQueueNums = defaultWriteQueueNums;
         private int perm = PermName.PERM_READ | PermName.PERM_WRITE;
@@ -33,7 +33,7 @@ namespace RocketMQ.Client
             this.perm = perm;
         }
 
-        public String encode()
+        public string encode()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(this.topicName);
@@ -71,7 +71,7 @@ namespace RocketMQ.Client
             return false;
         }
 
-        public String getTopicName()
+        public string getTopicName()
         {
             return topicName;
         }
@@ -181,7 +181,7 @@ namespace RocketMQ.Client
         }
 
         //@Override
-        public override String ToString()
+        public override string ToString()
         {
             return "TopicConfig [topicName=" + topicName + ", readQueueNums=" + readQueueNums
                 + ", writeQueueNums=" + writeQueueNums + ", perm=" + PermName.perm2String(perm)

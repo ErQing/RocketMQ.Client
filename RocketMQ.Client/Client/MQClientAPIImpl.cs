@@ -22,7 +22,7 @@ namespace RocketMQ.Client
         private readonly RemotingClient remotingClient;
         private readonly TopAddressing topAddressing;
         private readonly ClientRemotingProcessor clientRemotingProcessor;
-        private String nameSrvAddr = null;
+        private string nameSrvAddr = null;
         private ClientConfig clientConfig;
 
         public MQClientAPIImpl(NettyClientConfig nettyClientConfig,
@@ -60,11 +60,11 @@ namespace RocketMQ.Client
             return remotingClient;
         }
 
-        public String fetchNameServerAddr()
+        public string fetchNameServerAddr()
         {
             try
             {
-                String addrs = this.topAddressing.fetchNSAddr();
+                string addrs = this.topAddressing.fetchNSAddr();
                 if (addrs != null)
                 {
                     if (!addrs.Equals(this.nameSrvAddr))
@@ -135,7 +135,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="MQClientException"/>
-        public void createTopic(String addr, String defaultTopic, TopicConfig topicConfig, long timeoutMillis)
+        public void createTopic(String addr, string defaultTopic, TopicConfig topicConfig, long timeoutMillis)
         {
             CreateTopicRequestHeader requestHeader = new CreateTopicRequestHeader();
             requestHeader.topic = topicConfig.getTopicName();
@@ -203,7 +203,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="MQClientException"/>
-        public void deleteAccessConfig(String addr, String accessKey, long timeoutMillis)
+        public void deleteAccessConfig(String addr, string accessKey, long timeoutMillis)
         {
             DeleteAccessConfigRequestHeader requestHeader = new DeleteAccessConfigRequestHeader();
             requestHeader.accessKey = accessKey;
@@ -230,7 +230,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="MQClientException"/>
-        public void updateGlobalWhiteAddrsConfig(String addr, String globalWhiteAddrs, long timeoutMillis)
+        public void updateGlobalWhiteAddrsConfig(String addr, string globalWhiteAddrs, long timeoutMillis)
         {
 
             UpdateGlobalWhiteAddrsConfigRequestHeader requestHeader = new UpdateGlobalWhiteAddrsConfigRequestHeader();
@@ -343,8 +343,8 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public SendResult sendMessage(
-        String addr,
-        String brokerName,
+        string addr,
+        string brokerName,
         Message msg,
         SendMessageRequestHeader requestHeader,
         long timeoutMillis,
@@ -360,8 +360,8 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public SendResult sendMessage(
-        String addr,
-        String brokerName,
+        string addr,
+        string brokerName,
         Message msg,
         SendMessageRequestHeader requestHeader,
         long timeoutMillis,
@@ -376,7 +376,7 @@ namespace RocketMQ.Client
         {
             long beginStartTime = Sys.currentTimeMillis();
             RemotingCommand request = null;
-            String msgType = msg.getProperty(MessageConst.PROPERTY_MESSAGE_TYPE);
+            string msgType = msg.getProperty(MessageConst.PROPERTY_MESSAGE_TYPE);
             bool isReply = msgType != null && msgType.Equals(MixAll.REPLY_MESSAGE_FLAG);
             if (isReply)
             {
@@ -439,8 +439,8 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         private SendResult sendMessageSync(
-        String addr,
-        String brokerName,
+        string addr,
+        string brokerName,
         Message msg,
         long timeoutMillis,
         RemotingCommand request
@@ -455,8 +455,8 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         private void sendMessageAsync(
-        String addr,
-        String brokerName,
+        string addr,
+        string brokerName,
         Message msg,
         long timeoutMillis,
         RemotingCommand request,
@@ -582,13 +582,13 @@ namespace RocketMQ.Client
             int tmp = curTimes.getAndIncrement();
             if (needRetry && tmp <= timesTotal)
             {
-                String retryBrokerName = brokerName;//by default, it will send to the same broker
+                string retryBrokerName = brokerName;//by default, it will send to the same broker
                 if (topicPublishInfo != null)
                 { //select one message queue accordingly, in order to determine which broker to send
                     MessageQueue mqChosen = producer.selectOneMessageQueue(topicPublishInfo, brokerName);
                     retryBrokerName = mqChosen.getBrokerName();
                 }
-                String addr = instance.findBrokerAddressInPublish(retryBrokerName);
+                string addr = instance.findBrokerAddressInPublish(retryBrokerName);
                 log.Warn($"async send msg by retry {tmp} times. topic={msg.getTopic()}, brokerAddr={addr}, brokerName={retryBrokerName}", e.ToString());
                 try
                 {
@@ -635,10 +635,10 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="RemotingCommandException"/>
         private SendResult processSendResponse(
-    String brokerName,
+    string brokerName,
     Message msg,
     RemotingCommand response,
-    String addr
+    string addr
 
 )
         {
@@ -674,7 +674,7 @@ namespace RocketMQ.Client
             SendMessageResponseHeader responseHeader = response.decodeCommandCustomHeader<SendMessageResponseHeader>();
 
             //If namespace not null , reset Topic without namespace.
-            String topic = msg.getTopic();
+            string topic = msg.getTopic();
             if (UtilAll.isNotEmpty(this.clientConfig.getNamespace()))
             {
                 topic = NamespaceUtil.withoutNamespace(topic, this.clientConfig.getNamespace());
@@ -682,7 +682,7 @@ namespace RocketMQ.Client
 
             MessageQueue messageQueue = new MessageQueue(topic, brokerName, responseHeader.queueId);
 
-            String uniqMsgId = MessageClientIDSetter.getUniqID(msg);
+            string uniqMsgId = MessageClientIDSetter.getUniqID(msg);
             if (msg is MessageBatch)
             {
                 StringBuilder sb = new StringBuilder();
@@ -694,8 +694,8 @@ namespace RocketMQ.Client
             }
             SendResult sendResult = new SendResult(sendStatus, uniqMsgId, responseHeader.msgId, messageQueue, responseHeader.queueOffset);
             sendResult.setTransactionId(responseHeader.transactionId);
-            String regionId = response.getExtFields().get(MessageConst.PROPERTY_MSG_REGION);
-            String traceOn = response.getExtFields().get(MessageConst.PROPERTY_TRACE_SWITCH);
+            string regionId = response.getExtFields().Get(MessageConst.PROPERTY_MSG_REGION);
+            string traceOn = response.getExtFields().Get(MessageConst.PROPERTY_TRACE_SWITCH);
             if (regionId == null || regionId.isEmpty())
             {
                 regionId = MixAll.DEFAULT_TRACE_REGION_ID;
@@ -716,7 +716,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public PullResult pullMessage(
-        String addr,
+        string addr,
         PullMessageRequestHeader requestHeader,
         long timeoutMillis,
         CommunicationMode communicationMode,
@@ -797,7 +797,7 @@ namespace RocketMQ.Client
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQBrokerException"/>
         private PullResult pullMessageSync(
-        String addr,
+        string addr,
         RemotingCommand request,
         long timeoutMillis
     )
@@ -812,7 +812,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         private PullResult processPullResponse(
         RemotingCommand response,
-        String addr)
+        string addr)
         {
             PullStatus pullStatus = PullStatus.NO_NEW_MSG;
             switch (response.getCode())
@@ -876,7 +876,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
-        public long searchOffset(String addr, String topic, int queueId, long timestamp,
+        public long searchOffset(String addr, string topic, int queueId, long timestamp,
         long timeoutMillis)
         {
             SearchOffsetRequestHeader requestHeader = new SearchOffsetRequestHeader();
@@ -906,7 +906,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
-        public long getMaxOffset(String addr, String topic, int queueId, long timeoutMillis)
+        public long getMaxOffset(String addr, string topic, int queueId, long timeoutMillis)
         {
             GetMaxOffsetRequestHeader requestHeader = new GetMaxOffsetRequestHeader();
             requestHeader.topic = topic;
@@ -938,8 +938,8 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public List<String> getConsumerIdListByGroup(
-        String addr,
-        String consumerGroup,
+        string addr,
+        string consumerGroup,
         long timeoutMillis)
         {
             GetConsumerListByGroupRequestHeader requestHeader = new GetConsumerListByGroupRequestHeader();
@@ -973,7 +973,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
-        public long getMinOffset(String addr, String topic, int queueId, long timeoutMillis)
+        public long getMinOffset(String addr, string topic, int queueId, long timeoutMillis)
         {
             GetMinOffsetRequestHeader requestHeader = new GetMinOffsetRequestHeader();
             requestHeader.topic = topic;
@@ -1003,7 +1003,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
-        public long getEarliestMsgStoretime(String addr, String topic, int queueId,
+        public long getEarliestMsgStoretime(String addr, string topic, int queueId,
         long timeoutMillis)
         {
             GetEarliestMsgStoretimeRequestHeader requestHeader = new GetEarliestMsgStoretimeRequestHeader();
@@ -1035,7 +1035,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public long queryConsumerOffset(
-        String addr,
+        string addr,
         QueryConsumerOffsetRequestHeader requestHeader,
         long timeoutMillis
     )
@@ -1066,7 +1066,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public void updateConsumerOffset(
-        String addr,
+        string addr,
         UpdateConsumerOffsetRequestHeader requestHeader,
         long timeoutMillis
     )
@@ -1096,7 +1096,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingSendRequestException"/>
         ///<exception cref="InterruptedException"/>
         public void updateConsumerOffsetOneway(
-        String addr,
+        string addr,
         UpdateConsumerOffsetRequestHeader requestHeader,
         long timeoutMillis
     )
@@ -1110,7 +1110,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public int sendHearbeat(
-        String addr,
+        string addr,
         HeartbeatData heartbeatData,
         long timeoutMillis
     )
@@ -1138,10 +1138,10 @@ namespace RocketMQ.Client
         ///<exception cref="InterruptedException"/>
 
         public void unregisterClient(
-        String addr,
-        String clientID,
-        String producerGroup,
-        String consumerGroup,
+        string addr,
+        string clientID,
+        string producerGroup,
+        string consumerGroup,
         long timeoutMillis
     )
         {
@@ -1171,9 +1171,9 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public void endTransactionOneway(
-        String addr,
+        string addr,
         EndTransactionRequestHeader requestHeader,
-        String remark,
+        string remark,
         long timeoutMillis
     )
         {
@@ -1187,7 +1187,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public void queryMessage(
-        String addr,
+        string addr,
         QueryMessageRequestHeader requestHeader,
         long timeoutMillis,
         InvokeCallback invokeCallback,
@@ -1215,9 +1215,9 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public void consumerSendMessageBack(
-        String addr,
+        string addr,
         MessageExt msg,
-        String consumerGroup,
+        string consumerGroup,
         int delayLevel,
         long timeoutMillis,
         int maxConsumeRetryTimes
@@ -1254,7 +1254,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public HashSet<MessageQueue> lockBatchMQ(
-        String addr,
+        string addr,
         LockBatchRequestBody requestBody,
         long timeoutMillis)
         {
@@ -1283,7 +1283,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         public void unlockBatchMQ(
-        String addr,
+        string addr,
         UnlockBatchRequestBody requestBody,
         long timeoutMillis,
         bool oneway
@@ -1319,7 +1319,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingSendRequestException"/>
         ///<exception cref="RemotingConnectException"/>
         ///<exception cref="MQBrokerException"/>
-        public TopicStatsTable getTopicStatsInfo(String addr, String topic,
+        public TopicStatsTable getTopicStatsInfo(String addr, string topic,
         long timeoutMillis)
         {
             GetTopicStatsInfoRequestHeader requestHeader = new GetTopicStatsInfoRequestHeader();
@@ -1348,7 +1348,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingSendRequestException"/>
         ///<exception cref="RemotingConnectException"/>
         ///<exception cref="MQBrokerException"/>
-        public ConsumeStats getConsumeStats(String addr, String consumerGroup, long timeoutMillis)
+        public ConsumeStats getConsumeStats(String addr, string consumerGroup, long timeoutMillis)
         {
             return getConsumeStats(addr, consumerGroup, null, timeoutMillis);
         }
@@ -1358,7 +1358,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingSendRequestException"/>
         ///<exception cref="RemotingConnectException"/>
         ///<exception cref="MQBrokerException"/>
-        public ConsumeStats getConsumeStats(String addr, String consumerGroup, String topic, long timeoutMillis)
+        public ConsumeStats getConsumeStats(String addr, string consumerGroup, string topic, long timeoutMillis)
         {
             GetConsumeStatsRequestHeader requestHeader = new GetConsumeStatsRequestHeader();
             requestHeader.consumerGroup = consumerGroup;
@@ -1387,7 +1387,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingTimeoutException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQBrokerException"/>
-        public ProducerConnection getProducerConnectionList(String addr, String producerGroup, long timeoutMillis)
+        public ProducerConnection getProducerConnectionList(String addr, string producerGroup, long timeoutMillis)
         {
             GetProducerConnectionListRequestHeader requestHeader = new GetProducerConnectionListRequestHeader();
             requestHeader.producerGroup = producerGroup;
@@ -1414,7 +1414,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingTimeoutException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQBrokerException"/>
-        public ConsumerConnection getConsumerConnectionList(String addr, String consumerGroup, long timeoutMillis)
+        public ConsumerConnection getConsumerConnectionList(String addr, string consumerGroup, long timeoutMillis)
         {
             GetConsumerConnectionListRequestHeader requestHeader = new GetConsumerConnectionListRequestHeader();
             requestHeader.consumerGroup = consumerGroup;
@@ -1640,7 +1640,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingTimeoutException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public int wipeWritePermOfBroker(String namesrvAddr, String brokerName, long timeoutMillis)
+        public int wipeWritePermOfBroker(String namesrvAddr, string brokerName, long timeoutMillis)
         {
             WipeWritePermOfBrokerRequestHeader requestHeader = new WipeWritePermOfBrokerRequestHeader();
             requestHeader.brokerName = brokerName;
@@ -1671,7 +1671,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingTimeoutException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public int addWritePermOfBroker(String nameSrvAddr, String brokerName, long timeoutMillis)
+        public int addWritePermOfBroker(String nameSrvAddr, string brokerName, long timeoutMillis)
         {
             AddWritePermOfBrokerRequestHeader requestHeader = new AddWritePermOfBrokerRequestHeader();
             requestHeader.brokerName = brokerName;
@@ -1698,7 +1698,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public void deleteTopicInBroker(String addr, String topic, long timeoutMillis)
+        public void deleteTopicInBroker(String addr, string topic, long timeoutMillis)
         {
             DeleteTopicRequestHeader requestHeader = new DeleteTopicRequestHeader();
             requestHeader.topic = topic;
@@ -1724,7 +1724,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public void deleteTopicInNameServer(String addr, String topic, long timeoutMillis)
+        public void deleteTopicInNameServer(String addr, string topic, long timeoutMillis)
         {
             DeleteTopicFromNamesrvRequestHeader requestHeader = new DeleteTopicFromNamesrvRequestHeader();
             requestHeader.topic = topic;
@@ -1749,7 +1749,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public void deleteSubscriptionGroup(String addr, String groupName, bool removeOffset, long timeoutMillis)
+        public void deleteSubscriptionGroup(String addr, string groupName, bool removeOffset, long timeoutMillis)
         {
             DeleteSubscriptionGroupRequestHeader requestHeader = new DeleteSubscriptionGroupRequestHeader();
             requestHeader.groupName = groupName;
@@ -1776,7 +1776,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public String getKVConfigValue(String nameSpace, String key, long timeoutMillis)
+        public string getKVConfigValue(String nameSpace, string key, long timeoutMillis)
         {
             GetKVConfigRequestHeader requestHeader = new GetKVConfigRequestHeader();
             requestHeader.nameSpace = nameSpace;
@@ -1805,7 +1805,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public void putKVConfigValue(String nameSpace, String key, String value, long timeoutMillis)
+        public void putKVConfigValue(String nameSpace, string key, string value, long timeoutMillis)
         {
             PutKVConfigRequestHeader requestHeader = new PutKVConfigRequestHeader();
             requestHeader.nameSpace = nameSpace;
@@ -1845,7 +1845,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public void deleteKVConfigValue(String nameSpace, String key, long timeoutMillis)
+        public void deleteKVConfigValue(String nameSpace, string key, long timeoutMillis)
         {
             DeleteKVConfigRequestHeader requestHeader = new DeleteKVConfigRequestHeader();
             requestHeader.nameSpace = nameSpace;
@@ -1908,7 +1908,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public Dictionary<MessageQueue, long> invokeBrokerToResetOffset(String addr, String topic, String group,
+        public Dictionary<MessageQueue, long> invokeBrokerToResetOffset(String addr, string topic, string group,
         long timestamp, bool isForce, long timeoutMillis)
         {
             return invokeBrokerToResetOffset(addr, topic, group, timestamp, isForce, timeoutMillis, false);
@@ -1917,7 +1917,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public Dictionary<MessageQueue, long> invokeBrokerToResetOffset(String addr, String topic, String group,
+        public Dictionary<MessageQueue, long> invokeBrokerToResetOffset(String addr, string topic, string group,
         long timestamp, bool isForce, long timeoutMillis, bool isC)
         {
             ResetOffsetRequestHeader requestHeader = new ResetOffsetRequestHeader();
@@ -1957,9 +1957,9 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public Dictionary<String, Dictionary<MessageQueue, long>> invokeBrokerToGetConsumerStatus(String addr, String topic,
-        String group,
-        String clientAddr,
+        public Dictionary<String, Dictionary<MessageQueue, long>> invokeBrokerToGetConsumerStatus(String addr, string topic,
+        string group,
+        string clientAddr,
         long timeoutMillis)
         {
             GetConsumerStatusRequestHeader requestHeader = new GetConsumerStatusRequestHeader();
@@ -1996,7 +1996,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingTimeoutException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQBrokerException"/>
-        public GroupList queryTopicConsumeByWho(String addr, String topic, long timeoutMillis)
+        public GroupList queryTopicConsumeByWho(String addr, string topic, long timeoutMillis)
         {
             QueryTopicConsumeByWhoRequestHeader requestHeader = new QueryTopicConsumeByWhoRequestHeader();
             requestHeader.topic = topic;
@@ -2024,7 +2024,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingTimeoutException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQBrokerException"/>
-        public List<QueueTimeSpan> queryConsumeTimeSpan(String addr, String topic, String group, long timeoutMillis)
+        public List<QueueTimeSpan> queryConsumeTimeSpan(String addr, string topic, string group, long timeoutMillis)
         {
             QueryConsumeTimeSpanRequestHeader requestHeader = new QueryConsumeTimeSpanRequestHeader();
             requestHeader.topic = topic;
@@ -2085,9 +2085,9 @@ namespace RocketMQ.Client
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQBrokerException"/>
         public void registerMessageFilterClass(String addr,
-        String consumerGroup,
-        String topic,
-        String className,
+        string consumerGroup,
+        string topic,
+        string className,
         int classCRC,
         byte[] classBody,
         long timeoutMillis)
@@ -2132,14 +2132,14 @@ namespace RocketMQ.Client
                         if (body != null)
                         {
                             TopicList topicList = TopicList.decode<TopicList>(response.getBody()/*.class*/);
-                            if (topicList.topicList != null && !topicList.topicList.isEmpty()
+                            if (topicList.topicList != null && !topicList.topicList.IsEmpty()
                                 && !UtilAll.isBlank(topicList.brokerAddr))
                             {
                                 TopicList tmp = getSystemTopicListFromBroker(topicList.brokerAddr, timeoutMillis);
-                                if (tmp.topicList != null && !tmp.topicList.isEmpty())
+                                if (tmp.topicList != null && !tmp.topicList.IsEmpty())
                                 {
                                     //topicList.getTopicList().addAll(tmp.getTopicList());
-                                    topicList.topicList.addAll(tmp.topicList);
+                                    topicList.topicList.AddAll(tmp.topicList);
                                 }
                             }
                             return topicList;
@@ -2234,7 +2234,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public ConsumerRunningInfo getConsumerRunningInfo(String addr, String consumerGroup, String clientId, bool jstack, long timeoutMillis)
+        public ConsumerRunningInfo getConsumerRunningInfo(String addr, string consumerGroup, string clientId, bool jstack, long timeoutMillis)
         {
             GetConsumerRunningInfoRequestHeader requestHeader = new GetConsumerRunningInfoRequestHeader();
             requestHeader.consumerGroup = consumerGroup;
@@ -2270,9 +2270,9 @@ namespace RocketMQ.Client
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
         public ConsumeMessageDirectlyResult consumeMessageDirectly(String addr,
-        String consumerGroup,
-        String clientId,
-        String msgId,
+        string consumerGroup,
+        string clientId,
+        string msgId,
         long timeoutMillis)
         {
             ConsumeMessageDirectlyResultRequestHeader requestHeader = new ConsumeMessageDirectlyResultRequestHeader();
@@ -2310,7 +2310,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingSendRequestException"/>
         ///<exception cref="RemotingTimeoutException"/>
         ///<exception cref="InterruptedException"/>
-        public Dictionary<int, long> queryCorrectionOffset(String addr, String topic, String group,
+        public Dictionary<int, long> queryCorrectionOffset(String addr, string topic, string group,
         HashSet<String> filterGroup,
         long timeoutMillis)
         {
@@ -2320,7 +2320,7 @@ namespace RocketMQ.Client
             if (filterGroup != null)
             {
                 StringBuilder sb = new StringBuilder();
-                String splitor = "";
+                string splitor = "";
                 foreach (String s in filterGroup)
                 {
                     sb.Append(splitor).Append(s);
@@ -2476,7 +2476,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public void cloneGroupOffset(String addr, String srcGroup, String destGroup, String topic,
+        public void cloneGroupOffset(String addr, string srcGroup, string destGroup, string topic,
         bool isOffline,
         long timeoutMillis)
         {
@@ -2510,7 +2510,7 @@ namespace RocketMQ.Client
         /// ///<exception cref="RemotingTimeoutException"/>
         ///<exception cref="InterruptedException"/>
 
-        public BrokerStatsData viewBrokerStatsData(String brokerAddr, String statsName, String statsKey, long timeoutMillis)
+        public BrokerStatsData viewBrokerStatsData(String brokerAddr, string statsName, string statsKey, long timeoutMillis)
         {
             ViewBrokerStatsDataRequestHeader requestHeader = new ViewBrokerStatsDataRequestHeader();
             requestHeader.statsName = statsName;
@@ -2644,14 +2644,14 @@ namespace RocketMQ.Client
         ///<exception cref="UnsupportedEncodingException"/>
         public void updateNameServerConfig(Properties properties, List<String> nameServers, long timeoutMillis)
         {
-            String str = MixAll.properties2String(properties);
+            string str = MixAll.properties2String(properties);
             if (str == null || str.Length < 1)
             {
                 return;
             }
-            List<String> invokeNameServers = (nameServers == null || nameServers.isEmpty()) ?
+            List<String> invokeNameServers = (nameServers == null || nameServers.IsEmpty()) ?
                 this.remotingClient.getNameServerAddressList() : nameServers;
-            if (invokeNameServers == null || invokeNameServers.isEmpty())
+            if (invokeNameServers == null || invokeNameServers.IsEmpty())
             {
                 return;
             }
@@ -2691,9 +2691,9 @@ namespace RocketMQ.Client
         ///<exception cref="UnsupportedEncodingException"/>
         public Dictionary<String, Properties> getNameServerConfig(List<String> nameServers, long timeoutMillis)
         {
-            List<String> invokeNameServers = (nameServers == null || nameServers.isEmpty()) ?
+            List<String> invokeNameServers = (nameServers == null || nameServers.IsEmpty()) ?
                 this.remotingClient.getNameServerAddressList() : nameServers;
-            if (invokeNameServers == null || invokeNameServers.isEmpty())
+            if (invokeNameServers == null || invokeNameServers.IsEmpty())
             {
                 return null;
             }
@@ -2727,9 +2727,9 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingSendRequestException"/>
         ///<exception cref="RemotingConnectException"/>
         ///<exception cref="MQClientException"/>
-        public QueryConsumeQueueResponseBody queryConsumeQueue(String brokerAddr, String topic,
+        public QueryConsumeQueueResponseBody queryConsumeQueue(String brokerAddr, string topic,
             int queueId,
-            long index, int count, String consumerGroup,
+            long index, int count, string consumerGroup,
             long timeoutMillis)
         {
 
@@ -2760,8 +2760,8 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingSendRequestException"/>
         ///<exception cref="RemotingConnectException"/>
         ///<exception cref="MQClientException"/>
-        public void checkClientInBroker(String brokerAddr, String consumerGroup,
-        String clientId, SubscriptionData subscriptionData,
+        public void checkClientInBroker(String brokerAddr, string consumerGroup,
+        string clientId, SubscriptionData subscriptionData,
         long timeoutMillis)
         {
             RemotingCommand request = RemotingCommand.createRequestCommand(RequestCode.CHECK_CLIENT_CONFIG, null);
@@ -2787,7 +2787,7 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingException"/>
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public bool resumeCheckHalfMessage(String addr, String msgId,
+        public bool resumeCheckHalfMessage(String addr, string msgId,
             long timeoutMillis)
         {
             ResumeCheckHalfMessageRequestHeader requestHeader = new ResumeCheckHalfMessageRequestHeader();

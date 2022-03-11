@@ -9,7 +9,7 @@ namespace RocketMQ.Client//.Protocal.Header
     public class WipeWritePermOfBrokerRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String brokerName { get; set; }
+        public string brokerName { get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException

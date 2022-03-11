@@ -10,10 +10,10 @@ namespace RocketMQ.Client
     {
         //private static final long serialVersionUID = 5975020272601250368L;
         private readonly int responseCode;
-        private readonly String errorMessage;
-        private readonly String brokerAddr;
+        private readonly string errorMessage;
+        private readonly string brokerAddr;
 
-        public MQBrokerException(int responseCode, String errorMessage)
+        public MQBrokerException(int responseCode, string errorMessage)
                 : base(FAQUrl.attachDefaultURL("CODE: " + UtilAll.responseCode2String(responseCode) + "  DESC: " + errorMessage))
         {
 
@@ -22,7 +22,7 @@ namespace RocketMQ.Client
             this.brokerAddr = null;
         }
 
-        public MQBrokerException(int responseCode, String errorMessage, String brokerAddr)
+        public MQBrokerException(int responseCode, string errorMessage, string brokerAddr)
             : base(FAQUrl.attachDefaultURL("CODE: " + UtilAll.responseCode2String(responseCode) + "  DESC: "
                 + errorMessage + (brokerAddr != null ? " BROKER: " + brokerAddr : "")))
         {
@@ -36,12 +36,12 @@ namespace RocketMQ.Client
             return responseCode;
         }
 
-        public String getErrorMessage()
+        public string getErrorMessage()
         {
             return errorMessage;
         }
 
-        public String getBrokerAddr()
+        public string getBrokerAddr()
         {
             return brokerAddr;
         }

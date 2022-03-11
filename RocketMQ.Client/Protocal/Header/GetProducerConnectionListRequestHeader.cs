@@ -9,7 +9,7 @@ namespace RocketMQ.Client//.Protocal.Header
     public class GetProducerConnectionListRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String producerGroup { get; set; }
+        public string producerGroup { get; set; }
 
         //@Override
         public void checkFields()// throws RemotingCommandException

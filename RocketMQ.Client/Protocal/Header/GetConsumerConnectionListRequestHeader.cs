@@ -10,7 +10,7 @@ namespace RocketMQ.Client//.Protocal.Header
     {
         [CFNotNull]
         //[CFNotNull]
-        public String consumerGroup { get; set; }
+        public string consumerGroup { get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException

@@ -316,7 +316,7 @@ namespace RocketMQ.Client
 
             //private void processTransactionState(
             //    LocalTransactionState localTransactionState,
-            //    String producerGroup,
+            //    string producerGroup,
             //    Exception exception)
             request.processTransactionState = (localTransactionState, producerGroup, exception) =>
             {
@@ -326,7 +326,7 @@ namespace RocketMQ.Client
                 thisHeader.tranStateTableOffset = checkRequestHeader.tranStateTableOffset;
                 thisHeader.fromTransactionCheck = true;
 
-                String uniqueKey = message.getProperties().get(MessageConst.PROPERTY_UNIQ_CLIENT_MESSAGE_ID_KEYIDX);
+                string uniqueKey = message.getProperties().Get(MessageConst.PROPERTY_UNIQ_CLIENT_MESSAGE_ID_KEYIDX);
                 if (uniqueKey == null)
                 {
                     uniqueKey = message.getMsgId();
@@ -350,7 +350,7 @@ namespace RocketMQ.Client
                         break;
                 }
 
-                String remark = null;
+                string remark = null;
                 if (exception != null)
                 {
                     remark = "checkLocalTransactionState Exception: " + RemotingHelper.exceptionSimpleDesc(exception);
@@ -374,7 +374,7 @@ namespace RocketMQ.Client
         {
             if (info != null && topic != null)
             {
-                TopicPublishInfo prev = this.topicPublishInfoTable.put(topic, info);
+                TopicPublishInfo prev = this.topicPublishInfoTable.Put(topic, info);
                 if (prev != null)
                 {
                     log.Info("updateTopicPublishInfo prev is not null, " + prev.ToString());
@@ -389,13 +389,13 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum)
+        public void createTopic(String key, string newTopic, int queueNum)
         {
             createTopic(key, newTopic, queueNum, 0);
         }
 
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum, int topicSysFlag)
+        public void createTopic(String key, string newTopic, int queueNum, int topicSysFlag)
         {
             this.makeSureStateOK();
             Validators.checkTopic(newTopic);
@@ -458,7 +458,7 @@ namespace RocketMQ.Client
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQBrokerException"/>
         public MessageExt viewMessage(
-            String msgId)
+            string msgId)
         {
             this.makeSureStateOK();
 
@@ -467,7 +467,7 @@ namespace RocketMQ.Client
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end)
+        public QueryResult queryMessage(String topic, string key, int maxNum, long begin, long end)
         {
             this.makeSureStateOK();
             return this.mQClientFactory.getMQAdminImpl().queryMessage(topic, key, maxNum, begin, end);
@@ -475,7 +475,7 @@ namespace RocketMQ.Client
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public MessageExt queryMessageByUniqKey(String topic, String uniqKey)
+        public MessageExt queryMessageByUniqKey(String topic, string uniqKey)
         {
             this.makeSureStateOK();
             return this.mQClientFactory.getMQAdminImpl().queryMessageByUniqKey(topic, uniqKey);
@@ -546,7 +546,7 @@ namespace RocketMQ.Client
 
         }
 
-        public MessageQueue selectOneMessageQueue(TopicPublishInfo tpInfo, String lastBrokerName)
+        public MessageQueue selectOneMessageQueue(TopicPublishInfo tpInfo, string lastBrokerName)
         {
             return this.mqFaultStrategy.selectOneMessageQueue(tpInfo, lastBrokerName);
         }
@@ -560,7 +560,7 @@ namespace RocketMQ.Client
         private void validateNameServerSetting()
         {
             List<String> nsList = this.getmQClientFactory().getMQClientAPIImpl().getNameServerAddressList();
-            if (null == nsList || nsList.isEmpty())
+            if (null == nsList || nsList.IsEmpty())
             {
                 throw new MQClientException(
                     "No name server address, please set it." + FAQUrl.suggestTodo(FAQUrl.NAME_SERVER_ADDR_NOT_EXIST_URL), null).setResponseCode(ClientErrorCode.NO_NAME_SERVER_EXCEPTION);
@@ -593,7 +593,7 @@ namespace RocketMQ.Client
                 String[] brokersSent = new String[timesTotal];
                 for (; times < timesTotal; times++)
                 {
-                    String lastBrokerName = null == mq ? null : mq.getBrokerName();
+                    string lastBrokerName = null == mq ? null : mq.getBrokerName();
                     MessageQueue mqSelected = this.selectOneMessageQueue(topicPublishInfo, lastBrokerName);
                     if (mqSelected != null)
                     {
@@ -699,7 +699,7 @@ namespace RocketMQ.Client
                     return sendResult;
                 }
 
-                String info = String.Format("Send [%d] times, still failed, cost [%d]ms, Topic: %s, BrokersSent: %s",
+                string info = String.Format("Send [%d] times, still failed, cost [%d]ms, Topic: %s, BrokersSent: %s",
                     times,
                     Sys.currentTimeMillis() - beginTimestampFirst,
                     msg.getTopic(),
@@ -741,12 +741,12 @@ namespace RocketMQ.Client
 
         private TopicPublishInfo tryToFindTopicPublishInfo(String topic)
         {
-            TopicPublishInfo topicPublishInfo = this.topicPublishInfoTable.get(topic);
+            TopicPublishInfo topicPublishInfo = this.topicPublishInfoTable.Get(topic);
             if (null == topicPublishInfo || !topicPublishInfo.ok())
             {
-                this.topicPublishInfoTable.putIfAbsent(topic, new TopicPublishInfo());
+                this.topicPublishInfoTable.PutIfAbsent(topic, new TopicPublishInfo());
                 this.mQClientFactory.updateTopicRouteInfoFromNameServer(topic);
-                topicPublishInfo = this.topicPublishInfoTable.get(topic);
+                topicPublishInfo = this.topicPublishInfoTable.Get(topic);
             }
 
             if (topicPublishInfo.isHaveTopicRouterInfo() || topicPublishInfo.ok())
@@ -770,7 +770,7 @@ namespace RocketMQ.Client
             SendCallback sendCallback,TopicPublishInfo topicPublishInfo,long timeout)
         {
             long beginStartTime = Sys.currentTimeMillis();
-            String brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
+            string brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
             if (null == brokerAddr)
             {
                 tryToFindTopicPublishInfo(mq.getTopic());
@@ -806,7 +806,7 @@ namespace RocketMQ.Client
                         msgBodyCompressed = true;
                     }
 
-                    String tranMsg = msg.getProperty(MessageConst.PROPERTY_TRANSACTION_PREPARED);
+                    string tranMsg = msg.getProperty(MessageConst.PROPERTY_TRANSACTION_PREPARED);
                     if (bool.Parse(tranMsg))
                     {
                         sysFlag |= MessageSysFlag.TRANSACTION_PREPARED_TYPE;
@@ -836,7 +836,7 @@ namespace RocketMQ.Client
                         context.setMessage(msg);
                         context.setMq(mq);
                         context.setNamespace(this.defaultMQProducer.getNamespace());
-                        String isTrans = msg.getProperty(MessageConst.PROPERTY_TRANSACTION_PREPARED);
+                        string isTrans = msg.getProperty(MessageConst.PROPERTY_TRANSACTION_PREPARED);
                         if (isTrans != null && isTrans.Equals("true"))
                         {
                             context.setMsgType(MessageType.Trans_Msg_Half);
@@ -864,7 +864,7 @@ namespace RocketMQ.Client
                     requestHeader.batch = msg is MessageBatch;
                     if (requestHeader.topic.StartsWith(MixAll.RETRY_GROUP_TOPIC_PREFIX))
                     {
-                        String reconsumeTimes = MessageAccessor.getReconsumeTime(msg);
+                        string reconsumeTimes = MessageAccessor.getReconsumeTime(msg);
                         if (reconsumeTimes != null)
                         {
                             //requestHeader.setReconsumeTimes(Integer.valueOf(reconsumeTimes));
@@ -872,7 +872,7 @@ namespace RocketMQ.Client
                             MessageAccessor.clearProperty(msg, MessageConst.PROPERTY_RECONSUME_TIME);
                         }
 
-                        String maxReconsumeTimes = MessageAccessor.getMaxReconsumeTimes(msg);
+                        string maxReconsumeTimes = MessageAccessor.getMaxReconsumeTimes(msg);
                         if (maxReconsumeTimes != null)
                         {
                             //requestHeader.setMaxReconsumeTimes(Integer.valueOf(maxReconsumeTimes));
@@ -1033,7 +1033,7 @@ namespace RocketMQ.Client
 
         public bool hasCheckForbiddenHook()
         {
-            return !checkForbiddenHookList.isEmpty();
+            return !checkForbiddenHookList.IsEmpty();
         }
 
         ///<exception cref="MQClientException"/>
@@ -1050,12 +1050,12 @@ namespace RocketMQ.Client
 
         public bool hasSendMessageHook()
         {
-            return !this.sendMessageHookList.isEmpty();
+            return !this.sendMessageHookList.IsEmpty();
         }
 
         public void executeSendMessageHookBefore(SendMessageContext context)
         {
-            if (!this.sendMessageHookList.isEmpty())
+            if (!this.sendMessageHookList.IsEmpty())
             {
                 foreach (SendMessageHook hook in this.sendMessageHookList)
                 {
@@ -1073,7 +1073,7 @@ namespace RocketMQ.Client
 
         public void executeSendMessageHookAfter(SendMessageContext context)
         {
-            if (!this.sendMessageHookList.isEmpty())
+            if (!this.sendMessageHookList.IsEmpty())
             {
                 foreach (SendMessageHook hook in this.sendMessageHookList)
                 {
@@ -1091,12 +1091,12 @@ namespace RocketMQ.Client
 
         public bool hasEndTransactionHook()
         {
-            return !this.endTransactionHookList.isEmpty();
+            return !this.endTransactionHookList.IsEmpty();
         }
 
         public void executeEndTransactionHook(EndTransactionContext context)
         {
-            if (!this.endTransactionHookList.isEmpty())
+            if (!this.endTransactionHookList.IsEmpty())
             {
                 foreach (EndTransactionHook hook in this.endTransactionHookList)
                 {
@@ -1112,7 +1112,7 @@ namespace RocketMQ.Client
             }
         }
 
-        public void doExecuteEndTransactionHook(Message msg, String msgId, String brokerAddr, LocalTransactionState state,
+        public void doExecuteEndTransactionHook(Message msg, string msgId, string brokerAddr, LocalTransactionState state,
             bool fromTransactionCheck)
         {
             if (hasEndTransactionHook())
@@ -1331,7 +1331,7 @@ namespace RocketMQ.Client
                     List<MessageQueue> messageQueueList =
                         mQClientFactory.getMQAdminImpl().parsePublishMessageQueues(topicPublishInfo.getMessageQueueList());
                     Message userMessage = MessageAccessor.cloneMessage(msg);
-                    String userTopic = NamespaceUtil.withoutNamespace(userMessage.getTopic(), mQClientFactory.getClientConfig().getNamespace());
+                    string userTopic = NamespaceUtil.withoutNamespace(userMessage.getTopic(), mQClientFactory.getClientConfig().getNamespace());
                     userMessage.setTopic(userTopic);
 
                     mq = mQClientFactory.getClientConfig().queueWithNamespace(selector.Select(messageQueueList, userMessage, arg));
@@ -1497,7 +1497,7 @@ namespace RocketMQ.Client
                             {
                                 msg.putUserProperty("__transactionId__", sendResult.getTransactionId());
                             }
-                            String transactionId = msg.getProperty(MessageConst.PROPERTY_UNIQ_CLIENT_MESSAGE_ID_KEYIDX);
+                            string transactionId = msg.getProperty(MessageConst.PROPERTY_UNIQ_CLIENT_MESSAGE_ID_KEYIDX);
                             if (null != transactionId && !"".Equals(transactionId))
                             {
                                 msg.setTransactionId(transactionId);
@@ -1589,8 +1589,8 @@ namespace RocketMQ.Client
             {
                 id = MessageDecoder.decodeMessageId(sendResult.getMsgId());
             }
-            String transactionId = sendResult.getTransactionId();
-            String brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(sendResult.getMessageQueue().getBrokerName());
+            string transactionId = sendResult.getTransactionId();
+            string brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(sendResult.getMessageQueue().getBrokerName());
             EndTransactionRequestHeader requestHeader = new EndTransactionRequestHeader();
             requestHeader.transactionId = transactionId;
             requestHeader.commitLogOffset = id.getOffset();
@@ -1613,7 +1613,7 @@ namespace RocketMQ.Client
             requestHeader.producerGroup = this.defaultMQProducer.getProducerGroup();
             requestHeader.tranStateTableOffset = sendResult.getQueueOffset();
             requestHeader.msgId = sendResult.getMsgId();
-            String remark = localException != null ? ("executeLocalTransactionBranch exception: " + localException.ToString()) : null;
+            string remark = localException != null ? ("executeLocalTransactionBranch exception: " + localException.ToString()) : null;
             this.mQClientFactory.getMQClientAPIImpl().endTransactionOneway(brokerAddr, requestHeader, remark,
                 this.defaultMQProducer.getSendMsgTimeout());
         }
@@ -1653,12 +1653,12 @@ namespace RocketMQ.Client
         {
             long beginTimestamp = Sys.currentTimeMillis();
             prepareSendRequest(msg, timeout);
-            String correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
+            string correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
 
             try
             {
                 RequestResponseFuture requestResponseFuture = new RequestResponseFuture(correlationId, timeout, null);
-                RequestFutureHolder.getInstance().getRequestFutureTable().put(correlationId, requestResponseFuture);
+                RequestFutureHolder.getInstance().getRequestFutureTable().Put(correlationId, requestResponseFuture);
 
                 long cost = Sys.currentTimeMillis() - beginTimestamp;
                 this.sendDefaultImpl(msg, CommunicationMode.ASYNC, new SendCallback()
@@ -1682,7 +1682,7 @@ namespace RocketMQ.Client
             }
             finally
             {
-                RequestFutureHolder.getInstance().getRequestFutureTable().remove(correlationId);
+                RequestFutureHolder.getInstance().getRequestFutureTable().JavaRemove(correlationId);
             }
         }
 
@@ -1694,10 +1694,10 @@ namespace RocketMQ.Client
         {
             long beginTimestamp = Sys.currentTimeMillis();
             prepareSendRequest(msg, timeout);
-            String correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
+            string correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
 
             RequestResponseFuture requestResponseFuture = new RequestResponseFuture(correlationId, timeout, requestCallback);
-            RequestFutureHolder.getInstance().getRequestFutureTable().put(correlationId, requestResponseFuture);
+            RequestFutureHolder.getInstance().getRequestFutureTable().Put(correlationId, requestResponseFuture);
 
             long cost = Sys.currentTimeMillis() - beginTimestamp;
             this.sendDefaultImpl(msg, CommunicationMode.ASYNC, new SendCallback()
@@ -1727,12 +1727,12 @@ namespace RocketMQ.Client
         {
             long beginTimestamp = Sys.currentTimeMillis();
             prepareSendRequest(msg, timeout);
-            String correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
+            string correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
 
             try
             {
                 RequestResponseFuture requestResponseFuture = new RequestResponseFuture(correlationId, timeout, null);
-                RequestFutureHolder.getInstance().getRequestFutureTable().put(correlationId, requestResponseFuture);
+                RequestFutureHolder.getInstance().getRequestFutureTable().Put(correlationId, requestResponseFuture);
 
                 long cost = Sys.currentTimeMillis() - beginTimestamp;
                 this.sendSelectImpl(msg, selector, arg, CommunicationMode.ASYNC, new SendCallback()
@@ -1756,7 +1756,7 @@ namespace RocketMQ.Client
             }
             finally
             {
-                RequestFutureHolder.getInstance().getRequestFutureTable().remove(correlationId);
+                RequestFutureHolder.getInstance().getRequestFutureTable().JavaRemove(correlationId);
             }
         }
 
@@ -1769,10 +1769,10 @@ namespace RocketMQ.Client
         {
             long beginTimestamp = Sys.currentTimeMillis();
             prepareSendRequest(msg, timeout);
-            String correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
+            string correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
 
             RequestResponseFuture requestResponseFuture = new RequestResponseFuture(correlationId, timeout, requestCallback);
-            RequestFutureHolder.getInstance().getRequestFutureTable().put(correlationId, requestResponseFuture);
+            RequestFutureHolder.getInstance().getRequestFutureTable().Put(correlationId, requestResponseFuture);
 
             long cost = Sys.currentTimeMillis() - beginTimestamp;
             this.sendSelectImpl(msg, selector, arg, CommunicationMode.ASYNC, new SendCallback()
@@ -1802,12 +1802,12 @@ namespace RocketMQ.Client
         {
             long beginTimestamp = Sys.currentTimeMillis();
             prepareSendRequest(msg, timeout);
-            String correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
+            string correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
 
             try
             {
                 RequestResponseFuture requestResponseFuture = new RequestResponseFuture(correlationId, timeout, null);
-                RequestFutureHolder.getInstance().getRequestFutureTable().put(correlationId, requestResponseFuture);
+                RequestFutureHolder.getInstance().getRequestFutureTable().Put(correlationId, requestResponseFuture);
 
                 long cost = Sys.currentTimeMillis() - beginTimestamp;
                 this.sendKernelImpl(msg, mq, CommunicationMode.ASYNC, new SendCallback()
@@ -1831,7 +1831,7 @@ namespace RocketMQ.Client
             }
             finally
             {
-                RequestFutureHolder.getInstance().getRequestFutureTable().remove(correlationId);
+                RequestFutureHolder.getInstance().getRequestFutureTable().JavaRemove(correlationId);
             }
         }
 
@@ -1840,7 +1840,7 @@ namespace RocketMQ.Client
         ///<exception cref="RequestTimeoutException"/>
         private Message waitResponse(Message msg, long timeout, RequestResponseFuture requestResponseFuture, long cost)
         {
-            Message responseMessage = requestResponseFuture.waitResponseMessage(timeout - cost).Result; //???
+            Message responseMessage = requestResponseFuture.waitResponseMessage(timeout - cost); //???
             if (responseMessage == null)
             {
                 if (requestResponseFuture.isSendRequestOk())
@@ -1864,10 +1864,10 @@ namespace RocketMQ.Client
         {
             long beginTimestamp = Sys.currentTimeMillis();
             prepareSendRequest(msg, timeout);
-            String correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
+            string correlationId = msg.getProperty(MessageConst.PROPERTY_CORRELATION_ID);
 
             RequestResponseFuture requestResponseFuture = new RequestResponseFuture(correlationId, timeout, requestCallback);
-            RequestFutureHolder.getInstance().getRequestFutureTable().put(correlationId, requestResponseFuture);
+            RequestFutureHolder.getInstance().getRequestFutureTable().Put(correlationId, requestResponseFuture);
 
             long cost = Sys.currentTimeMillis() - beginTimestamp;
             this.sendKernelImpl(msg, mq, CommunicationMode.ASYNC, new SendCallback()
@@ -1889,7 +1889,7 @@ namespace RocketMQ.Client
 
         private void requestFail(String correlationId)
         {
-            RequestResponseFuture responseFuture = RequestFutureHolder.getInstance().getRequestFutureTable().remove(correlationId);
+            RequestResponseFuture responseFuture = RequestFutureHolder.getInstance().getRequestFutureTable().JavaRemove(correlationId);
             if (responseFuture != null)
             {
                 responseFuture.setSendRequestOk(false);
@@ -1907,8 +1907,8 @@ namespace RocketMQ.Client
 
         private void prepareSendRequest(Message msg, long timeout)
         {
-            String correlationId = CorrelationIdUtil.createCorrelationId();
-            String requestClientId = this.getmQClientFactory().getClientId();
+            string correlationId = CorrelationIdUtil.createCorrelationId();
+            string requestClientId = this.getmQClientFactory().getClientId();
             MessageAccessor.putProperty(msg, MessageConst.PROPERTY_CORRELATION_ID, correlationId);
             MessageAccessor.putProperty(msg, MessageConst.PROPERTY_MESSAGE_REPLY_TO_CLIENT, requestClientId);
             MessageAccessor.putProperty(msg, MessageConst.PROPERTY_MESSAGE_TTL, timeout.ToString());

@@ -15,13 +15,13 @@ namespace RocketMQ.Client
 
         private readonly LinkedList<CallSnapshot> csListDay = new LinkedList<CallSnapshot>();
 
-        private readonly String statsName;
-        private readonly String statsKey;
+        private readonly string statsName;
+        private readonly string statsKey;
         private readonly ScheduledExecutorService scheduledExecutorService;
         //private readonly InternalLogger log;
         private readonly NLog.Logger log;
 
-        public StatsItem(String statsName, String statsKey, ScheduledExecutorService scheduledExecutorService, NLog.Logger log)
+        public StatsItem(String statsName, string statsKey, ScheduledExecutorService scheduledExecutorService, NLog.Logger log)
         {
             this.statsName = statsName;
             this.statsKey = statsKey;
@@ -38,7 +38,7 @@ namespace RocketMQ.Client
                 double avgpt = 0;
                 long sum = 0;
                 long timesDiff = 0;
-                if (!csList.isEmpty())
+                if (!csList.IsEmpty())
                 {
                     CallSnapshot first = csList.First.Value;
                     CallSnapshot last = csList.First.Value;
@@ -176,7 +176,7 @@ namespace RocketMQ.Client
                 {
                     this.csListMinute.AddLast(new CallSnapshot(Sys.currentTimeMillis() - 10 * 1000, 0, 0));
                 }
-                this.csListMinute.AddLast(new CallSnapshot(Sys.currentTimeMillis(), this.times.sum(), this.value.sum()));
+                this.csListMinute.AddLast(new CallSnapshot(Sys.currentTimeMillis(), this.times.Sum(), this.value.Sum()));
                 if (this.csListMinute.Count > 7)
                 {
                     this.csListMinute.RemoveFirst();
@@ -192,7 +192,7 @@ namespace RocketMQ.Client
                 {
                     this.csListHour.AddLast(new CallSnapshot(Sys.currentTimeMillis() - 10 * 60 * 1000, 0, 0));
                 }
-                this.csListHour.AddLast(new CallSnapshot(Sys.currentTimeMillis(), this.times.sum(), this.value.sum()));
+                this.csListHour.AddLast(new CallSnapshot(Sys.currentTimeMillis(), this.times.Sum(), this.value.Sum()));
                 if (this.csListHour.Count > 7)
                 {
                     this.csListHour.RemoveFirst();
@@ -208,7 +208,7 @@ namespace RocketMQ.Client
                 {
                     this.csListDay.AddLast(new CallSnapshot(Sys.currentTimeMillis() - 1 * 60 * 60 * 1000, 0, 0));
                 }
-                this.csListDay.AddLast(new CallSnapshot(Sys.currentTimeMillis(), this.times.sum(), this.value.sum()));
+                this.csListDay.AddLast(new CallSnapshot(Sys.currentTimeMillis(), this.times.Sum(), this.value.Sum()));
                 if (this.csListDay.Count > 25)
                 {
                     this.csListDay.RemoveFirst();
@@ -235,7 +235,7 @@ namespace RocketMQ.Client
             log.Info(String.Format("[%s] [%s] Stats In One Day, ", this.statsName, this.statsKey) + statPrintDetail(ss));
         }
 
-        protected virtual String statPrintDetail(StatsSnapshot ss)
+        protected virtual string statPrintDetail(StatsSnapshot ss)
         {
             return String.Format("SUM: %d TPS: %.2f AVGPT: %.2f",
                     ss.getSum(),
@@ -248,12 +248,12 @@ namespace RocketMQ.Client
             return value;
         }
 
-        public String getStatsKey()
+        public string getStatsKey()
         {
             return statsKey;
         }
 
-        public String getStatsName()
+        public string getStatsName()
         {
             return statsName;
         }

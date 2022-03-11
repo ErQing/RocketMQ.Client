@@ -10,11 +10,11 @@ namespace RocketMQ.Client//.Protocal.Header
     {
 
         [CFNotNull]
-        public String consumerGroup{ get; set; }
+        public string consumerGroup{ get; set; }
         [CFNotNull]
-        public String topic{ get; set; }
+        public string topic{ get; set; }
         [CFNotNull]
-        public String className{ get; set; }
+        public string className{ get; set; }
         [CFNotNull]
         public int classCRC{ get; set; }
 

@@ -8,18 +8,18 @@ namespace RocketMQ.Client
 {
     public class CheckForbiddenContext
     {
-        private String nameSrvAddr;
-        private String group;
+        private string nameSrvAddr;
+        private string group;
         private Message message;
         private MessageQueue mq;
-        private String brokerAddr;
+        private string brokerAddr;
         private CommunicationMode communicationMode;
         private SendResult sendResult;
         private Exception exception;
         private Object arg;
         private bool unitMode = false;
 
-        public String getGroup()
+        public string getGroup()
         {
             return group;
         }
@@ -49,7 +49,7 @@ namespace RocketMQ.Client
             this.mq = mq;
         }
 
-        public String getBrokerAddr()
+        public string getBrokerAddr()
         {
             return brokerAddr;
         }
@@ -109,7 +109,7 @@ namespace RocketMQ.Client
             this.unitMode = isUnitMode;
         }
 
-        public String getNameSrvAddr()
+        public string getNameSrvAddr()
         {
             return nameSrvAddr;
         }
@@ -119,7 +119,7 @@ namespace RocketMQ.Client
             this.nameSrvAddr = nameSrvAddr;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "SendMessageContext [nameSrvAddr=" + nameSrvAddr + ", group=" + group + ", message=" + message
                 + ", mq=" + mq + ", brokerAddr=" + brokerAddr + ", communicationMode=" + communicationMode

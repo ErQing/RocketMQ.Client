@@ -15,7 +15,7 @@ namespace RocketMQ.Client
         private readonly ConcurrentDictionary<String/* key */, StatsItem> statsItemTable =
         new ConcurrentDictionary<String, StatsItem>();
 
-        private readonly String statsName;
+        private readonly string statsName;
     private readonly ScheduledExecutorService scheduledExecutorService;
     //private readonly InternalLogger log;
         private readonly NLog.Logger log;
@@ -203,14 +203,14 @@ namespace RocketMQ.Client
 
     public void delValue(String statsKey)
     {
-        StatsItem statsItem = this.statsItemTable.get(statsKey);
+        StatsItem statsItem = this.statsItemTable.Get(statsKey);
         if (null != statsItem)
         {
-            this.statsItemTable.remove(statsKey);
+            this.statsItemTable.JavaRemove(statsKey);
         }
     }
 
-    public void delValueByPrefixKey(String statsKey, String separator)
+    public void delValueByPrefixKey(String statsKey, string separator)
     {
             //Iterator<Entry<String, StatsItem>> it = this.statsItemTable.entrySet().iterator();
             //while (it.hasNext())
@@ -225,7 +225,7 @@ namespace RocketMQ.Client
         }
     }
 
-    public void delValueByInfixKey(String statsKey, String separator)
+    public void delValueByInfixKey(String statsKey, string separator)
     {
             //Iterator<Entry<String, StatsItem>> it = this.statsItemTable.entrySet().iterator();
             //while (it.hasNext())
@@ -240,7 +240,7 @@ namespace RocketMQ.Client
         }
     }
 
-    public void delValueBySuffixKey(String statsKey, String separator)
+    public void delValueBySuffixKey(String statsKey, string separator)
     {
             //Iterator<Entry<String, StatsItem>> it = this.statsItemTable.entrySet().iterator();
             //while (it.hasNext())
@@ -267,7 +267,7 @@ namespace RocketMQ.Client
 
     public StatsItem getAndCreateItem(String statsKey, bool rtItem)
     {
-        StatsItem statsItem = this.statsItemTable.get(statsKey);
+        StatsItem statsItem = this.statsItemTable.Get(statsKey);
         if (null == statsItem)
         {
             if (rtItem)
@@ -278,7 +278,7 @@ namespace RocketMQ.Client
             {
                 statsItem = new StatsItem(this.statsName, statsKey, this.scheduledExecutorService, this.log);
             }
-            StatsItem prev = this.statsItemTable.putIfAbsent(statsKey, statsItem);
+            StatsItem prev = this.statsItemTable.PutIfAbsent(statsKey, statsItem);
 
             if (null != prev)
             {
@@ -292,7 +292,7 @@ namespace RocketMQ.Client
 
     public StatsSnapshot getStatsDataInMinute(String statsKey)
     {
-        StatsItem statsItem = this.statsItemTable.get(statsKey);
+        StatsItem statsItem = this.statsItemTable.Get(statsKey);
         if (null != statsItem)
         {
             return statsItem.getStatsDataInMinute();
@@ -302,7 +302,7 @@ namespace RocketMQ.Client
 
     public StatsSnapshot getStatsDataInHour(String statsKey)
     {
-        StatsItem statsItem = this.statsItemTable.get(statsKey);
+        StatsItem statsItem = this.statsItemTable.Get(statsKey);
         if (null != statsItem)
         {
             return statsItem.getStatsDataInHour();
@@ -312,7 +312,7 @@ namespace RocketMQ.Client
 
     public StatsSnapshot getStatsDataInDay(String statsKey)
     {
-        StatsItem statsItem = this.statsItemTable.get(statsKey);
+        StatsItem statsItem = this.statsItemTable.Get(statsKey);
         if (null != statsItem)
         {
             return statsItem.getStatsDataInDay();
@@ -322,7 +322,7 @@ namespace RocketMQ.Client
 
     public StatsItem getStatsItem(String statsKey)
     {
-        return this.statsItemTable.get(statsKey);
+        return this.statsItemTable.Get(statsKey);
     }
 }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,32 +6,19 @@ namespace RocketMQ.Client
 {
     public abstract class ServiceThread : IRunnable
     {
-        public enum Model
-        {
-            OnDemand,  //按需执行
-            Looping       //循环执行
-        }
         //private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.COMMON_LOGGER_NAME);
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
-        private static readonly long JOIN_TIME = 90 * 1000;
-        //protected readonly Thread thread;
-        protected volatile bool hasNotified = false;
+        private static readonly int JOIN_TIME = 90 * 1000;
+        protected Thread thread;
         protected volatile bool stopped = false;
         private readonly Actor actor;
         public Actor Executor { get { return actor; } }
-        protected abstract Model ExecuteModel { get; }
 
-
-        public ServiceThread()
-        {
-            actor = new Actor();
-        }
-
-        public ServiceThread(int capacity)
-        {
-            //this.thread = new Thread(this, this.getServiceName());
-            actor = new Actor(1, capacity);
-        }
+        //Make it able to restart the thread
+        private readonly AtomicBoolean started = new AtomicBoolean(false);
+        protected bool isDaemon { get; set; } = false;
+        protected readonly CountdownEvent waitPoint = new CountdownEvent(1);
+        protected volatile AtomicBoolean hasNotified = new AtomicBoolean(false);
 
         public int GetWaitingCount()
         {
@@ -45,82 +29,122 @@ namespace RocketMQ.Client
 
         public void start()
         {
+            log.Info("Try to start service thread:{} started:{} lastThread:{}", getServiceName(), started.get(), thread);
+            if (!started.CompareAndSet(false, true))
+            {
+                return;
+            }
+            stopped = false;
+            this.thread = new Thread(run);
+            this.thread.Name = getServiceName();
+            //this.thread.setDaemon(isDaemon);
             //this.thread.start();
-            log.Info(this.getServiceName() + " service started");
-            if (ExecuteModel == Model.Looping)
-                actor.SendAsync(run, false, -1);
+            thread.IsBackground = isDaemon;
+            thread.Start();
         }
 
         public abstract void run();
 
-        //public void shutdown()
-        //{
-        //    this.shutdown(false);
-        //}
-
-        /// <summary>
-        /// 是否等待队列的消息执行完成
-        /// </summary>
-        /// <param name="waitCmp"></param>
-        /// <returns></returns>
-        public async Task Shutdown(bool waitCmp = false)
+        public void shutdown()
         {
-            stopped = true;
-            if (waitCmp)
-                await actor.Shutdown().WaitAsync(TimeSpan.FromMilliseconds(JOIN_TIME));
-            else
-                _ = actor.Shutdown();
-            log.Info(this.getServiceName() + " service end");
+            this.shutdown(false);
         }
 
-        //public void shutdown(bool interrupt)
-        //{
-        //    this.stopped = true;
-        //    log.Info("shutdown thread " + this.getServiceName() + " interrupt " + interrupt);
-        //    lock(this) 
-        //    {
-        //        if (!this.hasNotified)
-        //        {
-        //            this.hasNotified = true;
-        //            this.notify();
-        //        }
-        //    }
+        public virtual void shutdown(bool interrupt)
+        {
+            log.Info("Try to shutdown service thread:{} started:{} lastThread:{}", getServiceName(), started.get(), thread);
+            if (!started.CompareAndSet(true, false))
+            {
+                return;
+            }
+            this.stopped = true;
+            log.Info("shutdown thread " + this.getServiceName() + " interrupt " + interrupt);
 
-        //    try
-        //    {
-        //        if (interrupt)
-        //        {
-        //            this.thread.interrupt();
-        //        }
-        //        long beginTime = Sys.currentTimeMillis();
-        //        this.thread.join(this.getJointime());
-        //        long elapsedTime = Sys.currentTimeMillis() - beginTime;
-        //        log.Info("join thread " + this.getServiceName() + " elapsed time(ms) " + elapsedTime + " " + this.getJointime());
-        //    }
-        //    catch (ThreadInterruptedException e)
-        //    {
-        //        log.Error("Interrupted", e);
-        //    }
-        //}
+            if (hasNotified.CompareAndSet(false, true))
+            {
+                //waitPoint.countDown(); // notify
+                waitPoint.Signal(); // notify
+            }
 
-        public long getJointime()
+            try
+            {
+                if (interrupt)
+                {
+                    this.thread.Interrupt();
+                }
+
+                long beginTime = Sys.currentTimeMillis();
+                //if (!this.thread.isDaemon())
+                if (!this.thread.IsBackground)
+                {
+                    this.thread.Join(this.getJointime());
+                }
+                long elapsedTime = Sys.currentTimeMillis() - beginTime;
+                log.Info("join thread " + this.getServiceName() + " elapsed time(ms) " + elapsedTime + " "
+                    + this.getJointime());
+            }
+            catch (ThreadInterruptedException e)
+            {
+                log.Error("Interrupted", e);
+            }
+        }
+
+        public int getJointime()
         {
             return JOIN_TIME;
+        }
+
+        public void makeStop()
+        {
+            if (!started.get())
+            {
+                return;
+            }
+            this.stopped = true;
+            log.Info("makestop thread " + this.getServiceName());
+        }
+
+        public void wakeup()
+        {
+            if (hasNotified.CompareAndSet(false, true))
+            {
+                //waitPoint.countDown(); // notify
+                waitPoint.Signal(); // notify
+            }
+        }
+
+        protected void waitForRunning(int interval)
+        {
+            if (hasNotified.CompareAndSet(true, false))
+            {
+                this.onWaitEnd();
+                return;
+            }
+
+            //entry to wait
+            waitPoint.Reset();
+            try
+            {
+                waitPoint.Wait(interval);
+            }
+            catch (ThreadInterruptedException e)
+            {
+                log.Error("Interrupted", e);
+            }
+            finally
+            {
+                hasNotified.Set(false);
+                this.onWaitEnd();
+            }
+        }
+
+        protected void onWaitEnd()
+        {
         }
 
         public bool isStopped()
         {
             return stopped;
-        }
-
-        public void wakeup()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected void waitForRunning(long interval)
-        {
-            throw new NotImplementedException();
         }
 
     }

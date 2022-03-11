@@ -22,7 +22,7 @@ namespace RocketMQ.Client
             return Math.Abs(index);
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "ThreadLocalIndex{" +
                 "threadLocalIndex=" + threadLocalIndex.Value +

@@ -15,10 +15,10 @@ namespace RocketMQ.Client
         private readonly DefaultMQPushConsumerImpl defaultMQPushConsumerImpl;
         private readonly DefaultMQPushConsumer defaultMQPushConsumer;
         private readonly MessageListenerOrderly messageListener;
-        private readonly LinkedBlockingQueue<Runnable> consumeRequestQueue;
+        private readonly BlockingQueue<Runnable> consumeRequestQueue;
         //private readonly ThreadPoolExecutor consumeExecutor;
         private readonly ExecutorService consumeExecutor;
-        private readonly String consumerGroup;
+        private readonly string consumerGroup;
         private readonly MessageQueueLock messageQueueLock = new MessageQueueLock();
         private readonly ScheduledExecutorService scheduledExecutorService;
         private volatile bool stopped = false;
@@ -31,9 +31,10 @@ namespace RocketMQ.Client
 
             this.defaultMQPushConsumer = this.defaultMQPushConsumerImpl.getDefaultMQPushConsumer();
             this.consumerGroup = this.defaultMQPushConsumer.getConsumerGroup();
-            this.consumeRequestQueue = new LinkedBlockingQueue<Runnable>();
+            //this.consumeRequestQueue = new LinkedBlockingQueue<Runnable>();
+            this.consumeRequestQueue = BlockingQueue<Runnable>.Create();
 
-            String consumeThreadPrefix = null;
+            string consumeThreadPrefix = null;
             if (consumerGroup.length() > 100)
             {
                 consumeThreadPrefix = new StringBuilder("ConsumeMessageThread_").Append(consumerGroup.JavaSubstring(0, 100)).Append("_").ToString();
@@ -121,7 +122,7 @@ namespace RocketMQ.Client
         }
 
         //@Override
-        public ConsumeMessageDirectlyResult consumeMessageDirectly(MessageExt msg, String brokerName)
+        public ConsumeMessageDirectlyResult consumeMessageDirectly(MessageExt msg, string brokerName)
         {
             ConsumeMessageDirectlyResult result = new ConsumeMessageDirectlyResult();
             result.order = true;
@@ -379,7 +380,7 @@ namespace RocketMQ.Client
         private bool checkReconsumeTimes(List<MessageExt> msgs)
         {
             bool suspend = false;
-            if (msgs != null && !msgs.isEmpty())
+            if (msgs != null && !msgs.IsEmpty())
             {
                 foreach (MessageExt msg in msgs)
                 {
@@ -408,7 +409,7 @@ namespace RocketMQ.Client
             {
                 // max reconsume times exceeded then send to dead letter queue.
                 Message newMsg = new Message(MixAll.getRetryTopic(this.defaultMQPushConsumer.getConsumerGroup()), msg.getBody());
-                String originMsgId = MessageAccessor.getOriginMessageId(msg);
+                string originMsgId = MessageAccessor.getOriginMessageId(msg);
                 MessageAccessor.setOriginMessageId(newMsg, UtilAll.isBlank(originMsgId) ? msg.getMsgId() : originMsgId);
                 newMsg.setFlag(msg.getFlag());
                 MessageAccessor.setProperties(newMsg, msg.getProperties());
@@ -433,7 +434,7 @@ namespace RocketMQ.Client
         {
             foreach (MessageExt msg in msgs)
             {
-                if (StringUtils.isNotEmpty(this.defaultMQPushConsumer.getNamespace()))
+                if (Str.isNotEmpty(this.defaultMQPushConsumer.getNamespace()))
                 {
                     msg.setTopic(NamespaceUtil.withoutNamespace(msg.getTopic(), this.defaultMQPushConsumer.getNamespace()));
                 }
@@ -520,7 +521,7 @@ namespace RocketMQ.Client
 
                             List<MessageExt> msgs = this.processQueue.takeMessages(consumeBatchSize);
                             owner.defaultMQPushConsumerImpl.resetRetryAndNamespace(msgs, owner.defaultMQPushConsumer.getConsumerGroup());
-                            if (!msgs.isEmpty())
+                            if (!msgs.IsEmpty())
                             {
                                 ConsumeOrderlyContext context = new ConsumeOrderlyContext(this.messageQueue);
 
@@ -608,7 +609,7 @@ namespace RocketMQ.Client
 
                                 if (owner.defaultMQPushConsumerImpl.hasHook())
                                 {
-                                    consumeMessageContext.getProps().put(MixAll.CONSUME_CONTEXT_TYPE, returnType.name());
+                                    consumeMessageContext.getProps().Put(MixAll.CONSUME_CONTEXT_TYPE, returnType.name());
                                 }
 
                                 if (null == status)

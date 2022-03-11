@@ -15,9 +15,9 @@ namespace RocketMQ.Client
 
     public class RemotingCommand
     {
-        public static readonly String SERIALIZE_TYPE_PROPERTY = "rocketmq.serialize.type";
-        public static readonly String SERIALIZE_TYPE_ENV = "ROCKETMQ_SERIALIZE_TYPE";
-        public static readonly String REMOTING_VERSION_KEY = "rocketmq.remoting.version";
+        public static readonly string SERIALIZE_TYPE_PROPERTY = "rocketmq.serialize.type";
+        public static readonly string SERIALIZE_TYPE_ENV = "ROCKETMQ_SERIALIZE_TYPE";
+        public static readonly string REMOTING_VERSION_KEY = "rocketmq.remoting.version";
         //private static readonly InternalLogger log = InternalLoggerFactory.getLogger(RemotingHelper.ROCKETMQ_REMOTING);
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         private static readonly int RPC_TYPE = 0; // 0, REQUEST_COMMAND
@@ -31,15 +31,15 @@ namespace RocketMQ.Client
         // 1, Oneway
         // 1, RESPONSE_COMMAND
         private static readonly HashMap<PropertyInfo, bool> NULLABLE_FIELD_CACHE = new HashMap<PropertyInfo, bool>();
-        //private static readonly String STRING_CANONICAL_NAME = String.class.getCanonicalName();
-        //private static readonly String DOUBLE_CANONICAL_NAME_1 = Double.class.getCanonicalName();
-        //private static readonly String DOUBLE_CANONICAL_NAME_2 = double.class.getCanonicalName();
-        //private static readonly String INTEGER_CANONICAL_NAME_1 = Integer.class.getCanonicalName();
-        //private static readonly String INTEGER_CANONICAL_NAME_2 = int.class.getCanonicalName();
-        //private static readonly String LONG_CANONICAL_NAME_1 = Long.class.getCanonicalName();
-        //private static readonly String LONG_CANONICAL_NAME_2 = long.class.getCanonicalName();
-        //private static readonly String BOOLEAN_CANONICAL_NAME_1 = bool.class.getCanonicalName();
-        //private static readonly String BOOLEAN_CANONICAL_NAME_2 = bool.class.getCanonicalName();
+        //private static readonly string STRING_CANONICAL_NAME = String.class.getCanonicalName();
+        //private static readonly string DOUBLE_CANONICAL_NAME_1 = Double.class.getCanonicalName();
+        //private static readonly string DOUBLE_CANONICAL_NAME_2 = double.class.getCanonicalName();
+        //private static readonly string INTEGER_CANONICAL_NAME_1 = Integer.class.getCanonicalName();
+        //private static readonly string INTEGER_CANONICAL_NAME_2 = int.class.getCanonicalName();
+        //private static readonly string LONG_CANONICAL_NAME_1 = Long.class.getCanonicalName();
+        //private static readonly string LONG_CANONICAL_NAME_2 = long.class.getCanonicalName();
+        //private static readonly string BOOLEAN_CANONICAL_NAME_1 = bool.class.getCanonicalName();
+        //private static readonly string BOOLEAN_CANONICAL_NAME_2 = bool.class.getCanonicalName();
         private static readonly Type STRING_CANONICAL_NAME = typeof(string);
         private static readonly Type DOUBLE_CANONICAL_NAME_1 = typeof(Double);
         private static readonly Type DOUBLE_CANONICAL_NAME_2 = typeof(double);
@@ -73,7 +73,7 @@ namespace RocketMQ.Client
         private int version = 0;
         private int opaque = requestId.getAndIncrement();
         private int flag = 0;
-        private String remark;
+        private string remark;
         private HashMap<String, String> extFields;
         //private transient CommandCustomHeader customHeader; //???
         private CommandCustomHeader customHeader;
@@ -125,7 +125,7 @@ namespace RocketMQ.Client
             return createResponseCommand(RemotingSysResponseCode.SYSTEM_ERROR, "not set any response code");
         }
 
-        //public static RemotingCommand createResponseCommand(int code, String remark, Class<? extends CommandCustomHeader> classHeader)
+        //public static RemotingCommand createResponseCommand(int code, string remark, Class<? extends CommandCustomHeader> classHeader)
         public static RemotingCommand createResponseCommand<T>(int code, string remark) where T : CommandCustomHeader, new()
         {
             RemotingCommand cmd = new RemotingCommand();
@@ -303,12 +303,12 @@ namespace RocketMQ.Client
                 {
                     //if (!Modifier.isStatic(field.getModifiers())) //getClazzFields不会获取到静态属性
                     {
-                        String fieldName = field.Name;
+                        string fieldName = field.Name;
                         //if (!fieldName.StartsWith("this"))  //多余的判断
                         {
                             try
                             {
-                                string value = this.extFields.get(fieldName);  //??? int long 类型怎么判断
+                                string value = this.extFields.Get(fieldName);  //??? int long 类型怎么判断
                                 if (null == value)
                                 {
                                     if (!isFieldNullable(field))
@@ -368,14 +368,14 @@ namespace RocketMQ.Client
 
         private PropertyInfo[] getClazzFields(Type type)
         {
-            PropertyInfo[] pros = CLASS_HASH_MAP.get(type);
+            PropertyInfo[] pros = CLASS_HASH_MAP.Get(type);
             if (pros == null)
             {
                 //pros = type.getDeclaredFields();
                 pros = type.GetProperties(); //只会获取Public的属性
                 lock (CLASS_HASH_MAP)
                 {
-                    CLASS_HASH_MAP.put(type, pros);
+                    CLASS_HASH_MAP.Put(type, pros);
                 }
             }
             return pros;
@@ -399,24 +399,24 @@ namespace RocketMQ.Client
                 var notNull = field.GetCustomAttribute<CFNotNull>();
                 lock (NULLABLE_FIELD_CACHE)
                 {
-                    NULLABLE_FIELD_CACHE.put(field, notNull == null);
+                    NULLABLE_FIELD_CACHE.Put(field, notNull == null);
                 }
             }
-            return NULLABLE_FIELD_CACHE.get(field);
+            return NULLABLE_FIELD_CACHE.Get(field);
         }
 
-        //private String getCanonicalName(Class clazz)
+        //private string getCanonicalName(Class clazz)
         private string getCanonicalName<T>()
         {
             var type = typeof(T);
-            string name = CANONICAL_NAME_CACHE.get(type);
+            string name = CANONICAL_NAME_CACHE.Get(type);
             if (name == null)
             {
                 //name = clazz.getCanonicalName();
                 name = type.FullName;
                 lock(CANONICAL_NAME_CACHE) 
                 {
-                    CANONICAL_NAME_CACHE.put(type, name);
+                    CANONICAL_NAME_CACHE.Put(type, name);
                 }
             }
             return name;
@@ -503,7 +503,7 @@ namespace RocketMQ.Client
 
                             if (value != null)
                             {
-                                this.extFields.put(name, value.ToString());
+                                this.extFields.Put(name, value.ToString());
                             }
                         }
                     }
@@ -627,7 +627,7 @@ namespace RocketMQ.Client
             this.flag = flag;
         }
 
-        public String getRemark()
+        public string getRemark()
         {
             return remark;
         }
@@ -657,17 +657,17 @@ namespace RocketMQ.Client
             this.extFields = extFields;
         }
 
-        public void addExtField(String key, String value)
+        public void addExtField(String key, string value)
         {
             if (null == extFields)
             {
                 extFields = new HashMap<String, String>();
             }
-            extFields.put(key, value);
+            extFields.Put(key, value);
         }
 
         //@Override
-        public override String ToString()
+        public override string ToString()
         {
             return "RemotingCommand [code=" + code + ", language=" + language + ", version=" + version + ", opaque=" + opaque + ", flag(B)="
                 + Convert.ToString(flag, 2) + ", remark=" + remark + ", extFields=" + extFields + ", serializeTypeCurrentRPC="

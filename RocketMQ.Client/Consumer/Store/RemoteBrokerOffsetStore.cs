@@ -12,11 +12,11 @@ namespace RocketMQ.Client//.Consumer.Store
         //private readonly static InternalLogger log = ClientLogger.getLog();
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         private readonly MQClientInstance mQClientFactory;
-        private readonly String groupName;
+        private readonly string groupName;
         private ConcurrentDictionary<MessageQueue, AtomicLong> offsetTable =
             new ConcurrentDictionary<MessageQueue, AtomicLong>();
 
-        public RemoteBrokerOffsetStore(MQClientInstance mQClientFactory, String groupName)
+        public RemoteBrokerOffsetStore(MQClientInstance mQClientFactory, string groupName)
         {
             this.mQClientFactory = mQClientFactory;
             this.groupName = groupName;
@@ -32,10 +32,10 @@ namespace RocketMQ.Client//.Consumer.Store
         {
             if (mq != null)
             {
-                AtomicLong offsetOld = this.offsetTable.get(mq);
+                AtomicLong offsetOld = this.offsetTable.Get(mq);
                 if (null == offsetOld)
                 {
-                    offsetOld = this.offsetTable.putIfAbsent(mq, new AtomicLong(offset));
+                    offsetOld = this.offsetTable.PutIfAbsent(mq, new AtomicLong(offset));
                 }
 
                 if (null != offsetOld)
@@ -46,7 +46,7 @@ namespace RocketMQ.Client//.Consumer.Store
                     }
                     else
                     {
-                        offsetOld.set(offset);
+                        offsetOld.Set(offset);
                     }
                 }
             }
@@ -62,10 +62,10 @@ namespace RocketMQ.Client//.Consumer.Store
                     case ReadOffsetType.MEMORY_FIRST_THEN_STORE:
                     case ReadOffsetType.READ_FROM_MEMORY:
                         {
-                            AtomicLong offset = this.offsetTable.get(mq);
+                            AtomicLong offset = this.offsetTable.Get(mq);
                             if (offset != null)
                             {
-                                return offset.get();
+                                return offset.Get();
                             }
                             else if (ReadOffsetType.READ_FROM_MEMORY == type)
                             {
@@ -79,7 +79,7 @@ namespace RocketMQ.Client//.Consumer.Store
                             {
                                 long brokerOffset = this.fetchConsumeOffsetFromBroker(mq);
                                 AtomicLong offset = new AtomicLong(brokerOffset);
-                                this.updateOffset(mq, offset.get(), false);
+                                this.updateOffset(mq, offset.Get(), false);
                                 return brokerOffset;
                             }
                             // No offset in broker
@@ -105,7 +105,7 @@ namespace RocketMQ.Client//.Consumer.Store
         //@Override
         public void persistAll(HashSet<MessageQueue> mqs)
         {
-            if (null == mqs || mqs.isEmpty())
+            if (null == mqs || mqs.IsEmpty())
                 return;
 
             HashSet<MessageQueue> unusedMQ = new HashSet<MessageQueue>();
@@ -120,12 +120,12 @@ namespace RocketMQ.Client//.Consumer.Store
                     {
                         try
                         {
-                            this.updateConsumeOffsetToBroker(mq, offset.get());
+                            this.updateConsumeOffsetToBroker(mq, offset.Get());
                             log.Info("[persistAll] Group: {} ClientId: {} updateConsumeOffsetToBroker {} {}",
                                 this.groupName,
                                 this.mQClientFactory.getClientId(),
                                 mq,
-                                offset.get());
+                                offset.Get());
                         }
                         catch (Exception e)
                         {
@@ -139,11 +139,11 @@ namespace RocketMQ.Client//.Consumer.Store
                 }
             }
 
-            if (!unusedMQ.isEmpty())
+            if (!unusedMQ.IsEmpty())
             {
                 foreach (MessageQueue mq in unusedMQ)
                 {
-                    this.offsetTable.remove(mq);
+                    this.offsetTable.JavaRemove(mq);
                     log.Info("remove unused mq, {}, {}", mq, this.groupName);
                 }
             }
@@ -152,17 +152,17 @@ namespace RocketMQ.Client//.Consumer.Store
         //@Override
         public void persist(MessageQueue mq)
         {
-            AtomicLong offset = this.offsetTable.get(mq);
+            AtomicLong offset = this.offsetTable.Get(mq);
             if (offset != null)
             {
                 try
                 {
-                    this.updateConsumeOffsetToBroker(mq, offset.get());
+                    this.updateConsumeOffsetToBroker(mq, offset.Get());
                     log.Info("[persist] Group: {} ClientId: {} updateConsumeOffsetToBroker {} {}",
                         this.groupName,
                         this.mQClientFactory.getClientId(),
                         mq,
-                        offset.get());
+                        offset.Get());
                 }
                 catch (Exception e)
                 {
@@ -193,7 +193,7 @@ namespace RocketMQ.Client//.Consumer.Store
                     continue;
                 }
                 //cloneOffsetTable.put(mq, entry.Value.Get());
-                cloneOffsetTable[mq] =  entry.Value.get();
+                cloneOffsetTable[mq] =  entry.Value.Get();
             }
             return cloneOffsetTable;
         }

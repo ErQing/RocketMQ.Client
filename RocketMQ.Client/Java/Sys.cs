@@ -19,18 +19,15 @@ namespace RocketMQ.Client
             throw new NotImplementedException();
         }
 
-        internal static long currentTimeMillis()
+        public static long currentTimeMillis()
         {
-            throw new NotImplementedException();
+            return TimeUtils.CurrentTimeMillisUTC();
         }
-        internal static ulong currentTimeMillisUnsigned()
+
+        public static string getenv(string sERIALIZE_TYPE_ENV)
         {
             throw new NotImplementedException();
         }
 
-        internal static string getenv(string sERIALIZE_TYPE_ENV)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

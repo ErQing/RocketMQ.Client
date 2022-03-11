@@ -26,7 +26,7 @@ namespace RocketMQ.Client
             
         }
 
-        public TransactionMQProducer(String nameSpace, String producerGroup) : this(nameSpace, producerGroup, null)
+        public TransactionMQProducer(String nameSpace, string producerGroup) : this(nameSpace, producerGroup, null)
         {
        
     }
@@ -35,12 +35,12 @@ namespace RocketMQ.Client
         {
     }
 
-    public TransactionMQProducer(String nameSpace, String producerGroup, RPCHook rpcHook) : base(nameSpace, producerGroup, rpcHook)
+    public TransactionMQProducer(String nameSpace, string producerGroup, RPCHook rpcHook) : base(nameSpace, producerGroup, rpcHook)
     {
         
     }
 
-    public TransactionMQProducer(String nameSpace, String producerGroup, RPCHook rpcHook, bool enableMsgTrace, String customizedTraceTopic) 
+    public TransactionMQProducer(String nameSpace, string producerGroup, RPCHook rpcHook, bool enableMsgTrace, string customizedTraceTopic) 
         :base(nameSpace, producerGroup, rpcHook, enableMsgTrace, customizedTraceTopic)
     {
         

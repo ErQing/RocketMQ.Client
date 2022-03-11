@@ -5,7 +5,7 @@ namespace RocketMQ.Client
 {
     public class MessageClientIDSetter
     {
-        private static readonly String TOPIC_KEY_SPLITTER = "#";
+        private static readonly string TOPIC_KEY_SPLITTER = "#";
         private static readonly int LEN;
         private static readonly char[] FIX_STRING;
         private static readonly AtomicInteger COUNTER;
@@ -92,7 +92,7 @@ namespace RocketMQ.Client
             return dt.Ticks;
         }
 
-        public static String getIPStrFromID(string msgID)
+        public static string getIPStrFromID(string msgID)
         {
             byte[] ipBytes = getIPFromID(msgID);
             if (ipBytes.Length == 16)

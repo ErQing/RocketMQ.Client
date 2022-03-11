@@ -9,7 +9,7 @@ namespace RocketMQ.Client//.Protocal.Header
     public class GetTopicStatsInfoRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String topic { get; set; }
+        public string topic { get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException

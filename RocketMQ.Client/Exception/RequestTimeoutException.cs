@@ -6,7 +6,7 @@ namespace RocketMQ.Client
     {
         //private static final long serialVersionUID = -5758410930844185841L;
         private int responseCode;
-        private String errorMessage;
+        private string errorMessage;
 
         public RequestTimeoutException(String errorMessage, Exception cause) 
             : base(errorMessage, cause)
@@ -15,7 +15,7 @@ namespace RocketMQ.Client
             this.errorMessage = errorMessage;
         }
 
-        public RequestTimeoutException(int responseCode, String errorMessage)
+        public RequestTimeoutException(int responseCode, string errorMessage)
             :base("CODE: " + UtilAll.responseCode2String(responseCode) + "  DESC: " + errorMessage)
         {
             
@@ -34,7 +34,7 @@ namespace RocketMQ.Client
             return this;
         }
 
-        public String getErrorMessage()
+        public string getErrorMessage()
         {
             return errorMessage;
         }

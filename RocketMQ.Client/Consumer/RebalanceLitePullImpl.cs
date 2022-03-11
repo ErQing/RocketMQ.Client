@@ -152,7 +152,7 @@ namespace RocketMQ.Client
                                 try
                                 {
                                     long timestamp = UtilAll.parseDate(this.litePullConsumerImpl.getDefaultLitePullConsumer().getConsumeTimestamp(),
-                                        UtilAll.YYYYMMDDHHMMSS).Ticks;
+                                        UtilAll.YYYYMMDDHHMMSS).Value.Ticks;
                                     result = this.mQClientFactory.getMQAdminImpl().searchOffset(mq, timestamp);
                                 }
                                 catch (MQClientException e)

@@ -11,11 +11,11 @@ namespace RocketMQ.Client
         ///private static readonly InternalLogger log = ClientLogger.getLog();
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
-        private static readonly String TOPIC_AND_GROUP_CONSUME_OK_TPS = "CONSUME_OK_TPS";
-        private static readonly String TOPIC_AND_GROUP_CONSUME_FAILED_TPS = "CONSUME_FAILED_TPS";
-        private static readonly String TOPIC_AND_GROUP_CONSUME_RT = "CONSUME_RT";
-        private static readonly String TOPIC_AND_GROUP_PULL_TPS = "PULL_TPS";
-        private static readonly String TOPIC_AND_GROUP_PULL_RT = "PULL_RT";
+        private static readonly string TOPIC_AND_GROUP_CONSUME_OK_TPS = "CONSUME_OK_TPS";
+        private static readonly string TOPIC_AND_GROUP_CONSUME_FAILED_TPS = "CONSUME_FAILED_TPS";
+        private static readonly string TOPIC_AND_GROUP_CONSUME_RT = "CONSUME_RT";
+        private static readonly string TOPIC_AND_GROUP_PULL_TPS = "PULL_TPS";
+        private static readonly string TOPIC_AND_GROUP_PULL_RT = "PULL_RT";
 
         private readonly StatsItemSet topicAndGroupConsumeOKTPS;
         private readonly StatsItemSet topicAndGroupConsumeRT;
@@ -47,32 +47,32 @@ namespace RocketMQ.Client
         {
         }
 
-        public void incPullRT(String group, String topic, long rt)
+        public void incPullRT(String group, string topic, long rt)
         {
             this.topicAndGroupPullRT.addRTValue(topic + "@" + group, (int)rt, 1);
         }
 
-        public void incPullTPS(String group, String topic, long msgs)
+        public void incPullTPS(String group, string topic, long msgs)
         {
             this.topicAndGroupPullTPS.addValue(topic + "@" + group, (int)msgs, 1);
         }
 
-        public void incConsumeRT(String group, String topic, long rt)
+        public void incConsumeRT(String group, string topic, long rt)
         {
             this.topicAndGroupConsumeRT.addRTValue(topic + "@" + group, (int)rt, 1);
         }
 
-        public void incConsumeOKTPS(String group, String topic, long msgs)
+        public void incConsumeOKTPS(String group, string topic, long msgs)
         {
             this.topicAndGroupConsumeOKTPS.addValue(topic + "@" + group, (int)msgs, 1);
         }
 
-        public void incConsumeFailedTPS(String group, String topic, long msgs)
+        public void incConsumeFailedTPS(String group, string topic, long msgs)
         {
             this.topicAndGroupConsumeFailedTPS.addValue(topic + "@" + group, (int)msgs, 1);
         }
 
-        public ConsumeStatus consumeStatus(String group, String topic)
+        public ConsumeStatus consumeStatus(String group, string topic)
         {
             ConsumeStatus cs = new ConsumeStatus();
             {
@@ -126,17 +126,17 @@ namespace RocketMQ.Client
             return cs;
         }
 
-        private StatsSnapshot getPullRT(String group, String topic)
+        private StatsSnapshot getPullRT(String group, string topic)
         {
             return this.topicAndGroupPullRT.getStatsDataInMinute(topic + "@" + group);
         }
 
-        private StatsSnapshot getPullTPS(String group, String topic)
+        private StatsSnapshot getPullTPS(String group, string topic)
         {
             return this.topicAndGroupPullTPS.getStatsDataInMinute(topic + "@" + group);
         }
 
-        private StatsSnapshot getConsumeRT(String group, String topic)
+        private StatsSnapshot getConsumeRT(String group, string topic)
         {
             StatsSnapshot statsData = this.topicAndGroupConsumeRT.getStatsDataInMinute(topic + "@" + group);
             if (0 == statsData.getSum())
@@ -147,12 +147,12 @@ namespace RocketMQ.Client
             return statsData;
         }
 
-        private StatsSnapshot getConsumeOKTPS(String group, String topic)
+        private StatsSnapshot getConsumeOKTPS(String group, string topic)
         {
             return this.topicAndGroupConsumeOKTPS.getStatsDataInMinute(topic + "@" + group);
         }
 
-        private StatsSnapshot getConsumeFailedTPS(String group, String topic)
+        private StatsSnapshot getConsumeFailedTPS(String group, string topic)
         {
             return this.topicAndGroupConsumeFailedTPS.getStatsDataInMinute(topic + "@" + group);
         }

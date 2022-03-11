@@ -7,7 +7,7 @@ namespace RocketMQ.Client
 {
     public class MessageExt : Message
     {
-        private String brokerName;
+        private string brokerName;
 
         private int queueId;
 
@@ -93,7 +93,7 @@ namespace RocketMQ.Client
             return socketAddress2ByteBuffer(this.storeHost, byteBuffer);
         }
 
-        public String getBrokerName()
+        public string getBrokerName()
         {
             return brokerName;
         }
@@ -137,7 +137,7 @@ namespace RocketMQ.Client
         /// 主机ip地址（不包含端口）
         /// </summary>
         /// <returns></returns>
-        public String getBornHostString()
+        public string getBornHostString()
         {
             if (null != this.bornHost)
             {
@@ -153,7 +153,7 @@ namespace RocketMQ.Client
         /// 主机名字
         /// </summary>
         /// <returns></returns>
-        public String getBornHostNameString()
+        public string getBornHostNameString()
         {
             if (null != this.bornHost)
             {
@@ -188,7 +188,7 @@ namespace RocketMQ.Client
             this.storeHost = storeHost;
         }
 
-        public virtual String getMsgId()
+        public virtual string getMsgId()
         {
             return msgId;
         }
@@ -272,7 +272,7 @@ namespace RocketMQ.Client
             this.preparedTransactionOffset = preparedTransactionOffset;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "MessageExt [brokerName=" + brokerName + ", queueId=" + queueId + ", storeSize=" + storeSize + ", queueOffset=" + queueOffset
                 + ", sysFlag=" + sysFlag + ", bornTimestamp=" + bornTimestamp + ", bornHost=" + bornHost

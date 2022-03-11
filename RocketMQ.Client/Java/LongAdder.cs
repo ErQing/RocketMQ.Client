@@ -6,16 +6,21 @@ using System.Threading.Tasks;
 
 namespace RocketMQ.Client
 {
+
+    /// <summary>
+    /// 暂时用AtomicLong来实现
+    /// </summary>
     public class LongAdder : AtomicLong
     {
-        internal long sum()
+        public long Sum()
         {
-            throw new NotImplementedException();
+            return Get();
         }
 
-        internal void Add(int incValue)
+        public void Add(int delta)
         {
-            throw new NotImplementedException();
+            AddAndGet(delta);
         }
+
     }
 }

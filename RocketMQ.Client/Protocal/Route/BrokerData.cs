@@ -6,8 +6,8 @@ namespace RocketMQ.Client
 {
     public class BrokerData : IComparable<BrokerData>
     {
-        public String cluster { get; set; }
-        public String brokerName { get; set; }
+        public string cluster { get; set; }
+        public string brokerName { get; set; }
         public Dictionary<long/* brokerId */, String/* broker address */> brokerAddrs { get; set; }
 
         private readonly Random random = new Random();
@@ -17,7 +17,7 @@ namespace RocketMQ.Client
 
         }
 
-        public BrokerData(String cluster, String brokerName, Dictionary<long, String> brokerAddrs)
+        public BrokerData(String cluster, string brokerName, Dictionary<long, String> brokerAddrs)
         {
             this.cluster = cluster;
             this.brokerName = brokerName;
@@ -30,7 +30,7 @@ namespace RocketMQ.Client
          *
          * @return Broker address.
          */
-        public String selectBrokerAddr()
+        public string selectBrokerAddr()
         {
             //String addr = this.brokerAddrs.get(MixAll.MASTER_ID);
             brokerAddrs.TryGetValue(MixAll.MASTER_ID, out string addr);
@@ -79,7 +79,7 @@ namespace RocketMQ.Client
             return true;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "BrokerData [brokerName=" + brokerName + ", brokerAddrs=" + brokerAddrs + "]";
         }

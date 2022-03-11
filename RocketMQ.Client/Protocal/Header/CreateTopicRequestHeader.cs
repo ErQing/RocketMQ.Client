@@ -9,9 +9,9 @@ namespace RocketMQ.Client
     public class CreateTopicRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String topic { get; set; }
+        public string topic { get; set; }
         [CFNotNull]
-        public String defaultTopic { get; set; }
+        public string defaultTopic { get; set; }
         [CFNotNull]
         public int readQueueNums { get; set; }
         [CFNotNull]
@@ -19,7 +19,7 @@ namespace RocketMQ.Client
         [CFNotNull]
         public int perm { get; set; }
         [CFNotNull]
-        public String topicFilterType { get; set; }
+        public string topicFilterType { get; set; }
         public int topicSysFlag { get; set; }
         [CFNotNull]
         public bool order { get; set; } = false;

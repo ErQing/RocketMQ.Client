@@ -38,7 +38,7 @@ namespace RocketMQ.Client
         //        + 4 // 13 RECONSUMETIMES
         //        + 8; // 14 Prepared Transaction Offset
 
-        public static String createMessageId(ByteBuffer input, ByteBuffer addr, long offset)
+        public static string createMessageId(ByteBuffer input, ByteBuffer addr, long offset)
         {
             input.flip();
             int msgIDLength = addr.limit == 8 ? 16 : 28;
@@ -122,7 +122,7 @@ namespace RocketMQ.Client
                 byte[] properties = new byte[propertiesLength];
                 byteBuffer.get(properties);
                 //String propertiesString = new String(properties, CHARSET_UTF8);
-                String propertiesString = CHARSET_UTF8.GetString(properties);
+                string propertiesString = CHARSET_UTF8.GetString(properties);
                 var map = string2messageProperties(propertiesString);
                 return map;
             }
@@ -152,7 +152,7 @@ namespace RocketMQ.Client
             byte[]
             topics = messageExt.getTopic().getBytes(CHARSET_UTF8);
             byte topicLen = (byte)topics.Length;
-            String properties = messageProperties2String(messageExt.getProperties());
+            string properties = messageProperties2String(messageExt.getProperties());
             byte[]
             propertiesBytes = properties.getBytes(CHARSET_UTF8);
             short propertiesLength = (short)propertiesBytes.Length;
@@ -385,14 +385,14 @@ namespace RocketMQ.Client
                     byte[] properties = new byte[propertiesLength];
                     byteBuffer.get(properties);
                     //String propertiesString = new String(properties, CHARSET_UTF8);
-                    String propertiesString = CHARSET_UTF8.GetString(properties);
+                    string propertiesString = CHARSET_UTF8.GetString(properties);
                     var map = string2messageProperties(propertiesString);
                     msgExt.setProperties(map);
                 }
 
                 int msgIDLength = storehostIPLength + 4 + 8;
                 ByteBuffer byteBufferMsgId = ByteBuffer.allocate(msgIDLength);
-                String msgId = createMessageId(byteBufferMsgId, msgExt.getStoreHostBytes(), msgExt.getCommitLogOffset());
+                string msgId = createMessageId(byteBufferMsgId, msgExt.getStoreHostBytes(), msgExt.getCommitLogOffset());
                 msgExt.setMsgId(msgId);
 
                 if (isClient)
@@ -432,7 +432,7 @@ namespace RocketMQ.Client
             return msgExts;
         }
 
-        public static String messageProperties2String(Dictionary<string, string> properties)
+        public static string messageProperties2String(Dictionary<string, string> properties)
         {
             if (properties == null)
             {
@@ -459,8 +459,8 @@ namespace RocketMQ.Client
             {
                 foreach (var entry in properties)
                 {
-                    String name = entry.Key;
-                    String value = entry.Value;
+                    string name = entry.Key;
+                    string value = entry.Value;
 
                     if (value == null)
                     {
@@ -498,9 +498,9 @@ namespace RocketMQ.Client
                         int kvSepIndex = properties.IndexOf(NAME_VALUE_SEPARATOR, index);
                         if (kvSepIndex > index && kvSepIndex < newIndex - 1)
                         {
-                            String k = properties.JavaSubstring(index, kvSepIndex);
-                            String v = properties.JavaSubstring(kvSepIndex + 1, newIndex);
-                            map.put(k, v);
+                            string k = properties.JavaSubstring(index, kvSepIndex);
+                            string v = properties.JavaSubstring(kvSepIndex + 1, newIndex);
+                            map.Put(k, v);
                         }
                     }
                     index = newIndex + 1;
@@ -515,7 +515,7 @@ namespace RocketMQ.Client
             //only need flag, body, properties
             byte[] body = message.getBody();
             int bodyLen = body.Length;
-            String properties = messageProperties2String(message.getProperties());
+            string properties = messageProperties2String(message.getProperties());
             byte[] propertiesBytes = properties.getBytes(CHARSET_UTF8);
             //note properties length must not more than Short.MAX
             int propsLen = propertiesBytes.Length;

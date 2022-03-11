@@ -12,24 +12,24 @@ namespace RocketMQ.Client
         //private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.COMMON_LOGGER_NAME);
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
-        private String nsAddr;
-        private String wsAddr;
-        private String unitName;
+        private string nsAddr;
+        private string wsAddr;
+        private string unitName;
 
         public TopAddressing(String wsAddr) : this(wsAddr, null)
         {
             
         }
 
-        public TopAddressing(String wsAddr, String unitName)
+        public TopAddressing(String wsAddr, string unitName)
         {
             this.wsAddr = wsAddr;
             this.unitName = unitName;
         }
 
-        private static String clearNewLine(String str)
+        private static string clearNewLine(String str)
         {
-            String newString = str.Trim();
+            string newString = str.Trim();
             int index = newString.IndexOf("\r");
             if (index != -1)
             {
@@ -45,14 +45,14 @@ namespace RocketMQ.Client
             return newString;
         }
 
-        public String fetchNSAddr()
+        public string fetchNSAddr()
         {
             return fetchNSAddr(true, 3000);
         }
 
-        public String fetchNSAddr(bool verbose, long timeoutMills)
+        public string fetchNSAddr(bool verbose, long timeoutMills)
         {
-            String url = this.wsAddr;
+            string url = this.wsAddr;
             try
             {
                 if (!UtilAll.isBlank(this.unitName))
@@ -62,7 +62,7 @@ namespace RocketMQ.Client
                 HttpTinyClient.HttpResult result = HttpTinyClient.httpGet(url, null, null, "UTF-8", timeoutMills);
                 if (200 == result.code)
                 {
-                    String responseStr = result.content;
+                    string responseStr = result.content;
                     if (responseStr != null)
                     {
                         return clearNewLine(responseStr);
@@ -87,7 +87,7 @@ namespace RocketMQ.Client
 
             if (verbose)
             {
-                String errorMsg = "connect to " + url + " failed, maybe the domain name " + MixAll.getWSAddr() + " not bind in /etc/hosts";
+                string errorMsg = "connect to " + url + " failed, maybe the domain name " + MixAll.getWSAddr() + " not bind in /etc/hosts";
                 errorMsg += FAQUrl.suggestTodo(FAQUrl.NAME_SERVER_ADDR_NOT_EXIST_URL);
 
                 log.Warn(errorMsg);
@@ -95,7 +95,7 @@ namespace RocketMQ.Client
             return null;
         }
 
-        public String getNsAddr()
+        public string getNsAddr()
         {
             return nsAddr;
         }

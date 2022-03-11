@@ -63,23 +63,23 @@ namespace RocketMQ.Client
             MessageExt messageExt = MessageDecoder.decode(byteBuffer);
             if (messageExt != null)
             {
-                if (StringUtils.isNotEmpty(this.mqClientFactory.getClientConfig().getNamespace()))
+                if (Str.isNotEmpty(this.mqClientFactory.getClientConfig().getNamespace()))
                 {
                     messageExt.setTopic(NamespaceUtil
                         .withoutNamespace(messageExt.getTopic(), this.mqClientFactory.getClientConfig().getNamespace()));
                 }
-                String transactionId = messageExt.getProperty(MessageConst.PROPERTY_UNIQ_CLIENT_MESSAGE_ID_KEYIDX);
+                string transactionId = messageExt.getProperty(MessageConst.PROPERTY_UNIQ_CLIENT_MESSAGE_ID_KEYIDX);
                 if (null != transactionId && !"".Equals(transactionId))
                 {
                     messageExt.setTransactionId(transactionId);
                 }
-                String group = messageExt.getProperty(MessageConst.PROPERTY_PRODUCER_GROUP);
+                string group = messageExt.getProperty(MessageConst.PROPERTY_PRODUCER_GROUP);
                 if (group != null)
                 {
                     MQProducerInner producer = this.mqClientFactory.selectProducer(group);
                     if (producer != null)
                     {
-                        String addr = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
+                        string addr = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
                         producer.checkTransactionState(addr, messageExt, requestHeader);
                     }
                     else
@@ -274,13 +274,13 @@ namespace RocketMQ.Client
 
         private void processReplyMessage(MessageExt replyMsg)
         {
-            String correlationId = replyMsg.getUserProperty(MessageConst.PROPERTY_CORRELATION_ID);
-            RequestResponseFuture requestResponseFuture = RequestFutureHolder.getInstance().getRequestFutureTable().get(correlationId);
+            string correlationId = replyMsg.getUserProperty(MessageConst.PROPERTY_CORRELATION_ID);
+            RequestResponseFuture requestResponseFuture = RequestFutureHolder.getInstance().getRequestFutureTable().Get(correlationId);
             if (requestResponseFuture != null)
             {
                 requestResponseFuture.putResponseMessage(replyMsg);
 
-                RequestFutureHolder.getInstance().getRequestFutureTable().remove(correlationId);
+                RequestFutureHolder.getInstance().getRequestFutureTable().JavaRemove(correlationId);
 
                 if (requestResponseFuture.getRequestCallback() != null)
                 {
@@ -289,7 +289,7 @@ namespace RocketMQ.Client
             }
             else
             {
-                String bornHost = replyMsg.getBornHostString();
+                string bornHost = replyMsg.getBornHostString();
                 log.Warn(String.Format("receive reply message, but not matched any request, CorrelationId: %s , reply from host: %s",
                     correlationId, bornHost));
             }

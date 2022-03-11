@@ -9,7 +9,7 @@ namespace RocketMQ.Client//.Protocal.Header
     public class GetTopicsByClusterRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String cluster { get; set; }
+        public string cluster { get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException

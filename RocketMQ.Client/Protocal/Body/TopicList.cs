@@ -9,6 +9,6 @@ namespace RocketMQ.Client//.Protocal.Body
     public class TopicList : RemotingSerializable
     {
         public HashSet<String> topicList { get; set; } = new HashSet<String>();
-        public String brokerAddr { get; set; }
+        public string brokerAddr { get; set; }
     }
 }

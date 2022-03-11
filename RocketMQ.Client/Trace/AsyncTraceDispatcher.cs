@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -22,22 +21,22 @@ namespace RocketMQ.Client
         private AtomicLong discardCount;
         private Thread worker;
         //private readonly ArrayBlockingQueue<TraceContext> traceContextQueue;
-        private readonly ConcurrentQueue<TraceContext> traceContextQueue;
+        private readonly BlockingQueue<TraceContext> traceContextQueue;
         //private ArrayBlockingQueue<Runnable> appenderQueue;
-        private ConcurrentQueue<Runnable> appenderQueue;
+        //private ConcurrentQueue<Runnable> appenderQueue;
         private volatile Thread shutDownHook;
         private volatile bool stopped = false;
         private DefaultMQProducerImpl hostProducer;
         private DefaultMQPushConsumerImpl hostConsumer;
         private volatile ThreadLocalIndex sendWhichQueue = new ThreadLocalIndex();
-        private String dispatcherId = UUID.randomUUID().ToString();
-        private String traceTopicName;
+        private string dispatcherId = UUID.randomUUID().ToString();
+        private string traceTopicName;
         private AtomicBoolean isStarted = new AtomicBoolean(false);
         private AccessChannel accessChannel = AccessChannel.LOCAL;
-        private String group;
+        private string group;
         private TraceDispatcher.Type type;
 
-        public AsyncTraceDispatcher(String group, TraceDispatcher.Type type, String traceTopicName, RPCHook rpcHook)
+        public AsyncTraceDispatcher(String group, TraceDispatcher.Type type, string traceTopicName, RPCHook rpcHook)
         {
             // queueSize is greater than or equal to the n power of 2 of value
             this.queueSize = 2048;
@@ -46,12 +45,12 @@ namespace RocketMQ.Client
             this.maxMsgSize = 128000;
             this.discardCount = new AtomicLong(0L);
             //this.traceContextQueue = new ArrayBlockingQueue<TraceContext>(1024);
-            this.traceContextQueue = new ConcurrentQueue<TraceContext>();
+            this.traceContextQueue = BlockingQueue<TraceContext>.Create();
             this.group = group;
             this.type = type;
 
             //this.appenderQueue = new ArrayBlockingQueue<Runnable>(queueSize);
-            this.traceContextQueue = new ConcurrentQueue<TraceContext>();
+            this.traceContextQueue = BlockingQueue<TraceContext>.Create();
             if (!UtilAll.isBlank(traceTopicName))
             {
                 this.traceTopicName = traceTopicName;
@@ -83,7 +82,7 @@ namespace RocketMQ.Client
             this.accessChannel = accessChannel;
         }
 
-        public String getTraceTopicName()
+        public string getTraceTopicName()
         {
             return traceTopicName;
         }
@@ -120,7 +119,7 @@ namespace RocketMQ.Client
 
         public void start(String nameSrvAddr, AccessChannel accessChannel)
         {
-            if (isStarted.compareAndSet(false, true))
+            if (isStarted.CompareAndSet(false, true))
             {
                 traceProducer.setNamesrvAddr(nameSrvAddr);
                 traceProducer.setInstanceName(TraceConstants.TRACE_INSTANCE_NAME + "_" + nameSrvAddr);
@@ -131,7 +130,7 @@ namespace RocketMQ.Client
             this.worker = new Thread(new ThreadStart(new AsyncRunnable(this).run));
             worker.Name = "MQ-AsyncTraceDispatcher-Thread-" + dispatcherId;
             this.worker.IsBackground = true;  //如果所有前台线程都已经终止，不会等待此线程完成
-            //this.worker.setDaemon(true);
+            //this.worker.setDaemon(true); //???
             this.worker.Start();
             this.registerShutDownHook();
         }
@@ -151,7 +150,7 @@ namespace RocketMQ.Client
             return traceProducerInstance;
         }
 
-        private String genGroupNameForTrace()
+        private string genGroupNameForTrace()
         {
             return TraceConstants.GROUP_NAME_PREFIX + "-" + this.group + "-" + this.type + "-" + COUNTER.incrementAndGet();
         }
@@ -165,14 +164,14 @@ namespace RocketMQ.Client
             //    log.Info("buffer full" + discardCount.incrementAndGet() + " ,context is " + ctx);
             //}
             //return result;
-            if (traceContextQueue.Count >= traceQueueSize)
+            if (traceContextQueue.Count >= traceQueueSize)  //???
             {
-                log.Info("buffer full" + discardCount.incrementAndGet() + " ,context is " + ctx);
+                log.Info("buffer full" + discardCount.IncrementAndGet() + " ,context is " + ctx);
                 return false;
             }
             else
             {
-                traceContextQueue.Enqueue((TraceContext)ctx);
+                traceContextQueue.Add((TraceContext)ctx);
                 return true;
             }
         }
@@ -186,7 +185,8 @@ namespace RocketMQ.Client
             {
                 lock (traceContextQueue)
                 {
-                    if (traceContextQueue.Count == 0 && appenderQueue.Count == 0)
+                    //if (traceContextQueue.Count == 0 && appenderQueue.Count == 0)
+                    if (traceContextQueue.Count == 0 && traceExecutor.GetWaitingCount() == 0)
                     {
                         break;
                     }
@@ -200,7 +200,8 @@ namespace RocketMQ.Client
                     break;
                 }
             }
-            log.Info("------end trace send " + traceContextQueue.Count + "   " + appenderQueue.Count);
+            //log.Info("------end trace send " + traceContextQueue.Count + "   " + appenderQueue.Count);
+            log.Info("------end trace send " + traceContextQueue.Count + "   " + traceExecutor.GetWaitingCount());
         }
 
         //@Override
@@ -296,8 +297,7 @@ namespace RocketMQ.Client
                             try
                             {
                                 //get trace data element from blocking Queue - traceContextQueue
-                                //context = traceContextQueue.poll(5, TimeUnit.MILLISECONDS); //???阻塞5毫秒？
-                                owner.traceContextQueue.TryDequeue(out context);
+                                context = owner.traceContextQueue.Poll(5, TimeUnit.MILLISECONDS); //???阻塞5毫秒？
                             }
                             catch (Exception e)
                             {
@@ -358,24 +358,24 @@ namespace RocketMQ.Client
                 var transBeanMap = new HashMap<String, List<TraceTransferBean>>();
                 foreach (TraceContext context in contextList)
                 {
-                    if (context.getTraceBeans().isEmpty())
+                    if (context.getTraceBeans().IsEmpty())
                     {
                         continue;
                     }
                     // Topic value corresponding to original message entity content
-                    String topic = context.getTraceBeans().get(0).getTopic();
-                    String regionId = context.getRegionId();
+                    string topic = context.getTraceBeans().Get(0).getTopic();
+                    string regionId = context.getRegionId();
                     // Use  original message entity's topic as key
-                    String key = topic;
-                    if (!StringUtils.isBlank(regionId))
+                    string key = topic;
+                    if (!Str.isBlank(regionId))
                     {
                         key = key + TraceConstants.CONTENT_SPLITOR + regionId;
                     }
-                    List<TraceTransferBean> transBeanList = transBeanMap.get(key);
+                    List<TraceTransferBean> transBeanList = transBeanMap.Get(key);
                     if (transBeanList == null)
                     {
                         transBeanList = new ArrayList<TraceTransferBean>();
-                        transBeanMap.put(key, transBeanList);
+                        transBeanMap.Put(key, transBeanList);
                     }
                     TraceTransferBean traceData = TraceDataEncoder.encoderFromContextBean(context);
                     transBeanList.Add(traceData);
@@ -383,8 +383,8 @@ namespace RocketMQ.Client
                 foreach (var entry in transBeanMap)
                 {
                     String[] key = entry.Key.Split(Str.valueOf(TraceConstants.CONTENT_SPLITOR));
-                    String dataTopic = entry.Key;
-                    String regionId = null;
+                    string dataTopic = entry.Key;
+                    string regionId = null;
                     if (key.Length > 1)
                     {
                         dataTopic = key[0];
@@ -397,7 +397,7 @@ namespace RocketMQ.Client
             /**
              * Batch sending data actually
              */
-            private void flushData(List<TraceTransferBean> transBeanList, String dataTopic, String regionId)
+            private void flushData(List<TraceTransferBean> transBeanList, string dataTopic, string regionId)
             {
                 if (transBeanList.Count == 0)
                 {
@@ -411,7 +411,7 @@ namespace RocketMQ.Client
                 foreach (TraceTransferBean bean in transBeanList)
                 {
                     // Keyset of message trace includes msgId of or original message
-                    keySet.addAll(bean.getTransKey());
+                    keySet.AddAll(bean.getTransKey());
                     buffer.Append(bean.getTransData());
                     count++;
                     // Ensure that the size of the package should not exceed the upper limit.
@@ -439,9 +439,9 @@ namespace RocketMQ.Client
              * @param keySet the keyset in this batch(including msgId in original message not offsetMsgId)
              * @param data   the message trace data in this batch
              */
-            private void sendTraceDataByMQ(HashSet<String> keySet, String data, String dataTopic, String regionId)
+            private void sendTraceDataByMQ(HashSet<String> keySet, string data, string dataTopic, string regionId)
             {
-                String traceTopic = owner.traceTopicName;
+                string traceTopic = owner.traceTopicName;
                 if (AccessChannel.CLOUD == owner.accessChannel)
                 {
                     traceTopic = TraceConstants.TRACE_TOPIC_PREFIX + regionId;
@@ -496,7 +496,7 @@ namespace RocketMQ.Client
                                 {
                                     pos = 0;
                                 }
-                                return filterMqs.get(pos);
+                                return filterMqs.Get(pos);
                             }
                         }, traceBrokerSet, callback);
                     }
@@ -508,15 +508,15 @@ namespace RocketMQ.Client
                 }
             }
 
-            private HashSet<String> tryGetMessageQueueBrokerSet(DefaultMQProducerImpl producer, String topic)
+            private HashSet<String> tryGetMessageQueueBrokerSet(DefaultMQProducerImpl producer, string topic)
             {
                 HashSet<String> brokerSet = new HashSet<String>();
-                TopicPublishInfo topicPublishInfo = producer.getTopicPublishInfoTable().get(topic);
+                TopicPublishInfo topicPublishInfo = producer.getTopicPublishInfoTable().Get(topic);
                 if (null == topicPublishInfo || !topicPublishInfo.ok())
                 {
-                    producer.getTopicPublishInfoTable().putIfAbsent(topic, new TopicPublishInfo());
+                    producer.getTopicPublishInfoTable().PutIfAbsent(topic, new TopicPublishInfo());
                     producer.getmQClientFactory().updateTopicRouteInfoFromNameServer(topic);
-                    topicPublishInfo = producer.getTopicPublishInfoTable().get(topic);
+                    topicPublishInfo = producer.getTopicPublishInfoTable().Get(topic);
                 }
                 if (topicPublishInfo.isHaveTopicRouterInfo() || topicPublishInfo.ok())
                 {

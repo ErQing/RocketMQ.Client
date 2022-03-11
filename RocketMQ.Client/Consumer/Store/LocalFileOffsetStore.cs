@@ -7,19 +7,19 @@ namespace RocketMQ.Client//.Consumer.Store
 {
     public class LocalFileOffsetStore : OffsetStore
     {
-        public readonly static String LOCAL_OFFSET_STORE_DIR = Sys.getProperty(
+        public readonly static string LOCAL_OFFSET_STORE_DIR = Sys.getProperty(
         "rocketmq.client.localOffsetStoreDir",
         Sys.getProperty("user.home") + Path.DirectorySeparatorChar + ".rocketmq_offsets");
 
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         //private readonly static InternalLogger log = ClientLogger.getLog();
         private readonly MQClientInstance mQClientFactory;
-        private readonly String groupName;
-        private readonly String storePath;
+        private readonly string groupName;
+        private readonly string storePath;
         private ConcurrentDictionary<MessageQueue, AtomicLong> offsetTable =
             new ConcurrentDictionary<MessageQueue, AtomicLong>();
 
-        public LocalFileOffsetStore(MQClientInstance mQClientFactory, String groupName)
+        public LocalFileOffsetStore(MQClientInstance mQClientFactory, string groupName)
         {
             this.mQClientFactory = mQClientFactory;
             this.groupName = groupName;
@@ -40,7 +40,7 @@ namespace RocketMQ.Client//.Consumer.Store
             OffsetSerializeWrapper offsetSerializeWrapper = this.readLocalOffset();
             if (offsetSerializeWrapper != null && offsetSerializeWrapper.getOffsetTable() != null)
             {
-                offsetTable.putAll(offsetSerializeWrapper.getOffsetTable());
+                offsetTable.PutAll(offsetSerializeWrapper.getOffsetTable());
 
                 foreach (var mqEntry in offsetSerializeWrapper.getOffsetTable())
                 {
@@ -48,7 +48,7 @@ namespace RocketMQ.Client//.Consumer.Store
                     log.Info("load consumer's offset, {} {} {}",
                                     this.groupName,
                                     mqEntry.Key,
-                                    offset.get());
+                                    offset.Get());
                 }
             }
         }
@@ -58,10 +58,10 @@ namespace RocketMQ.Client//.Consumer.Store
         {
             if (mq != null)
             {
-                AtomicLong offsetOld = this.offsetTable.get(mq);
+                AtomicLong offsetOld = this.offsetTable.Get(mq);
                 if (null == offsetOld)
                 {
-                    offsetOld = this.offsetTable.putIfAbsent(mq, new AtomicLong(offset));
+                    offsetOld = this.offsetTable.PutIfAbsent(mq, new AtomicLong(offset));
                 }
 
                 if (null != offsetOld)
@@ -72,7 +72,7 @@ namespace RocketMQ.Client//.Consumer.Store
                     }
                     else
                     {
-                        offsetOld.set(offset);
+                        offsetOld.Set(offset);
                     }
                 }
             }
@@ -88,10 +88,10 @@ namespace RocketMQ.Client//.Consumer.Store
                     case ReadOffsetType.MEMORY_FIRST_THEN_STORE:
                     case ReadOffsetType.READ_FROM_MEMORY:
                         {
-                            AtomicLong offset = this.offsetTable.get(mq);
+                            AtomicLong offset = this.offsetTable.Get(mq);
                             if (offset != null)
                             {
-                                return offset.get();
+                                return offset.Get();
                             }
                             else if (ReadOffsetType.READ_FROM_MEMORY == type)
                             {
@@ -112,11 +112,11 @@ namespace RocketMQ.Client//.Consumer.Store
                             }
                             if (offsetSerializeWrapper != null && offsetSerializeWrapper.getOffsetTable() != null)
                             {
-                                AtomicLong offset = offsetSerializeWrapper.getOffsetTable().get(mq);
+                                AtomicLong offset = offsetSerializeWrapper.getOffsetTable().Get(mq);
                                 if (offset != null)
                                 {
-                                    this.updateOffset(mq, offset.get(), false);
-                                    return offset.get();
+                                    this.updateOffset(mq, offset.Get(), false);
+                                    return offset.Get();
                                 }
                             }
                             break;
@@ -132,7 +132,7 @@ namespace RocketMQ.Client//.Consumer.Store
         //@Override
         public void persistAll(HashSet<MessageQueue> mqs)
         {
-            if (null == mqs || mqs.isEmpty())
+            if (null == mqs || mqs.IsEmpty())
                 return;
 
             OffsetSerializeWrapper offsetSerializeWrapper = new OffsetSerializeWrapper();
@@ -141,11 +141,11 @@ namespace RocketMQ.Client//.Consumer.Store
                 if (mqs.Contains(entry.Key))
                 {
                     AtomicLong offset = entry.Value;
-                    offsetSerializeWrapper.getOffsetTable().put(entry.Key, offset);
+                    offsetSerializeWrapper.getOffsetTable().Put(entry.Key, offset);
                 }
             }
 
-            String jsonString = offsetSerializeWrapper.toJson(true);
+            string jsonString = offsetSerializeWrapper.toJson(true);
             if (jsonString != null)
             {
                 try
@@ -187,7 +187,7 @@ namespace RocketMQ.Client//.Consumer.Store
                 {
                     continue;
                 }
-                cloneOffsetTable.put(mq, entry.Value.get());
+                cloneOffsetTable.Put(mq, entry.Value.Get());
 
             }
             return cloneOffsetTable;
@@ -196,7 +196,7 @@ namespace RocketMQ.Client//.Consumer.Store
         ///<exception cref="MQClientException"/>
         private OffsetSerializeWrapper readLocalOffset()
         {
-            String content = null;
+            string content = null;
             try
             {
                 content = MixAll.file2String(this.storePath);
@@ -230,7 +230,7 @@ namespace RocketMQ.Client//.Consumer.Store
         ///<exception cref="MQClientException"/>
         private OffsetSerializeWrapper readLocalOffsetBak()
         {
-            String content = null;
+            string content = null;
             try
             {
                 content = MixAll.file2String(this.storePath + ".bak");

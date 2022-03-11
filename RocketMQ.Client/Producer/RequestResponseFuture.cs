@@ -6,13 +6,14 @@ namespace RocketMQ.Client
 {
     public class RequestResponseFuture
     {
-        private readonly String correlationId;
+        private readonly string correlationId;
         private readonly RequestCallback requestCallback;
         private readonly long beginTimestamp = Sys.currentTimeMillis();
         private readonly Message requestMsg = null;
         private long timeoutMillis;
         //private CountDownLatch countDownLatch = new CountDownLatch(1); //CountdownEvent
-        private TaskCompletionSource<Message> countDownLatch = new TaskCompletionSource<Message>();
+        //private TaskCompletionSource<Message> countDownLatch = new TaskCompletionSource<Message>();
+        private CountdownEvent countDownLatch = new CountdownEvent(1); //CountdownEvent
         private volatile Message responseMsg = null;
         private volatile bool sendRequestOk = true;
         private volatile Exception cause = null;
@@ -46,20 +47,27 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="ThreadInterruptedException"/>
-        public async Task<Message> waitResponseMessage(long timeout)
+        //public async Task<Message> waitResponseMessage(long timeout)
+        //{
+        //    return await countDownLatch.Task.WaitAsync(TimeSpan.FromMilliseconds(timeout));
+        //    //return this.responseMsg;
+        //}
+
+        public Message waitResponseMessage(long timeout)
         {
-            return await countDownLatch.Task.WaitAsync(TimeSpan.FromMilliseconds(timeout));
-            //return this.responseMsg;
+            countDownLatch.Wait((int)timeout);
+            return this.responseMsg;
         }
 
         public void putResponseMessage(Message responseMsg)
         {
             this.responseMsg = responseMsg;
             //this.countDownLatch.countDown();
-            countDownLatch.TrySetResult(responseMsg);
+            //countDownLatch.TrySetResult(responseMsg);
+            countDownLatch.Signal();
         }
 
-        public String getCorrelationId()
+        public string getCorrelationId()
         {
             return correlationId;
         }
@@ -84,12 +92,12 @@ namespace RocketMQ.Client
             return beginTimestamp;
         }
 
-        public TaskCompletionSource<Message> getCountDownLatch()
+        public CountdownEvent getCountDownLatch()
         {
             return countDownLatch;
         }
 
-        public void setCountDownLatch(TaskCompletionSource<Message> countDownLatch)
+        public void setCountDownLatch(CountdownEvent countDownLatch)
         {
             this.countDownLatch = countDownLatch;
         }

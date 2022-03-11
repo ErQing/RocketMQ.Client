@@ -9,8 +9,8 @@ namespace RocketMQ.Client//.Protocal.Header
     public class GetConsumeStatsRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String consumerGroup { get; set; }
-        public String topic { get; set; }
+        public string consumerGroup { get; set; }
+        public string topic { get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException

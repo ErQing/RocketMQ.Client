@@ -5,13 +5,13 @@ namespace RocketMQ.Client
     public class ConsumeMessageDirectlyResultRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String consumerGroup { get; set; }
+        public string consumerGroup { get; set; }
         [CFNullable]
-        public String clientId { get; set; }
+        public string clientId { get; set; }
         [CFNullable]
-        public String msgId { get; set; }
+        public string msgId { get; set; }
         [CFNullable]
-        public String brokerName { get; set; }
+        public string brokerName { get; set; }
 
         public void checkFields() { }
     }

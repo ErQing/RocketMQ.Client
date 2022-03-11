@@ -62,9 +62,9 @@ namespace RocketMQ.Client
             var brokerMqs = this.buildProcessQueueTableByBrokerName();
             foreach (var entry in brokerMqs)
             {
-                String brokerName = entry.Key;
+                string brokerName = entry.Key;
                 HashSet<MessageQueue> mqs = entry.Value;
-                if (mqs.isEmpty())
+                if (mqs.IsEmpty())
                     continue;
 
                 FindBrokerResult findBrokerResult = this.mQClientFactory.findBrokerAddressInSubscribe(brokerName, MixAll.MASTER_ID, true);
@@ -81,7 +81,7 @@ namespace RocketMQ.Client
 
                         foreach (MessageQueue mq in mqs)
                         {
-                            ProcessQueue processQueue = this.processQueueTable.get(mq);
+                            ProcessQueue processQueue = this.processQueueTable.Get(mq);
                             if (processQueue != null)
                             {
                                 processQueue.setLocked(false);
@@ -134,7 +134,7 @@ namespace RocketMQ.Client
                         this.mQClientFactory.getMQClientAPIImpl().lockBatchMQ(findBrokerResult.getBrokerAddr(), requestBody, 1000);
                     foreach (MessageQueue mmqq in lockedMq)
                     {
-                        ProcessQueue processQueue = this.processQueueTable.get(mmqq);
+                        ProcessQueue processQueue = this.processQueueTable.Get(mmqq);
                         if (processQueue != null)
                         {
                             processQueue.setLocked(true);
@@ -167,10 +167,10 @@ namespace RocketMQ.Client
             foreach (var entry in brokerMqs)
             {
                 //Entry<String, Set<MessageQueue>> entry = it.next();
-                String brokerName = entry.Key;
+                string brokerName = entry.Key;
                 HashSet<MessageQueue> mqs = entry.Value;
 
-                if (mqs.isEmpty())
+                if (mqs.IsEmpty())
                     continue;
 
                 FindBrokerResult findBrokerResult = this.mQClientFactory.findBrokerAddressInSubscribe(brokerName, MixAll.MASTER_ID, true);
@@ -188,7 +188,7 @@ namespace RocketMQ.Client
 
                         foreach (MessageQueue mq in lockOKMQSet)
                         {
-                            ProcessQueue processQueue = this.processQueueTable.get(mq);
+                            ProcessQueue processQueue = this.processQueueTable.Get(mq);
                             if (processQueue != null)
                             {
                                 if (!processQueue.isLocked())
@@ -204,7 +204,7 @@ namespace RocketMQ.Client
                         {
                             if (!lockOKMQSet.Contains(mq))
                             {
-                                ProcessQueue processQueue = this.processQueueTable.get(mq);
+                                ProcessQueue processQueue = this.processQueueTable.Get(mq);
                                 if (processQueue != null)
                                 {
                                     processQueue.setLocked(false);
@@ -228,7 +228,7 @@ namespace RocketMQ.Client
             {
                 foreach (var entry in subTable)
                 {
-                    String topic = entry.Key;
+                    string topic = entry.Key;
                     try
                     {
                         this.rebalanceByTopic(topic, isOrder);
@@ -357,7 +357,7 @@ namespace RocketMQ.Client
                 if (!subTable.ContainsKey(mq.getTopic()))
                 {
 
-                    ProcessQueue pq = this.processQueueTable.remove(mq);
+                    ProcessQueue pq = this.processQueueTable.JavaRemove(mq);
                     if (pq != null)
                     {
                         pq.setDropped(true);
@@ -387,7 +387,7 @@ namespace RocketMQ.Client
                         if (this.removeUnnecessaryMessageQueue(mq, pq))
                         {
                             //it.remove();
-                            processQueueTable.remove(entry.Key);
+                            processQueueTable.JavaRemove(entry.Key);
                             changed = true;
                             log.Info("doRebalance, {}, remove unnecessary mq, {}", consumerGroup, mq);
                         }
@@ -403,7 +403,7 @@ namespace RocketMQ.Client
                                 if (this.removeUnnecessaryMessageQueue(mq, pq))
                                 {
                                     //it.remove();
-                                    processQueueTable.remove(entry.Key);
+                                    processQueueTable.JavaRemove(entry.Key);
                                     changed = true;
                                     log.Error("[BUG]doRebalance, {}, remove unnecessary mq, {}, because pull is pause, so try to fixed it",
                                         consumerGroup, mq);
@@ -443,7 +443,7 @@ namespace RocketMQ.Client
 
                     if (nextOffset >= 0)
                     {
-                        ProcessQueue pre = this.processQueueTable.putIfAbsent(mq, pq);
+                        ProcessQueue pre = this.processQueueTable.PutIfAbsent(mq, pq);
                         if (pre != null)
                         {
                             log.Info("doRebalance, {}, mq already exists, {}", consumerGroup, mq);
@@ -517,7 +517,7 @@ namespace RocketMQ.Client
             return topicSubscribeInfoTable;
         }
 
-        public String getConsumerGroup()
+        public string getConsumerGroup()
         {
             return consumerGroup;
         }

@@ -5,7 +5,7 @@ namespace RocketMQ.Client
 {
     public class TopicRouteData : RemotingSerializable
     {
-        public String orderTopicConf { get; set; }
+        public string orderTopicConf { get; set; }
         public List<QueueData> queueDatas { get; set; }
         public List<BrokerData> brokerDatas { get; set; }
         public Dictionary<String/* brokerAddr */, List<String>/* Filter Server */> filterServerTable { get; set; }
@@ -35,7 +35,7 @@ namespace RocketMQ.Client
             if (this.filterServerTable != null)
             {
                 //topicRouteData.getFilterServerTable().putAll(this.filterServerTable);
-                topicRouteData.filterServerTable.putAll(this.filterServerTable);
+                topicRouteData.filterServerTable.PutAll(this.filterServerTable);
             }
 
             return topicRouteData;
@@ -91,7 +91,7 @@ namespace RocketMQ.Client
             return true;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "TopicRouteData [orderTopicConf=" + orderTopicConf + ", queueDatas=" + queueDatas
                 + ", brokerDatas=" + brokerDatas + ", filterServerTable=" + filterServerTable + "]";

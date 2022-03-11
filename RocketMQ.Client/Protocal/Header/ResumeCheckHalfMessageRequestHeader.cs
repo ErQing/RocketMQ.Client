@@ -9,7 +9,7 @@ namespace RocketMQ.Client//.Protocal.Header
     public class ResumeCheckHalfMessageRequestHeader : CommandCustomHeader
     {
         [CFNullable]
-        public String msgId { get; set; }
+        public string msgId { get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException
@@ -17,7 +17,7 @@ namespace RocketMQ.Client//.Protocal.Header
 
         }
         //@Override
-        public override String ToString()
+        public override string ToString()
         {
             return "ResumeCheckHalfMessageRequestHeader [msgId=" + msgId + "]";
         }

@@ -9,7 +9,7 @@ namespace RocketMQ.Client//.Protocal.Header
     public class GetKVListByNamespaceRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String nameSpace { get; set; }
+        public string nameSpace { get; set; }
 
         //@Override
         public void checkFields() //throws RemotingCommandException

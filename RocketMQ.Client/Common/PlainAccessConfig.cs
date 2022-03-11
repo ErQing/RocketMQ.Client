@@ -8,23 +8,23 @@ namespace RocketMQ.Client
 {
     public class PlainAccessConfig
     {
-        private String accessKey;
+        private string accessKey;
 
-        private String secretKey;
+        private string secretKey;
 
-        private String whiteRemoteAddress;
+        private string whiteRemoteAddress;
 
         private bool admin;
 
-        private String defaultTopicPerm;
+        private string defaultTopicPerm;
 
-        private String defaultGroupPerm;
+        private string defaultGroupPerm;
 
         private List<String> topicPerms;
 
         private List<String> groupPerms;
 
-        public String getAccessKey()
+        public string getAccessKey()
         {
             return accessKey;
         }
@@ -34,7 +34,7 @@ namespace RocketMQ.Client
             this.accessKey = accessKey;
         }
 
-        public String getSecretKey()
+        public string getSecretKey()
         {
             return secretKey;
         }
@@ -44,7 +44,7 @@ namespace RocketMQ.Client
             this.secretKey = secretKey;
         }
 
-        public String getWhiteRemoteAddress()
+        public string getWhiteRemoteAddress()
         {
             return whiteRemoteAddress;
         }
@@ -64,7 +64,7 @@ namespace RocketMQ.Client
             this.admin = admin;
         }
 
-        public String getDefaultTopicPerm()
+        public string getDefaultTopicPerm()
         {
             return defaultTopicPerm;
         }
@@ -74,7 +74,7 @@ namespace RocketMQ.Client
             this.defaultTopicPerm = defaultTopicPerm;
         }
 
-        public String getDefaultGroupPerm()
+        public string getDefaultGroupPerm()
         {
             return defaultGroupPerm;
         }

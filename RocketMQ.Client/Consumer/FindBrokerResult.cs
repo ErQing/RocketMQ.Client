@@ -4,7 +4,7 @@ namespace RocketMQ.Client
 {
     public class FindBrokerResult
     {
-        private readonly String brokerAddr;
+        private readonly string brokerAddr;
         private readonly bool slave;
         private readonly int brokerVersion;
 
@@ -22,7 +22,7 @@ namespace RocketMQ.Client
             this.brokerVersion = brokerVersion;
         }
 
-        public String getBrokerAddr()
+        public string getBrokerAddr()
         {
             return brokerAddr;
         }

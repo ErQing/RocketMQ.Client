@@ -38,7 +38,7 @@ namespace RocketMQ.Client
          *
          * See <a href="http://rocketmq.apache.org/docs/core-concept/">here</a> for further discussion.
          */
-        private String consumerGroup;
+        private string consumerGroup;
 
         /**
          * Message model defines the way how messages are delivered to each consumer clients.
@@ -93,7 +93,7 @@ namespace RocketMQ.Client
          * Implying Seventeen twelve and 01 seconds on December 23, 2013 year<br>
          * Default backtracking consumption time Half an hour ago.
          */
-        private String consumeTimestamp = UtilAll.timeMillisToHumanString3(Sys.currentTimeMillis() - (1000 * 60 * 30));
+        private string consumeTimestamp = UtilAll.timeMillisToHumanString3(Sys.currentTimeMillis() - (1000 * 60 * 30));
 
         /**
          * Queue allocation algorithm specifying how message queues are allocated to each consumer clients.
@@ -103,7 +103,7 @@ namespace RocketMQ.Client
         /**
          * Subscription relationship
          */
-        private Dictionary<String /* topic */, String /* sub expression */> subscription = new Dictionary<String, String>();
+        private Dictionary<String /* topic */, string /* sub expression */> subscription = new Dictionary<String, String>();
 
         /**
          * Message listener
@@ -252,7 +252,7 @@ namespace RocketMQ.Client
          * @param namespace Namespace for this MQ Producer instance.
          * @param consumerGroup Consumer group.
          */
-        public DefaultMQPushConsumer(String nameSpace, String consumerGroup)
+        public DefaultMQPushConsumer(String nameSpace, string consumerGroup)
             : this(nameSpace, consumerGroup, null, new AllocateMessageQueueAveragely())
         {
 
@@ -277,7 +277,7 @@ namespace RocketMQ.Client
          * @param consumerGroup Consumer group.
          * @param rpcHook RPC hook to execute before each remoting command.
          */
-        public DefaultMQPushConsumer(String nameSpace, String consumerGroup, RPCHook rpcHook)
+        public DefaultMQPushConsumer(String nameSpace, string consumerGroup, RPCHook rpcHook)
                 : this(nameSpace, consumerGroup, rpcHook, new AllocateMessageQueueAveragely())
         {
 
@@ -305,7 +305,7 @@ namespace RocketMQ.Client
          * @param rpcHook RPC hook to execute before each remoting command.
          * @param allocateMessageQueueStrategy Message queue allocating algorithm.
          */
-        public DefaultMQPushConsumer(String nameSpace, String consumerGroup, RPCHook rpcHook,
+        public DefaultMQPushConsumer(String nameSpace, string consumerGroup, RPCHook rpcHook,
             AllocateMessageQueueStrategy allocateMessageQueueStrategy)
         {
             this.consumerGroup = consumerGroup;
@@ -333,7 +333,7 @@ namespace RocketMQ.Client
          * @param enableMsgTrace Switch flag instance for message trace.
          * @param customizedTraceTopic The name value of message trace topic.If you don't config,you can use the default trace topic name.
          */
-        public DefaultMQPushConsumer(String consumerGroup, bool enableMsgTrace, String customizedTraceTopic)
+        public DefaultMQPushConsumer(String consumerGroup, bool enableMsgTrace, string customizedTraceTopic)
                 : this(null, consumerGroup, null, new AllocateMessageQueueAveragely(), enableMsgTrace, customizedTraceTopic)
         {
 
@@ -350,7 +350,7 @@ namespace RocketMQ.Client
          * @param customizedTraceTopic The name value of message trace topic.If you don't config,you can use the default trace topic name.
          */
         public DefaultMQPushConsumer(String consumerGroup, RPCHook rpcHook,
-            AllocateMessageQueueStrategy allocateMessageQueueStrategy, bool enableMsgTrace, String customizedTraceTopic)
+            AllocateMessageQueueStrategy allocateMessageQueueStrategy, bool enableMsgTrace, string customizedTraceTopic)
                 : this(null, consumerGroup, rpcHook, allocateMessageQueueStrategy, enableMsgTrace, customizedTraceTopic)
         {
 
@@ -366,8 +366,8 @@ namespace RocketMQ.Client
          * @param enableMsgTrace Switch flag instance for message trace.
          * @param customizedTraceTopic The name value of message trace topic.If you don't config,you can use the default trace topic name.
          */
-        public DefaultMQPushConsumer(String nameSpace, String consumerGroup, RPCHook rpcHook,
-            AllocateMessageQueueStrategy allocateMessageQueueStrategy, bool enableMsgTrace, String customizedTraceTopic)
+        public DefaultMQPushConsumer(String nameSpace, string consumerGroup, RPCHook rpcHook,
+            AllocateMessageQueueStrategy allocateMessageQueueStrategy, bool enableMsgTrace, string customizedTraceTopic)
         {
             this.consumerGroup = consumerGroup;
             this.nameSpace = nameSpace;
@@ -396,7 +396,7 @@ namespace RocketMQ.Client
         [Obsolete]//@Deprecated
                   //@Override
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum)
+        public void createTopic(String key, string newTopic, int queueNum)
         {
             createTopic(key, withNamespace(newTopic), queueNum, 0);
         }
@@ -417,7 +417,7 @@ namespace RocketMQ.Client
         [Obsolete]//@Deprecated
                   //@Override
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum, int topicSysFlag)
+        public void createTopic(String key, string newTopic, int queueNum, int topicSysFlag)
         {
             this.defaultMQPushConsumerImpl.createTopic(key, withNamespace(newTopic), queueNum, topicSysFlag);
         }
@@ -481,7 +481,7 @@ namespace RocketMQ.Client
         [Obsolete]//@Deprecated @Override
         ///<exception cref = "MQClientException" />
         ///<exception cref= "InterruptedException"/>
-        public QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end)
+        public QueryResult queryMessage(String topic, string key, int maxNum, long begin, long end)
         {
             return this.defaultMQPushConsumerImpl.queryMessage(withNamespace(topic), key, maxNum, begin, end);
         }
@@ -495,7 +495,7 @@ namespace RocketMQ.Client
         ///<exception cref= "InterruptedException"/>
         ///<exception cref= "MQClientException"/>
         public MessageExt viewMessage(String topic,
-        String msgId)
+        string msgId)
         {
             try
             {
@@ -549,7 +549,7 @@ namespace RocketMQ.Client
             this.consumeMessageBatchMaxSize = consumeMessageBatchMaxSize;
         }
 
-        public String getConsumerGroup()
+        public string getConsumerGroup()
         {
             return consumerGroup;
         }
@@ -732,7 +732,7 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public void sendMessageBack(MessageExt msg, int delayLevel, String brokerName)
+        public void sendMessageBack(MessageExt msg, int delayLevel, string brokerName)
         {
             msg.setTopic(withNamespace(msg.getTopic()));
             this.defaultMQPushConsumerImpl.sendMessageBack(msg, delayLevel, brokerName);
@@ -823,7 +823,7 @@ namespace RocketMQ.Client
          */
         // @Override
         ///<exception cref="MQClientException"/>
-        public void subscribe(String topic, String subExpression)
+        public void subscribe(String topic, string subExpression)
         {
             this.defaultMQPushConsumerImpl.subscribe(withNamespace(topic), subExpression);
         }
@@ -837,7 +837,7 @@ namespace RocketMQ.Client
          */
         // @Override
         ///<exception cref="MQClientException"/>
-        public void subscribe(String topic, String fullClassName, String filterClassSource)
+        public void subscribe(String topic, string fullClassName, string filterClassSource)
         {
             this.defaultMQPushConsumerImpl.subscribe(withNamespace(topic), fullClassName, filterClassSource);
         }
@@ -915,7 +915,7 @@ namespace RocketMQ.Client
             this.offsetStore = offsetStore;
         }
 
-        public String getConsumeTimestamp()
+        public string getConsumeTimestamp()
         {
             return consumeTimestamp;
         }

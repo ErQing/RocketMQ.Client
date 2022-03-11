@@ -13,5 +13,6 @@ namespace RocketMQ.Client
         CONSUME_FROM_MAX_OFFSET,
         CONSUME_FROM_FIRST_OFFSET,
         CONSUME_FROM_TIMESTAMP,
+        UNKNOWN   //永远放在最后
     }
 }

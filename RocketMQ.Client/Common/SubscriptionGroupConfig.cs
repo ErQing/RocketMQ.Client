@@ -4,7 +4,7 @@ namespace RocketMQ.Client
 {
     public class SubscriptionGroupConfig
     {
-        private String groupName;
+        private string groupName;
 
         private bool consumeEnable = true;
         private bool consumeFromMinEnable = true;
@@ -15,13 +15,13 @@ namespace RocketMQ.Client
 
         private int retryMaxTimes = 16;
 
-        private ulong brokerId = (ulong)MixAll.MASTER_ID; //???
+        private long brokerId = MixAll.MASTER_ID; //???
 
         private long whichBrokerWhenConsumeSlowly = 1;
 
         private bool notifyConsumerIdsChangedEnable = true;
 
-        public String getGroupName()
+        public string getGroupName()
         {
             return groupName;
         }
@@ -81,12 +81,12 @@ namespace RocketMQ.Client
             this.retryMaxTimes = retryMaxTimes;
         }
 
-        public ulong getBrokerId()
+        public long getBrokerId()
         {
             return brokerId;
         }
 
-        public void setBrokerId(ulong brokerId)
+        public void setBrokerId(long brokerId)
         {
             this.brokerId = brokerId;
         }
@@ -115,7 +115,8 @@ namespace RocketMQ.Client
         {
             int prime = 31;
             int result = 1;
-            result = prime * result + (int)(brokerId ^ (brokerId >> 32)); //ulong
+            //result = prime * result + (int)(brokerId ^ (brokerId >> 32)); //ulong
+            result = prime * result + (int)(brokerId ^ (brokerId.UnsignedRightShift(32))); //ulong
             result = prime * result + (consumeBroadcastEnable ? 1231 : 1237);
             result = prime * result + (consumeEnable ? 1231 : 1237);
             result = prime * result + (consumeFromMinEnable ? 1231 : 1237);
@@ -123,8 +124,8 @@ namespace RocketMQ.Client
             result = prime * result + ((groupName == null) ? 0 : groupName.GetHashCode());
             result = prime * result + retryMaxTimes;
             result = prime * result + retryQueueNums;
-            result =
-                prime * result + (int)(whichBrokerWhenConsumeSlowly ^ (whichBrokerWhenConsumeSlowly >> 32)); //ulong
+            //result = prime * result + (int)(whichBrokerWhenConsumeSlowly ^ (whichBrokerWhenConsumeSlowly >> 32)); //ulong
+            result = prime * result + (int)(whichBrokerWhenConsumeSlowly ^ (whichBrokerWhenConsumeSlowly.UnsignedRightShift(32))); //ulong
             return result;
         }
 
@@ -163,7 +164,7 @@ namespace RocketMQ.Client
             return true;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "SubscriptionGroupConfig [groupName=" + groupName + ", consumeEnable=" + consumeEnable
                 + ", consumeFromMinEnable=" + consumeFromMinEnable + ", consumeBroadcastEnable="

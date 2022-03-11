@@ -86,7 +86,7 @@ namespace RocketMQ.Client
         /// <returns>
         /// <c>true</c> if the comparison and set was successful. A <c>false</c> indicates the comparison failed.
         /// </returns>
-        public bool compareAndSet(bool expected, bool result)
+        public bool CompareAndSet(bool expected, bool result)
         {
             int e = expected ? 1 : 0;
             int r = result ? 1 : 0;

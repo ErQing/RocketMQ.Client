@@ -13,7 +13,7 @@ namespace RocketMQ.Client
         TransactionListener getCheckListener();
 
         void checkTransactionState(
-            String addr,
+            string addr,
             MessageExt msg,
             CheckTransactionStateRequestHeader checkRequestHeader);
 

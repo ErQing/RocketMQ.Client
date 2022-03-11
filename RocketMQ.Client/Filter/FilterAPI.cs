@@ -10,7 +10,7 @@ namespace RocketMQ.Client
     {
         //public static URL classFile(String className)
         //{
-        //    String javaSource = simpleClassName(className) + ".java";
+        //    string javaSource = simpleClassName(className) + ".java";
         //    URL url = FilterAPI./*class.*/getClassLoader().getResource(javaSource);
         //    return url;
         //}
@@ -27,7 +27,7 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="Exception"/>
-        public static SubscriptionData buildSubscriptionData(String topic, String subString)
+        public static SubscriptionData buildSubscriptionData(String topic, string subString)
         {
             SubscriptionData subscriptionData = new SubscriptionData();
             subscriptionData.topic = topic;
@@ -46,7 +46,7 @@ namespace RocketMQ.Client
                     {
                         if (tag.Length > 0)
                         {
-                            String trimString = tag.Trim();
+                            string trimString = tag.Trim();
                             if (trimString.Length > 0)
                             {
                                 subscriptionData.tagsSet.Add(trimString);
@@ -65,7 +65,7 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="Exception"/>
-        public static SubscriptionData build(String topic, String subString, String type)
+        public static SubscriptionData build(String topic, string subString, string type)
         {
             if (ExpressionType.TAG.Equals(type) || type == null)
             {

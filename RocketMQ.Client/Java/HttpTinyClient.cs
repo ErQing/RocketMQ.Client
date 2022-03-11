@@ -11,16 +11,16 @@ namespace RocketMQ.Client
         public class HttpResult
         {
             readonly public int code;
-            readonly public String content;
+            readonly public string content;
 
-            public HttpResult(int code, String content)
+            public HttpResult(int code, string content)
             {
                 this.code = code;
                 this.content = content;
             }
         }
 
-        internal static HttpResult httpGet(String url, List<String> headers, List<String> paramValues, String encoding, long readTimeoutMs)
+        internal static HttpResult httpGet(String url, List<String> headers, List<String> paramValues, string encoding, long readTimeoutMs)
         {
             throw new NotImplementedException();
         }

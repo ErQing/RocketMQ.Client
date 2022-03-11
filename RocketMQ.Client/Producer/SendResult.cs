@@ -5,10 +5,10 @@ namespace RocketMQ.Client
     public class SendResult
     {
         private SendStatus sendStatus;
-        private String msgId;
+        private string msgId;
         private MessageQueue messageQueue;
         private long queueOffset;
-        private String transactionId;
+        private string transactionId;
         private string offsetMsgId;
         private string regionId;
         private bool traceOn = true;

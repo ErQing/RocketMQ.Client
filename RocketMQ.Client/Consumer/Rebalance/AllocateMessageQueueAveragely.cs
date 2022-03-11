@@ -8,7 +8,7 @@ namespace RocketMQ.Client
         //private final InternalLogger log = ClientLogger.getLog();
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
-        public List<MessageQueue> allocate(String consumerGroup, String currentCID, List<MessageQueue> mqAll, List<String> cidAll)
+        public List<MessageQueue> allocate(String consumerGroup, string currentCID, List<MessageQueue> mqAll, List<String> cidAll)
         {
             if (currentCID == null || currentCID.Length < 1)
             {

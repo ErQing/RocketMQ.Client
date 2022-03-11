@@ -21,7 +21,7 @@ namespace RocketMQ.Client
         private Random random = new Random(TimeUtils.CurrentTimeSecondUTC());
         private List<FilterMessageHook> filterMessageHookList = new List<FilterMessageHook>();
 
-        public PullAPIWrapper(MQClientInstance mQClientFactory, String consumerGroup, bool unitMode)
+        public PullAPIWrapper(MQClientInstance mQClientFactory, string consumerGroup, bool unitMode)
         {
             this.mQClientFactory = mQClientFactory;
             this.consumerGroup = consumerGroup;
@@ -65,7 +65,7 @@ namespace RocketMQ.Client
 
                 foreach (MessageExt msg in msgListFilterAgain)
                 {
-                    String traFlag = msg.getProperty(MessageConst.PROPERTY_TRANSACTION_PREPARED);
+                    string traFlag = msg.getProperty(MessageConst.PROPERTY_TRANSACTION_PREPARED);
                     if (bool.Parse(traFlag))
                     {
                         msg.setTransactionId(msg.getProperty(MessageConst.PROPERTY_UNIQ_CLIENT_MESSAGE_ID_KEYIDX));
@@ -96,7 +96,7 @@ namespace RocketMQ.Client
             }
             else
             {
-                suggest.set(brokerId);
+                suggest.Set(brokerId);
             }
         }
 
@@ -125,8 +125,8 @@ namespace RocketMQ.Client
 
         public PullResult pullKernelImpl(
             MessageQueue mq,
-            String subExpression,
-            String expressionType,
+            string subExpression,
+            string expressionType,
             long subVersion,
             long offset,
             int maxNums,
@@ -181,7 +181,7 @@ namespace RocketMQ.Client
                 requestHeader.subVersion = subVersion;
                 requestHeader.expressionType = expressionType;
 
-                String brokerAddr = findBrokerResult.getBrokerAddr();
+                string brokerAddr = findBrokerResult.getBrokerAddr();
                 if (PullSysFlag.hasClassFilterFlag(sysFlagInner))
                 {
                     brokerAddr = computePullFromWhichFilterServer(mq.getTopic(), brokerAddr);
@@ -207,22 +207,22 @@ namespace RocketMQ.Client
                 return getDefaultBrokerId();   //小心只能通过Volatile读取
             }
 
-            AtomicLong suggest = this.pullFromWhichNodeTable.get(mq);
+            AtomicLong suggest = this.pullFromWhichNodeTable.Get(mq);
             if (suggest != null)
             {
-                return suggest.get();
+                return suggest.Get();
             }
 
             return MixAll.MASTER_ID;
         }
 
-        private String computePullFromWhichFilterServer(String topic, String brokerAddr)
+        private string computePullFromWhichFilterServer(String topic, string brokerAddr)
         {
             ConcurrentDictionary<String, TopicRouteData> topicRouteTable = this.mQClientFactory.getTopicRouteTable();
             if (topicRouteTable != null)
             {
-                TopicRouteData topicRouteData = topicRouteTable.get(topic);
-                List<String> list = topicRouteData.filterServerTable.get(brokerAddr);
+                TopicRouteData topicRouteData = topicRouteTable.Get(topic);
+                List<String> list = topicRouteData.filterServerTable.Get(brokerAddr);
 
                 if (list != null && list.Count > 0)
                 {

@@ -12,7 +12,7 @@ namespace RocketMQ.Client
         }
 
         //@Override
-        public String hookName()
+        public string hookName()
         {
             return "SendMessageTraceHook";
         }
@@ -64,7 +64,7 @@ namespace RocketMQ.Client
             }
 
             TraceContext tuxeContext = (TraceContext)context.getMqTraceContext();
-            TraceBean traceBean = tuxeContext.getTraceBeans().get(0);
+            TraceBean traceBean = tuxeContext.getTraceBeans().Get(0);
             int costTime = (int)((Sys.currentTimeMillis() - tuxeContext.getTimeStamp()) / tuxeContext.getTraceBeans().Count);
             tuxeContext.setCostTime(costTime);
             if (context.getSendResult().getSendStatus().Equals(SendStatus.SEND_OK))

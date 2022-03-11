@@ -13,15 +13,15 @@ namespace RocketMQ.Client
 {
     public class RemotingHelper
     {
-        public static readonly String ROCKETMQ_REMOTING = "RocketmqRemoting";
-        public static readonly String DEFAULT_CHARSET = "UTF-8";
+        public static readonly string ROCKETMQ_REMOTING = "RocketmqRemoting";
+        public static readonly string DEFAULT_CHARSET = "UTF-8";
 
         //private static readonly InternalLogger log = InternalLoggerFactory.getLogger(ROCKETMQ_REMOTING);
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         //private static readonly AttributeKey<String> REMOTE_ADDR_KEY = AttributeKey.valueOf("RemoteAddr");
         public static readonly AttributeKey<string> REMOTE_ADDR_KEY = AttributeKey<string>.ValueOf("RemoteAddr");
 
-        public static String exceptionSimpleDesc(Exception e)
+        public static string exceptionSimpleDesc(Exception e)
         {
             StringBuilder sb = new StringBuilder();
             if (e != null)
@@ -177,7 +177,7 @@ namespace RocketMQ.Client
         //    }
         //}
 
-        public static String parseChannelRemoteAddr(IChannel channel)
+        public static string parseChannelRemoteAddr(IChannel channel)
         {
             if (null == channel)
             {
@@ -199,7 +199,7 @@ namespace RocketMQ.Client
             return addr;
         }
 
-        private static String parseChannelRemoteAddr0(IChannel channel)
+        private static string parseChannelRemoteAddr0(IChannel channel)
         {
             EndPoint remote = channel.RemoteAddress;
             string addr = remote != null ? remote.ToString() : "";

@@ -5,9 +5,9 @@ namespace RocketMQ.Client
     public class QueryMessageRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String topic { get; set; }
+        public string topic { get; set; }
         [CFNotNull]
-        public String key { get; set; }
+        public string key { get; set; }
         [CFNotNull]
         public int maxNum { get; set; }
         [CFNotNull]

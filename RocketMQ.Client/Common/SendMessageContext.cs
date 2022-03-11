@@ -5,11 +5,11 @@ namespace RocketMQ.Client
 {
     public class SendMessageContext
     {
-        private String producerGroup;
+        private string producerGroup;
         private Message message;
         private MessageQueue mq;
-        private String brokerAddr;
-        private String bornHost;
+        private string brokerAddr;
+        private string bornHost;
         private CommunicationMode communicationMode;
         private SendResult sendResult;
         private Exception exception;
@@ -17,7 +17,7 @@ namespace RocketMQ.Client
         private Dictionary<String, String> props;
         private DefaultMQProducerImpl producer;
         private MessageType msgType = MessageType.Normal_Msg;
-        private String nameSpace;
+        private string nameSpace;
 
         public MessageType getMsgType()
         {
@@ -39,7 +39,7 @@ namespace RocketMQ.Client
             this.producer = producer;
         }
 
-        public String getProducerGroup()
+        public string getProducerGroup()
         {
             return producerGroup;
         }
@@ -69,7 +69,7 @@ namespace RocketMQ.Client
             this.mq = mq;
         }
 
-        public String getBrokerAddr()
+        public string getBrokerAddr()
         {
             return brokerAddr;
         }
@@ -129,7 +129,7 @@ namespace RocketMQ.Client
             this.props = props;
         }
 
-        public String getBornHost()
+        public string getBornHost()
         {
             return bornHost;
         }
@@ -139,7 +139,7 @@ namespace RocketMQ.Client
             this.bornHost = bornHost;
         }
 
-        public String getNamespace()
+        public string getNamespace()
         {
             return nameSpace;
         }

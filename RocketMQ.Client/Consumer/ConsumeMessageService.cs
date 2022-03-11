@@ -16,7 +16,7 @@ namespace RocketMQ.Client
 
         int getCorePoolSize();
 
-        ConsumeMessageDirectlyResult consumeMessageDirectly(MessageExt msg, String brokerName);
+        ConsumeMessageDirectlyResult consumeMessageDirectly(MessageExt msg, string brokerName);
 
         void submitConsumeRequest(
             List<MessageExt> msgs,

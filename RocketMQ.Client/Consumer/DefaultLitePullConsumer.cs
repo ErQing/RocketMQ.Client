@@ -22,7 +22,7 @@ namespace RocketMQ.Client
          * data consumption model aligns with the traditional publish-subscribe model. The messages are broadcast to all
          * consumer groups.
          */
-        private String consumerGroup;
+        private string consumerGroup;
 
         /**
          * Long polling mode, the Consumer connection max suspend time, it is not recommended to modify
@@ -129,7 +129,7 @@ namespace RocketMQ.Client
          * Backtracking consumption time with second precision. Time format is 20131223171201<br> Implying Seventeen twelve
          * and 01 seconds on December 23, 2013 year<br> Default backtracking consumption time Half an hour ago.
          */
-        private String consumeTimestamp = UtilAll.timeMillisToHumanString3(TimeUtils.CurrentTimeMillis(true) - (1000 * 60 * 30));
+        private string consumeTimestamp = UtilAll.timeMillisToHumanString3(TimeUtils.CurrentTimeMillis(true) - (1000 * 60 * 30));
 
         /**
          * Interface of asynchronous transfer data
@@ -144,7 +144,7 @@ namespace RocketMQ.Client
         /**
          * The name value of message trace topic.If you don't config,you can use the default trace topic name.
          */
-        private String customizedTraceTopic;
+        private string customizedTraceTopic;
 
         /**
          * Default constructor.
@@ -191,7 +191,7 @@ namespace RocketMQ.Client
          * @param consumerGroup Consumer group.
          * @param rpcHook RPC hook to execute before each remoting command.
          */
-        public DefaultLitePullConsumer(String nameSpace, String consumerGroup, RPCHook rpcHook)
+        public DefaultLitePullConsumer(String nameSpace, string consumerGroup, RPCHook rpcHook)
         {
             this.nameSpace = nameSpace;
             this.consumerGroup = consumerGroup;
@@ -230,7 +230,7 @@ namespace RocketMQ.Client
             return this.defaultLitePullConsumerImpl.isRunning();
         }
 
-        public void subscribe(String topic, String subExpression)
+        public void subscribe(String topic, string subExpression)
         {
             this.defaultLitePullConsumerImpl.subscribe(withNamespace(topic), subExpression);
         }
@@ -474,7 +474,7 @@ namespace RocketMQ.Client
             this.messageModel = messageModel;
         }
 
-        public String getConsumerGroup()
+        public string getConsumerGroup()
         {
             return consumerGroup;
         }
@@ -540,7 +540,7 @@ namespace RocketMQ.Client
             this.consumeFromWhere = consumeFromWhere;
         }
 
-        public String getConsumeTimestamp()
+        public string getConsumeTimestamp()
         {
             return consumeTimestamp;
         }
@@ -579,7 +579,7 @@ namespace RocketMQ.Client
             }
         }
 
-        public String getCustomizedTraceTopic()
+        public string getCustomizedTraceTopic()
         {
             return customizedTraceTopic;
         }

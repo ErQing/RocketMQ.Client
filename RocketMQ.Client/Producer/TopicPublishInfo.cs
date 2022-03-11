@@ -103,7 +103,7 @@ namespace RocketMQ.Client
             return -1;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "TopicPublishInfo [orderTopic=" + orderTopic + ", messageQueueList=" + messageQueueList
                 + ", sendWhichQueue=" + sendWhichQueue + ", haveTopicRouterInfo=" + haveTopicRouterInfo + "]";

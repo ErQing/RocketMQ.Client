@@ -4,7 +4,7 @@ namespace RocketMQ.Client
 {
     public class PullRequest
     {
-        private String consumerGroup;
+        private string consumerGroup;
         private MessageQueue messageQueue;
         private ProcessQueue processQueue;
         private long nextOffset;
@@ -20,7 +20,7 @@ namespace RocketMQ.Client
             this.previouslyLocked = previouslyLocked;
         }
 
-        public String getConsumerGroup()
+        public string getConsumerGroup()
         {
             return consumerGroup;
         }
@@ -85,7 +85,7 @@ namespace RocketMQ.Client
             return true;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "PullRequest [consumerGroup=" + consumerGroup + ", messageQueue=" + messageQueue
                 + ", nextOffset=" + nextOffset + "]";

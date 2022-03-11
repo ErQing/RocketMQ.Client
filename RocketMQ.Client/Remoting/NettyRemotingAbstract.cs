@@ -172,7 +172,7 @@ namespace RocketMQ.Client
          */
         public void processRequestCommand(IChannelHandlerContext ctx, RemotingCommand cmd)
         {
-            Pair<NettyRequestProcessor, ExecutorService> matched = this.processorTable.get(cmd.getCode());
+            Pair<NettyRequestProcessor, ExecutorService> matched = this.processorTable.Get(cmd.getCode());
             Pair<NettyRequestProcessor, ExecutorService> pair = null == matched ? this.defaultRequestProcessor : matched;
             int opaque = cmd.getOpaque();
 
@@ -182,69 +182,69 @@ namespace RocketMQ.Client
                 {
                     //public void run()
                     Run = () =>
-                {
-                    try
                     {
-                        String remoteAddr = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
-                        doBeforeRpcHooks(remoteAddr, cmd);
-                        RemotingResponseCallback callback = new RemotingResponseCallback()
+                        try
                         {
-                        //@Override
-                        //public void callback(RemotingCommand response)
-                        Callback = (response) =>
-                {
-                            doAfterRpcHooks(remoteAddr, cmd, response);
-                            if (!cmd.isOnewayRPC())
+                            string remoteAddr = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
+                            doBeforeRpcHooks(remoteAddr, cmd);
+                            RemotingResponseCallback callback = new RemotingResponseCallback()
                             {
-                                if (response != null)
+                                //@Override
+                                //public void callback(RemotingCommand response)
+                                Callback = (response) =>
                                 {
-                                    response.setOpaque(opaque);
-                                    response.markResponseType();
-                                    try
+                                    doAfterRpcHooks(remoteAddr, cmd, response);
+                                    if (!cmd.isOnewayRPC())
                                     {
-                                    //ctx.writeAndFlush(response);
-                                    ctx.WriteAndFlushAsync(response);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        log.Error("process request over, but response failed", e.ToString());
-                                        log.Error(cmd.ToString());
-                                        log.Error(response.ToString());
+                                        if (response != null)
+                                        {
+                                            response.setOpaque(opaque);
+                                            response.markResponseType();
+                                            try
+                                            {
+                                        //ctx.writeAndFlush(response);
+                                        ctx.WriteAndFlushAsync(response);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                log.Error("process request over, but response failed", e.ToString());
+                                                log.Error(cmd.ToString());
+                                                log.Error(response.ToString());
+                                            }
+                                        }
+                                        else
+                                        {
+                                        }
                                     }
                                 }
-                                else
-                                {
-                                }
+                            };
+                            if (pair.getObject1() is AsyncNettyRequestProcessor)
+                            {
+                                AsyncNettyRequestProcessor processor = (AsyncNettyRequestProcessor)pair.getObject1();
+                                processor.asyncProcessRequest(ctx, cmd, callback);
+                            }
+                            else
+                            {
+                                NettyRequestProcessor processor = pair.getObject1();
+                                RemotingCommand response = processor.processRequest(ctx, cmd);
+                                callback.Callback(response);
                             }
                         }
-                        };
-                        if (pair.getObject1() is AsyncNettyRequestProcessor)
+                        catch (Exception e)
                         {
-                            AsyncNettyRequestProcessor processor = (AsyncNettyRequestProcessor)pair.getObject1();
-                            processor.asyncProcessRequest(ctx, cmd, callback);
-                        }
-                        else
-                        {
-                            NettyRequestProcessor processor = pair.getObject1();
-                            RemotingCommand response = processor.processRequest(ctx, cmd);
-                            callback.Callback(response);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        log.Error("process request exception", e.ToString());
-                        log.Error(cmd.ToString());
+                            log.Error("process request exception", e.ToString());
+                            log.Error(cmd.ToString());
 
-                        if (!cmd.isOnewayRPC())
-                        {
-                            RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_ERROR,
-                            RemotingHelper.exceptionSimpleDesc(e));
-                            response.setOpaque(opaque);
-                        //ctx.writeAndFlush(response);
-                        ctx.WriteAndFlushAsync(response);
+                            if (!cmd.isOnewayRPC())
+                            {
+                                RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_ERROR,
+                                RemotingHelper.exceptionSimpleDesc(e));
+                                response.setOpaque(opaque);
+                                //ctx.writeAndFlush(response);
+                                ctx.WriteAndFlushAsync(response);
+                            }
                         }
                     }
-                }
                 };
 
                 if (pair.getObject1().rejectRequest())
@@ -284,7 +284,7 @@ namespace RocketMQ.Client
             }
             else
             {
-                String error = " request type " + cmd.getCode() + " not supported";
+                string error = " request type " + cmd.getCode() + " not supported";
                 RemotingCommand response =
                     RemotingCommand.createResponseCommand(RemotingSysResponseCode.REQUEST_CODE_NOT_SUPPORTED, error);
                 response.setOpaque(opaque);
@@ -303,12 +303,12 @@ namespace RocketMQ.Client
         public void processResponseCommand(IChannelHandlerContext ctx, RemotingCommand cmd)
         {
             int opaque = cmd.getOpaque();
-            ResponseFuture responseFuture = responseTable.get(opaque);
+            ResponseFuture responseFuture = responseTable.Get(opaque);
             if (responseFuture != null)
             {
                 responseFuture.setResponseCommand(cmd);
 
-                responseTable.remove(opaque);
+                responseTable.JavaRemove(opaque);
 
                 if (responseFuture.getInvokeCallback() != null)
                 {
@@ -342,20 +342,20 @@ namespace RocketMQ.Client
                     {
                         //public void run()
                         Run = () =>
-                {
-                    try
-                    {
-                        responseFuture.executeInvokeCallback();
-                    }
-                    catch (Exception e)
-                    {
-                        log.Warn("execute callback in executor exception, and callback throw", e.ToString());
-                    }
-                    finally
-                    {
-                        responseFuture.release();
-                    }
-                }
+                        {
+                            try
+                            {
+                                responseFuture.executeInvokeCallback();
+                            }
+                            catch (Exception e)
+                            {
+                                log.Warn("execute callback in executor exception, and callback throw", e.ToString());
+                            }
+                            finally
+                            {
+                                responseFuture.release();
+                            }
+                        }
                     });
                 }
                 catch (Exception e)
@@ -397,7 +397,7 @@ namespace RocketMQ.Client
         {
             if (rpcHooks.Count > 0)
             {
-                return rpcHooks.get(0);
+                return rpcHooks.Get(0);
             }
             return null;
         }
@@ -468,7 +468,7 @@ namespace RocketMQ.Client
             try
             {
                 ResponseFuture responseFuture = new ResponseFuture(channel, opaque, timeoutMillis, null);
-                this.responseTable.put(opaque, responseFuture);
+                this.responseTable.Put(opaque, responseFuture);
                 EndPoint addr = channel.RemoteAddress;
 
 
@@ -481,7 +481,7 @@ namespace RocketMQ.Client
                 else
                 {
                     responseFuture.setSendRequestOK(false);
-                    responseTable.remove(opaque);
+                    responseTable.JavaRemove(opaque);
                     //responseFuture.setCause(f.cause());
                     responseFuture.setCause(task.Exception);
                     responseFuture.putResponse(null);
@@ -503,7 +503,7 @@ namespace RocketMQ.Client
                 //}
                 //});
 
-                RemotingCommand responseCommand = responseFuture.waitResponse(timeoutMillis).Result;
+                RemotingCommand responseCommand = responseFuture.waitResponse(timeoutMillis);
                 if (null == responseCommand)
                 {
                     if (responseFuture.isSendRequestOK())
@@ -519,7 +519,7 @@ namespace RocketMQ.Client
             }
             finally
             {
-                this.responseTable.remove(opaque);
+                this.responseTable.JavaRemove(opaque);
             }
         }
 
@@ -528,14 +528,15 @@ namespace RocketMQ.Client
         ///<exception cref="RemotingTimeoutException"/>
         ///<exception cref="RemotingTooMuchRequestException"/>
 
-        public async void invokeAsyncImpl(IChannel channel, RemotingCommand request, long timeoutMillis, InvokeCallback invokeCallback)
+        public void invokeAsyncImpl(IChannel channel, RemotingCommand request, long timeoutMillis, InvokeCallback invokeCallback)
         {
             long beginStartTime = Sys.currentTimeMillis();
             int opaque = request.getOpaque();
 
-            bool acquired = await semaphoreAsync.WaitAsync(TimeSpan.FromMilliseconds(timeoutMillis));
+            //bool acquired = await semaphoreAsync.WaitAsync(TimeSpan.FromMilliseconds(timeoutMillis));
             //bool acquired = semaphoreAsync.WaitOne(TimeSpan.FromMilliseconds(timeoutMillis));
             //bool acquired = this.semaphoreAsync.tryAcquire(timeoutMillis, TimeUnit.MILLISECONDS);
+            bool acquired = semaphoreAsync.Wait(TimeSpan.FromMilliseconds(timeoutMillis));
             if (acquired)
             {
                 //SemaphoreReleaseOnlyOnce once = new SemaphoreReleaseOnlyOnce(this.semaphoreAsync);
@@ -548,11 +549,12 @@ namespace RocketMQ.Client
                 }
 
                 ResponseFuture responseFuture = new ResponseFuture(channel, opaque, timeoutMillis - costTime, invokeCallback);
-                this.responseTable.put(opaque, responseFuture);
+                this.responseTable.Put(opaque, responseFuture);
                 try
                 {
                     var task = channel.WriteAndFlushAsync(request);
-                    await task;
+                    task.Wait();
+                    //await task;
                     if (task.IsCompletedSuccessfully)
                     {
                         responseFuture.setSendRequestOK(true);
@@ -606,7 +608,7 @@ namespace RocketMQ.Client
 
         private void requestFail(int opaque)
         {
-            ResponseFuture responseFuture = responseTable.remove(opaque);
+            ResponseFuture responseFuture = responseTable.JavaRemove(opaque);
             if (responseFuture != null)
             {
                 responseFuture.setSendRequestOK(false);
@@ -712,63 +714,63 @@ namespace RocketMQ.Client
         {
 
             private NettyRemotingAbstract owner;
-            //private LinkedBlockingQueue<NettyEvent> eventQueue = new LinkedBlockingQueue<NettyEvent>();
+            private BlockingQueue<NettyEvent> eventQueue = BlockingQueue<NettyEvent>.Create();
             private const int maxSize = 10000;
 
-            protected override Model ExecuteModel => Model.OnDemand;
-
             public NettyEventExecutor(NettyRemotingAbstract owner)
-                : base(maxSize)
             {
                 this.owner = owner;
             }
 
             public void putNettyEvent(NettyEvent evt)
             {
-                int currentSize = GetWaitingCount();
+                int currentSize = eventQueue.Count;
                 if (currentSize <= maxSize)
                 {
-                    //this.eventQueue.add(evt);
-                    Executor.SendAsync(() => { Work(evt); });
+                    this.eventQueue.Add(evt);
                 }
                 else
                 {
                     log.Warn("event queue size [{}] over the limit [{}], so drop this event {}", currentSize, maxSize, evt.ToString());
                 }
+
             }
 
-            public Task Work(NettyEvent evt)
+            public override void run()
             {
                 ChannelEventListener listener = owner.getChannelEventListener();
-                try
+                while (!this.isStopped())
                 {
-                    if (evt != null && listener != null)
+                    try
                     {
-                        switch (evt.getType())
+                        NettyEvent evt = this.eventQueue.Poll(3000, TimeUnit.MILLISECONDS);
+                        if (evt != null && listener != null)
                         {
-                            case NettyEventType.IDLE:
-                                listener.onChannelIdle(evt.getRemoteAddr(), evt.getChannel());
-                                break;
-                            case NettyEventType.CLOSE:
-                                listener.onChannelClose(evt.getRemoteAddr(), evt.getChannel());
-                                break;
-                            case NettyEventType.CONNECT:
-                                listener.onChannelConnect(evt.getRemoteAddr(), evt.getChannel());
-                                break;
-                            case NettyEventType.EXCEPTION:
-                                listener.onChannelException(evt.getRemoteAddr(), evt.getChannel());
-                                break;
-                            default:
-                                break;
+                            switch (evt.getType())
+                            {
+                                case NettyEventType.IDLE:
+                                    listener.onChannelIdle(evt.getRemoteAddr(), evt.getChannel());
+                                    break;
+                                case NettyEventType.CLOSE:
+                                    listener.onChannelClose(evt.getRemoteAddr(), evt.getChannel());
+                                    break;
+                                case NettyEventType.CONNECT:
+                                    listener.onChannelConnect(evt.getRemoteAddr(), evt.getChannel());
+                                    break;
+                                case NettyEventType.EXCEPTION:
+                                    listener.onChannelException(evt.getRemoteAddr(), evt.getChannel());
+                                    break;
+                                default:
+                                    break;
 
+                            }
                         }
                     }
+                    catch (Exception e)
+                    {
+                        log.Warn(this.getServiceName() + " service has exception. ", e.ToString());
+                    }
                 }
-                catch (Exception e)
-                {
-                    log.Warn(this.getServiceName() + " service has exception. ", e.ToString());
-                }
-                return Task.CompletedTask;
             }
 
             public override string getServiceName()
@@ -777,10 +779,6 @@ namespace RocketMQ.Client
                 //return NettyEventExecutor.class.getSimpleName();
             }
 
-            public override void run()
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }

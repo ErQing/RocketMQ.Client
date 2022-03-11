@@ -13,7 +13,7 @@ namespace RocketMQ.Client
         }
 
         //@Override
-        public String hookName()
+        public string hookName()
         {
             return "ConsumeMessageTraceHook";
         }
@@ -21,7 +21,7 @@ namespace RocketMQ.Client
         //@Override
         public void consumeMessageBefore(ConsumeMessageContext context)
         {
-            if (context == null || context.getMsgList() == null || context.getMsgList().isEmpty())
+            if (context == null || context.getMsgList() == null || context.getMsgList().IsEmpty())
             {
                 return;
             }
@@ -36,8 +36,8 @@ namespace RocketMQ.Client
                 {
                     continue;
                 }
-                String regionId = msg.getProperty(MessageConst.PROPERTY_MSG_REGION);
-                String traceOn = msg.getProperty(MessageConst.PROPERTY_TRACE_SWITCH);
+                string regionId = msg.getProperty(MessageConst.PROPERTY_MSG_REGION);
+                string traceOn = msg.getProperty(MessageConst.PROPERTY_TRACE_SWITCH);
 
                 if (traceOn != null && traceOn.Equals("false"))
                 {
@@ -66,7 +66,7 @@ namespace RocketMQ.Client
         //@Override
         public void consumeMessageAfter(ConsumeMessageContext context)
         {
-            if (context == null || context.getMsgList() == null || context.getMsgList().isEmpty())
+            if (context == null || context.getMsgList() == null || context.getMsgList().IsEmpty())
             {
                 return;
             }
@@ -91,7 +91,7 @@ namespace RocketMQ.Client
             var props = context.getProps();
             if (props != null)
             {
-                String contextType = props.get(MixAll.CONSUME_CONTEXT_TYPE);
+                string contextType = props.Get(MixAll.CONSUME_CONTEXT_TYPE);
                 if (contextType != null)
                 {
                     //subAfterContext.setContextCode(ConsumeReturnType.valueOf(contextType).ordinal()); ///???

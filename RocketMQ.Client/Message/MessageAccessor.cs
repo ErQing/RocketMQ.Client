@@ -5,7 +5,7 @@ namespace RocketMQ.Client
 {
     public class MessageAccessor
     {
-        public static void clearProperty(Message msg, String name)
+        public static void clearProperty(Message msg, string name)
         {
             msg.clearProperty(name);
         }
@@ -15,77 +15,77 @@ namespace RocketMQ.Client
             msg.setProperties(properties);
         }
 
-        public static void setTransferFlag(Message msg, String unit)
+        public static void setTransferFlag(Message msg, string unit)
         {
             putProperty(msg, MessageConst.PROPERTY_TRANSFER_FLAG, unit);
         }
 
-        public static void putProperty(Message msg, String name, String value)
+        public static void putProperty(Message msg, string name, string value)
         {
             msg.putProperty(name, value);
         }
 
-        public static String getTransferFlag(Message msg)
+        public static string getTransferFlag(Message msg)
         {
             return msg.getProperty(MessageConst.PROPERTY_TRANSFER_FLAG);
         }
 
-        public static void setCorrectionFlag(Message msg, String unit)
+        public static void setCorrectionFlag(Message msg, string unit)
         {
             putProperty(msg, MessageConst.PROPERTY_CORRECTION_FLAG, unit);
         }
 
-        public static String getCorrectionFlag(Message msg)
+        public static string getCorrectionFlag(Message msg)
         {
             return msg.getProperty(MessageConst.PROPERTY_CORRECTION_FLAG);
         }
 
-        public static void setOriginMessageId(Message msg, String originMessageId)
+        public static void setOriginMessageId(Message msg, string originMessageId)
         {
             putProperty(msg, MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, originMessageId);
         }
 
-        public static String getOriginMessageId(Message msg)
+        public static string getOriginMessageId(Message msg)
         {
             return msg.getProperty(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID);
         }
 
-        public static void setMQ2Flag(Message msg, String flag)
+        public static void setMQ2Flag(Message msg, string flag)
         {
             putProperty(msg, MessageConst.PROPERTY_MQ2_FLAG, flag);
         }
 
-        public static String getMQ2Flag(Message msg)
+        public static string getMQ2Flag(Message msg)
         {
             return msg.getProperty(MessageConst.PROPERTY_MQ2_FLAG);
         }
 
-        public static void setReconsumeTime(Message msg, String reconsumeTimes)
+        public static void setReconsumeTime(Message msg, string reconsumeTimes)
         {
             putProperty(msg, MessageConst.PROPERTY_RECONSUME_TIME, reconsumeTimes);
         }
 
-        public static String getReconsumeTime(Message msg)
+        public static string getReconsumeTime(Message msg)
         {
             return msg.getProperty(MessageConst.PROPERTY_RECONSUME_TIME);
         }
 
-        public static void setMaxReconsumeTimes(Message msg, String maxReconsumeTimes)
+        public static void setMaxReconsumeTimes(Message msg, string maxReconsumeTimes)
         {
             putProperty(msg, MessageConst.PROPERTY_MAX_RECONSUME_TIMES, maxReconsumeTimes);
         }
 
-        public static String getMaxReconsumeTimes(Message msg)
+        public static string getMaxReconsumeTimes(Message msg)
         {
             return msg.getProperty(MessageConst.PROPERTY_MAX_RECONSUME_TIMES);
         }
 
-        public static void setConsumeStartTimeStamp(Message msg, String propertyConsumeStartTimeStamp)
+        public static void setConsumeStartTimeStamp(Message msg, string propertyConsumeStartTimeStamp)
         {
             putProperty(msg, MessageConst.PROPERTY_CONSUME_START_TIMESTAMP, propertyConsumeStartTimeStamp);
         }
 
-        public static String getConsumeStartTimeStamp(Message msg)
+        public static string getConsumeStartTimeStamp(Message msg)
         {
             return msg.getProperty(MessageConst.PROPERTY_CONSUME_START_TIMESTAMP);
         }

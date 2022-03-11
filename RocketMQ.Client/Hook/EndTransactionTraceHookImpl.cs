@@ -12,7 +12,7 @@ namespace RocketMQ.Client
         }
 
         //@Override
-        public String hookName()
+        public string hookName()
         {
             return "EndTransactionTraceHook";
         }
@@ -43,7 +43,7 @@ namespace RocketMQ.Client
             traceBean.setTransactionState(context.getTransactionState());
             traceBean.setTransactionId(context.getTransactionId());
             traceBean.setFromTransactionCheck(context.isFromTransactionCheck());
-            String regionId = msg.getProperty(MessageConst.PROPERTY_MSG_REGION);
+            string regionId = msg.getProperty(MessageConst.PROPERTY_MSG_REGION);
             if (regionId == null || regionId.isEmpty())
             {
                 regionId = MixAll.DEFAULT_TRACE_REGION_ID;

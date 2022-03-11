@@ -8,7 +8,7 @@ namespace RocketMQ.Client
 {
     public interface CheckForbiddenHook
     {
-        String hookName();
+        string hookName();
 
         ///<exception cref="MQClientException"/>
         void checkForbidden(CheckForbiddenContext context);

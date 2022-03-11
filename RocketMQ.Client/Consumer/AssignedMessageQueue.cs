@@ -42,14 +42,8 @@ namespace RocketMQ.Client
         {
             foreach (MessageQueue messageQueue in messageQueues)
             {
-                //?????????? 为什么要先get一次
-                //MessageQueueState messageQueueState = assignedMessageQueueState.get(messageQueue);
-                //if (assignedMessageQueueState.get(messageQueue) != null)
-                //{
-                //    messageQueueState.setPaused(true);
-                //}
-                assignedMessageQueueState.TryGetValue(messageQueue, out MessageQueueState messageQueueState);
-                if (messageQueueState != null)
+                MessageQueueState messageQueueState = assignedMessageQueueState.Get(messageQueue);
+                if (assignedMessageQueueState.Get(messageQueue) != null)  //??? 为什么不直接使用messageQueueState变量？
                 {
                     messageQueueState.setPaused(true);
                 }
@@ -60,14 +54,8 @@ namespace RocketMQ.Client
         {
             foreach (MessageQueue messageQueue in messageQueueCollection)
             {
-                //?????????? 为什么要先get一次
-                //MessageQueueState messageQueueState = assignedMessageQueueState.get(messageQueue);
-                //if (assignedMessageQueueState.get(messageQueue) != null)
-                //{
-                //    messageQueueState.setPaused(false);
-                //}
-                assignedMessageQueueState.TryGetValue(messageQueue, out MessageQueueState messageQueueState);
-                if (messageQueueState != null)
+                MessageQueueState messageQueueState = assignedMessageQueueState.Get(messageQueue);
+                if (assignedMessageQueueState.Get(messageQueue) != null) //??? 为什么不直接使用messageQueueState变量？
                 {
                     messageQueueState.setPaused(false);
                 }
@@ -76,7 +64,7 @@ namespace RocketMQ.Client
 
         public ProcessQueue getProcessQueue(MessageQueue messageQueue)
         {
-            MessageQueueState messageQueueState = assignedMessageQueueState.get(messageQueue);
+            MessageQueueState messageQueueState = assignedMessageQueueState.Get(messageQueue);
             if (messageQueueState != null)
             {
                 return messageQueueState.getProcessQueue();
@@ -86,7 +74,7 @@ namespace RocketMQ.Client
 
         public long getPullOffset(MessageQueue messageQueue)
         {
-            MessageQueueState messageQueueState = assignedMessageQueueState.get(messageQueue);
+            MessageQueueState messageQueueState = assignedMessageQueueState.Get(messageQueue);
             if (messageQueueState != null)
             {
                 return messageQueueState.getPullOffset();

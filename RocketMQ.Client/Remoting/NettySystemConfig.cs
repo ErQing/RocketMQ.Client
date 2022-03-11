@@ -8,29 +8,29 @@ namespace RocketMQ.Client
 {
     public class NettySystemConfig
     {
-        public static readonly String COM_ROCKETMQ_REMOTING_NETTY_POOLED_BYTE_BUF_ALLOCATOR_ENABLE =
+        public static readonly string COM_ROCKETMQ_REMOTING_NETTY_POOLED_BYTE_BUF_ALLOCATOR_ENABLE =
         "com.rocketmq.remoting.nettyPooledByteBufAllocatorEnable";
-    public static readonly String COM_ROCKETMQ_REMOTING_SOCKET_SNDBUF_SIZE =
+    public static readonly string COM_ROCKETMQ_REMOTING_SOCKET_SNDBUF_SIZE =
         "com.rocketmq.remoting.socket.sndbuf.size";
-    public static readonly String COM_ROCKETMQ_REMOTING_SOCKET_RCVBUF_SIZE =
+    public static readonly string COM_ROCKETMQ_REMOTING_SOCKET_RCVBUF_SIZE =
         "com.rocketmq.remoting.socket.rcvbuf.size";
-    public static readonly String COM_ROCKETMQ_REMOTING_SOCKET_BACKLOG =
+    public static readonly string COM_ROCKETMQ_REMOTING_SOCKET_BACKLOG =
         "com.rocketmq.remoting.socket.backlog";
-    public static readonly String COM_ROCKETMQ_REMOTING_CLIENT_ASYNC_SEMAPHORE_VALUE =
+    public static readonly string COM_ROCKETMQ_REMOTING_CLIENT_ASYNC_SEMAPHORE_VALUE =
         "com.rocketmq.remoting.clientAsyncSemaphoreValue";
-    public static readonly String COM_ROCKETMQ_REMOTING_CLIENT_ONEWAY_SEMAPHORE_VALUE =
+    public static readonly string COM_ROCKETMQ_REMOTING_CLIENT_ONEWAY_SEMAPHORE_VALUE =
         "com.rocketmq.remoting.clientOnewaySemaphoreValue";
-    public static readonly String COM_ROCKETMQ_REMOTING_CLIENT_WORKER_SIZE =
+    public static readonly string COM_ROCKETMQ_REMOTING_CLIENT_WORKER_SIZE =
         "com.rocketmq.remoting.client.worker.size";
-    public static readonly String COM_ROCKETMQ_REMOTING_CLIENT_CONNECT_TIMEOUT =
+    public static readonly string COM_ROCKETMQ_REMOTING_CLIENT_CONNECT_TIMEOUT =
         "com.rocketmq.remoting.client.connect.timeout";
-    public static readonly String COM_ROCKETMQ_REMOTING_CLIENT_CHANNEL_MAX_IDLE_SECONDS =
+    public static readonly string COM_ROCKETMQ_REMOTING_CLIENT_CHANNEL_MAX_IDLE_SECONDS =
         "com.rocketmq.remoting.client.channel.maxIdleTimeSeconds";
-    public static readonly String COM_ROCKETMQ_REMOTING_CLIENT_CLOSE_SOCKET_IF_TIMEOUT =
+    public static readonly string COM_ROCKETMQ_REMOTING_CLIENT_CLOSE_SOCKET_IF_TIMEOUT =
         "com.rocketmq.remoting.client.closeSocketIfTimeout";
-    public static readonly String COM_ROCKETMQ_REMOTING_WRITE_BUFFER_HIGH_WATER_MARK_VALUE =
+    public static readonly string COM_ROCKETMQ_REMOTING_WRITE_BUFFER_HIGH_WATER_MARK_VALUE =
         "com.rocketmq.remoting.write.buffer.high.water.mark";
-    public static readonly String COM_ROCKETMQ_REMOTING_WRITE_BUFFER_LOW_WATER_MARK =
+    public static readonly string COM_ROCKETMQ_REMOTING_WRITE_BUFFER_LOW_WATER_MARK =
         "com.rocketmq.remoting.write.buffer.low.water.mark";
 
     public static readonly bool NETTY_POOLED_BYTE_BUF_ALLOCATOR_ENABLE = //

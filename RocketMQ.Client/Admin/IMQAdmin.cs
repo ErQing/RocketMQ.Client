@@ -13,7 +13,7 @@ namespace RocketMQ.Client
          * @param newTopic topic name
          * @param queueNum topic's queue number
          */
-        void createTopic(String key, String newTopic, int queueNum);
+        void createTopic(String key, string newTopic, int queueNum);
 
         /**
          * Creates an topic
@@ -23,7 +23,7 @@ namespace RocketMQ.Client
          * @param queueNum topic's queue number
          * @param topicSysFlag topic system flag
          */
-        void createTopic(String key, String newTopic, int queueNum, int topicSysFlag);
+        void createTopic(String key, string newTopic, int queueNum, int topicSysFlag);
 
         /**
          * Gets the message queue offset according to some time in milliseconds<br>
@@ -77,11 +77,11 @@ namespace RocketMQ.Client
          * @param end to when
          * @return Instance of QueryResult
          */
-        QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end);
+        QueryResult queryMessage(String topic, string key, int maxNum, long begin, long end);
 
         /**
          * @return The {@code MessageExt} of given msgId
          */
-        MessageExt viewMessage(String topic, String msgId);
+        MessageExt viewMessage(String topic, string msgId);
     }
 }

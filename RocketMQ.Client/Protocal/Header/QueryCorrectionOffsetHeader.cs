@@ -4,11 +4,11 @@ namespace RocketMQ.Client//.Protocal.Header
 {
     public class QueryCorrectionOffsetHeader : CommandCustomHeader
     {
-        public String filterGroups { get; set; }
+        public string filterGroups { get; set; }
         [CFNotNull]
-        public String compareGroup { get; set; }
+        public string compareGroup { get; set; }
         [CFNotNull]
-        public String topic { get; set; }
+        public string topic { get; set; }
 
         public void checkFields() { }
     }

@@ -11,55 +11,55 @@ namespace RocketMQ.Client
 {
     public class MixAll
     {
-        public static readonly String ROCKETMQ_HOME_ENV = "ROCKETMQ_HOME";
-        public static readonly String ROCKETMQ_HOME_PROPERTY = "rocketmq.home.dir";
-        public static readonly String NAMESRV_ADDR_ENV = "NAMESRV_ADDR";
-        public static readonly String NAMESRV_ADDR_PROPERTY = "rocketmq.namesrv.addr";
-        public static readonly String MESSAGE_COMPRESS_LEVEL = "rocketmq.message.compressLevel";
-        public static readonly String DEFAULT_NAMESRV_ADDR_LOOKUP = "jmenv.tbsite.net";
-        public static readonly String WS_DOMAIN_NAME = Sys.getProperty("rocketmq.namesrv.domain", DEFAULT_NAMESRV_ADDR_LOOKUP);
-        public static readonly String WS_DOMAIN_SUBGROUP = Sys.getProperty("rocketmq.namesrv.domain.subgroup", "nsaddr");
+        public static readonly string ROCKETMQ_HOME_ENV = "ROCKETMQ_HOME";
+        public static readonly string ROCKETMQ_HOME_PROPERTY = "rocketmq.home.dir";
+        public static readonly string NAMESRV_ADDR_ENV = "NAMESRV_ADDR";
+        public static readonly string NAMESRV_ADDR_PROPERTY = "rocketmq.namesrv.addr";
+        public static readonly string MESSAGE_COMPRESS_LEVEL = "rocketmq.message.compressLevel";
+        public static readonly string DEFAULT_NAMESRV_ADDR_LOOKUP = "jmenv.tbsite.net";
+        public static readonly string WS_DOMAIN_NAME = Sys.getProperty("rocketmq.namesrv.domain", DEFAULT_NAMESRV_ADDR_LOOKUP);
+        public static readonly string WS_DOMAIN_SUBGROUP = Sys.getProperty("rocketmq.namesrv.domain.subgroup", "nsaddr");
         //http://jmenv.tbsite.net:8080/rocketmq/nsaddr
-        //public static readonly String WS_ADDR = "http://" + WS_DOMAIN_NAME + ":8080/rocketmq/" + WS_DOMAIN_SUBGROUP;
-        public static readonly String DEFAULT_PRODUCER_GROUP = "DEFAULT_PRODUCER";
-        public static readonly String DEFAULT_CONSUMER_GROUP = "DEFAULT_CONSUMER";
-        public static readonly String TOOLS_CONSUMER_GROUP = "TOOLS_CONSUMER";
-        public static readonly String SCHEDULE_CONSUMER_GROUP = "SCHEDULE_CONSUMER";
-        public static readonly String FILTERSRV_CONSUMER_GROUP = "FILTERSRV_CONSUMER";
-        public static readonly String MONITOR_CONSUMER_GROUP = "__MONITOR_CONSUMER";
-        public static readonly String CLIENT_INNER_PRODUCER_GROUP = "CLIENT_INNER_PRODUCER";
-        public static readonly String SELF_TEST_PRODUCER_GROUP = "SELF_TEST_P_GROUP";
-        public static readonly String SELF_TEST_CONSUMER_GROUP = "SELF_TEST_C_GROUP";
-        public static readonly String ONS_HTTP_PROXY_GROUP = "CID_ONS-HTTP-PROXY";
-        public static readonly String CID_ONSAPI_PERMISSION_GROUP = "CID_ONSAPI_PERMISSION";
-        public static readonly String CID_ONSAPI_OWNER_GROUP = "CID_ONSAPI_OWNER";
-        public static readonly String CID_ONSAPI_PULL_GROUP = "CID_ONSAPI_PULL";
-        public static readonly String CID_RMQ_SYS_PREFIX = "CID_RMQ_SYS_";
+        //public static readonly string WS_ADDR = "http://" + WS_DOMAIN_NAME + ":8080/rocketmq/" + WS_DOMAIN_SUBGROUP;
+        public static readonly string DEFAULT_PRODUCER_GROUP = "DEFAULT_PRODUCER";
+        public static readonly string DEFAULT_CONSUMER_GROUP = "DEFAULT_CONSUMER";
+        public static readonly string TOOLS_CONSUMER_GROUP = "TOOLS_CONSUMER";
+        public static readonly string SCHEDULE_CONSUMER_GROUP = "SCHEDULE_CONSUMER";
+        public static readonly string FILTERSRV_CONSUMER_GROUP = "FILTERSRV_CONSUMER";
+        public static readonly string MONITOR_CONSUMER_GROUP = "__MONITOR_CONSUMER";
+        public static readonly string CLIENT_INNER_PRODUCER_GROUP = "CLIENT_INNER_PRODUCER";
+        public static readonly string SELF_TEST_PRODUCER_GROUP = "SELF_TEST_P_GROUP";
+        public static readonly string SELF_TEST_CONSUMER_GROUP = "SELF_TEST_C_GROUP";
+        public static readonly string ONS_HTTP_PROXY_GROUP = "CID_ONS-HTTP-PROXY";
+        public static readonly string CID_ONSAPI_PERMISSION_GROUP = "CID_ONSAPI_PERMISSION";
+        public static readonly string CID_ONSAPI_OWNER_GROUP = "CID_ONSAPI_OWNER";
+        public static readonly string CID_ONSAPI_PULL_GROUP = "CID_ONSAPI_PULL";
+        public static readonly string CID_RMQ_SYS_PREFIX = "CID_RMQ_SYS_";
         public static readonly List<String> LOCAL_INET_ADDRESS = getLocalInetAddress();
-        public static readonly String LOCALHOST = localhost();
+        public static readonly string LOCALHOST = localhost();
         public static readonly long MASTER_ID = 0L;//???
         public static readonly long CURRENT_JVM_PID = getPID();
-        public static readonly String RETRY_GROUP_TOPIC_PREFIX = "%RETRY%";
-        public static readonly String DLQ_GROUP_TOPIC_PREFIX = "%DLQ%";
-        public static readonly String REPLY_TOPIC_POSTFIX = "REPLY_TOPIC";
-        public static readonly String UNIQUE_MSG_QUERY_FLAG = "_UNIQUE_KEY_QUERY";
-        public static readonly String DEFAULT_TRACE_REGION_ID = "DefaultRegion";
-        public static readonly String CONSUME_CONTEXT_TYPE = "ConsumeContextType";
-        public static readonly String CID_SYS_RMQ_TRANS = "CID_RMQ_SYS_TRANS";
-        public static readonly String ACL_CONF_TOOLS_FILE = "/conf/tools.yml";
-        public static readonly String REPLY_MESSAGE_FLAG = "reply";
-        public static readonly String LMQ_PREFIX = "%LMQ%";
-        public static readonly String MULTI_DISPATCH_QUEUE_SPLITTER = ",";
+        public static readonly string RETRY_GROUP_TOPIC_PREFIX = "%RETRY%";
+        public static readonly string DLQ_GROUP_TOPIC_PREFIX = "%DLQ%";
+        public static readonly string REPLY_TOPIC_POSTFIX = "REPLY_TOPIC";
+        public static readonly string UNIQUE_MSG_QUERY_FLAG = "_UNIQUE_KEY_QUERY";
+        public static readonly string DEFAULT_TRACE_REGION_ID = "DefaultRegion";
+        public static readonly string CONSUME_CONTEXT_TYPE = "ConsumeContextType";
+        public static readonly string CID_SYS_RMQ_TRANS = "CID_RMQ_SYS_TRANS";
+        public static readonly string ACL_CONF_TOOLS_FILE = "/conf/tools.yml";
+        public static readonly string REPLY_MESSAGE_FLAG = "reply";
+        public static readonly string LMQ_PREFIX = "%LMQ%";
+        public static readonly string MULTI_DISPATCH_QUEUE_SPLITTER = ",";
         //private static readonly InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.COMMON_LOGGER_NAME);
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
-        //public static readonly String DEFAULT_CHARSET = "UTF-8";
+        //public static readonly string DEFAULT_CHARSET = "UTF-8";
         public static readonly Encoding DEFAULT_CHARSET = Encoding.UTF8;
 
-        public static String getWSAddr()
+        public static string getWSAddr()
         {
-            String wsDomainName = Sys.getProperty("rocketmq.namesrv.domain", DEFAULT_NAMESRV_ADDR_LOOKUP);
-            String wsDomainSubgroup = Sys.getProperty("rocketmq.namesrv.domain.subgroup", "nsaddr");
-            String wsAddr = "http://" + wsDomainName + ":8080/rocketmq/" + wsDomainSubgroup;
+            string wsDomainName = Sys.getProperty("rocketmq.namesrv.domain", DEFAULT_NAMESRV_ADDR_LOOKUP);
+            string wsDomainSubgroup = Sys.getProperty("rocketmq.namesrv.domain.subgroup", "nsaddr");
+            string wsAddr = "http://" + wsDomainName + ":8080/rocketmq/" + wsDomainSubgroup;
             if (wsDomainName.IndexOf(":") > 0)
             {
                 wsAddr = "http://" + wsDomainName + "/rocketmq/" + wsDomainSubgroup;
@@ -67,12 +67,12 @@ namespace RocketMQ.Client
             return wsAddr;
         }
 
-        public static String getRetryTopic(String consumerGroup)
+        public static string getRetryTopic(String consumerGroup)
         {
             return RETRY_GROUP_TOPIC_PREFIX + consumerGroup;
         }
 
-        public static String getReplyTopic(String clusterName)
+        public static string getReplyTopic(String clusterName)
         {
             return clusterName + "_" + REPLY_TOPIC_POSTFIX;
         }
@@ -82,19 +82,19 @@ namespace RocketMQ.Client
             return consumerGroup.StartsWith(CID_RMQ_SYS_PREFIX);
         }
 
-        public static String getDLQTopic(String consumerGroup)
+        public static string getDLQTopic(String consumerGroup)
         {
             return DLQ_GROUP_TOPIC_PREFIX + consumerGroup;
         }
 
-        public static String brokerVIPChannel(bool isChange, String brokerAddr)
+        public static string brokerVIPChannel(bool isChange, string brokerAddr)
         {
             if (isChange)
             {
                 int split = brokerAddr.LastIndexOf(":");
-                String ip = brokerAddr.Substring(0, split);
-                String port = brokerAddr.Substring(split + 1);
-                String brokerAddrNew = ip + ":" + (int.Parse(port) - 2);
+                string ip = brokerAddr.Substring(0, split);
+                string port = brokerAddr.Substring(split + 1);
+                string brokerAddrNew = ip + ":" + (int.Parse(port) - 2);
                 return brokerAddrNew;
             }
             else
@@ -122,13 +122,13 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="IOException"/>
-        public static void string2File(String str, String fileName)
+        public static void string2File(String str, string fileName)
         {
-            String tmpFile = fileName + ".tmp";
+            string tmpFile = fileName + ".tmp";
             string2FileNotSafe(str, tmpFile);
 
-            String bakFile = fileName + ".bak";
-            String prevContent = file2String(fileName);
+            string bakFile = fileName + ".bak";
+            string prevContent = file2String(fileName);
             if (prevContent != null)
             {
                 string2FileNotSafe(prevContent, bakFile);
@@ -145,7 +145,7 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="IOException"/>
-        public static void string2FileNotSafe(String str, String fileName)
+        public static void string2FileNotSafe(String str, string fileName)
         {
             //File file = new File(fileName);
             //File fileParent = file.getParentFile();
@@ -199,7 +199,7 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="IOException"/>
-        //public static String file2String(File file)
+        //public static string file2String(File file)
         //{
         //    if (file.exists())
         //    {
@@ -229,7 +229,7 @@ namespace RocketMQ.Client
         //    return null;
         //}
 
-        //public static String file2String(URL url)
+        //public static string file2String(URL url)
         //{
         //    InputStream input = null;
         //    try
@@ -275,7 +275,7 @@ namespace RocketMQ.Client
             {
                 //if (!Modifier.isStatic(field.getModifiers()))
                 {
-                    String name = field.Name;
+                    string name = field.Name;
                     //if (!name.StartsWith("this"))
                     {
                         object value = null;
@@ -316,7 +316,7 @@ namespace RocketMQ.Client
             }
         }
 
-        public static String properties2String(Properties properties)
+        public static string properties2String(Properties properties)
         {
             StringBuilder sb = new StringBuilder();
             foreach (var entry in properties)
@@ -386,22 +386,22 @@ namespace RocketMQ.Client
         //    Method[] methods = obj.getClass().getMethods();
         //    foreach (Method method in methods)
         //    {
-        //        String mn = method.getName();
+        //        string mn = method.getName();
         //        if (mn.startsWith("set"))
         //        {
         //            try
         //            {
-        //                String tmp = mn.substring(4);
-        //                String first = mn.substring(3, 4);
+        //                string tmp = mn.substring(4);
+        //                string first = mn.substring(3, 4);
 
-        //                String key = first.toLowerCase() + tmp;
-        //                String property = p.getProperty(key);
+        //                string key = first.toLowerCase() + tmp;
+        //                string property = p.getProperty(key);
         //                if (property != null)
         //                {
         //                    Class <?>[] pt = method.getParameterTypes();
         //                    if (pt != null && pt.length > 0)
         //                    {
-        //                        String cn = pt[0].getSimpleName();
+        //                        string cn = pt[0].getSimpleName();
         //                        Object arg = null;
         //                        if (cn.Equals("int") || cn.Equals("Integer"))
         //                        {
@@ -474,7 +474,7 @@ namespace RocketMQ.Client
             return inetAddressList;
         }
 
-        private static String localhost()
+        private static string localhost()
         {
             try
             {
@@ -485,7 +485,7 @@ namespace RocketMQ.Client
             {
                 try
                 {
-                    String candidatesHost = getLocalhostByNetworkInterface();
+                    string candidatesHost = getLocalhostByNetworkInterface();
                     if (candidatesHost != null)
                         return candidatesHost;
 
@@ -536,29 +536,29 @@ namespace RocketMQ.Client
                 }
             }
 
-            if (!candidatesHost.isEmpty())
+            if (!candidatesHost.IsEmpty())
             {
-                return candidatesHost.get(0);
+                return candidatesHost.Get(0);
             }
             return null;
         }
 
         public static bool compareAndIncreaseOnly(AtomicLong target, long value)
         {
-            long prev = target.get();
+            long prev = target.Get();
             while (value > prev)
             {
-                bool updated = target.compareAndSet(prev, value);
+                bool updated = target.CompareAndSet(prev, value);
                 if (updated)
                     return true;
 
-                prev = target.get();
+                prev = target.Get();
             }
 
             return false;
         }
 
-        public static String humanReadableByteCount(long bytes, bool si)
+        public static string humanReadableByteCount(long bytes, bool si)
         {
             int unit = si ? 1000 : 1024;
             if (bytes < unit)

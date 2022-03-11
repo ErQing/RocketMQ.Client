@@ -31,7 +31,7 @@ namespace RocketMQ.Client
              * When rebalance result changed, should update subscription's version to notify broker.
              * Fix: inconsistency subscription may lead to consumer miss messages.
              */
-            SubscriptionData subscriptionData = this.subscriptionInner.get(topic);
+            SubscriptionData subscriptionData = this.subscriptionInner.Get(topic);
             long newVersion = Sys.currentTimeMillis();
             log.Info("{} Rebalance changed, also update version: {}, {}", topic, subscriptionData.subVersion, newVersion);
             subscriptionData.subVersion = newVersion;
@@ -254,7 +254,7 @@ namespace RocketMQ.Client
                                 try
                                 {
                                     long timestamp = UtilAll.parseDate(this.defaultMQPushConsumerImpl.getDefaultMQPushConsumer().getConsumeTimestamp(),
-                                        UtilAll.YYYYMMDDHHMMSS).Ticks;
+                                        UtilAll.YYYYMMDDHHMMSS).Value.Ticks;
                                     result = this.mQClientFactory.getMQAdminImpl().searchOffset(mq, timestamp);
                                 }
                                 catch (MQClientException e)

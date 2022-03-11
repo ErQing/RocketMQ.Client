@@ -7,7 +7,7 @@ namespace RocketMQ.Client
         [CFNotNull]
         public string consumerGroup { get; set; }
         [CFNotNull]
-        public String topic { get; set; }
+        public string topic { get; set; }
         [CFNotNull]
         public int queueId { get; set; }
         [CFNotNull]
@@ -21,10 +21,10 @@ namespace RocketMQ.Client
         [CFNotNull]
         public long suspendTimeoutMillis { get; set; }
         [CFNullable]
-        public String subscription { get; set; }
+        public string subscription { get; set; }
         [CFNotNull]
         public long subVersion { get; set; }
-        public String expressionType { get; set; }
+        public string expressionType { get; set; }
 
         public void checkFields()
         {

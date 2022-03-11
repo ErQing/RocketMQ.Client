@@ -8,10 +8,10 @@ namespace RocketMQ.Client
 {
     public class TraceTransferBean
     {
-        private String transData;
+        private string transData;
         private HashSet<String> transKey = new HashSet<String>();
 
-        public String getTransData()
+        public string getTransData()
         {
             return transData;
         }

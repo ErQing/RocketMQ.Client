@@ -9,7 +9,7 @@ namespace RocketMQ.Client
         public static readonly int PERM_WRITE = 0x1 << 1;
         public static readonly int PERM_INHERIT = 0x1;
 
-        public static String perm2String(int perm)
+        public static string perm2String(int perm)
         {
             string res = null;
             //StringBuilder sb = new StringBuilder("---");

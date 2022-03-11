@@ -28,7 +28,7 @@ namespace RocketMQ.Client
          * <li>{@code >, >=, <, <=, =}</li>
          * <li>{@code BETWEEN A AND B}, equals to {@code >=A AND <=B}</li>
          * <li>{@code NOT BETWEEN A AND B}, equals to {@code >B OR <A}</li>
-         * <li>{@code IN ('a', 'b')}, equals to {@code ='a' OR ='b'}, this operation only support String type.</li>
+         * <li>{@code IN ('a', 'b')}, equals to {@code ='a' OR ='b'}, this operation only support string type.</li>
          * <li>{@code IS NULL}, {@code IS NOT NULL}, check parameter whether is null, or not.</li>
          * <li>{@code =TRUE}, {@code =FALSE}, check parameter whether is true, or false.</li>
          * </ul>

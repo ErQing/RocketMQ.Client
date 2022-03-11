@@ -59,7 +59,7 @@ namespace RocketMQ.Client
 
         public bool hasHook()
         {
-            return !this.consumeMessageHookList.isEmpty();
+            return !this.consumeMessageHookList.IsEmpty();
         }
 
         public void registerConsumeMessageHook(ConsumeMessageHook hook)
@@ -70,7 +70,7 @@ namespace RocketMQ.Client
 
         public void executeHookBefore(ConsumeMessageContext context)
         {
-            if (!this.consumeMessageHookList.isEmpty())
+            if (!this.consumeMessageHookList.IsEmpty())
             {
                 foreach (ConsumeMessageHook hook in this.consumeMessageHookList)
                 {
@@ -87,7 +87,7 @@ namespace RocketMQ.Client
 
         public void executeHookAfter(ConsumeMessageContext context)
         {
-            if (!this.consumeMessageHookList.isEmpty())
+            if (!this.consumeMessageHookList.IsEmpty())
             {
                 foreach (ConsumeMessageHook hook in this.consumeMessageHookList)
                 {
@@ -103,13 +103,13 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum)
+        public void createTopic(String key, string newTopic, int queueNum)
         {
             createTopic(key, newTopic, queueNum, 0);
         }
 
         ///<exception cref="MQClientException"/>
-        public void createTopic(String key, String newTopic, int queueNum, int topicSysFlag)
+        public void createTopic(String key, string newTopic, int queueNum, int topicSysFlag)
         {
             this.mQClientFactory.getMQAdminImpl().createTopic(key, newTopic, queueNum, topicSysFlag);
         }
@@ -139,7 +139,7 @@ namespace RocketMQ.Client
             HashSet<MessageQueue> resultQueues = new HashSet<MessageQueue>();
             foreach (MessageQueue queue in messageQueueList)
             {
-                String userTopic = NamespaceUtil.withoutNamespace(queue.getTopic(), this.defaultMQPushConsumer.getNamespace());
+                string userTopic = NamespaceUtil.withoutNamespace(queue.getTopic(), this.defaultMQPushConsumer.getNamespace());
                 resultQueues.Add(new MessageQueue(userTopic, queue.getBrokerName(), queue.getQueueId()));
             }
 
@@ -208,8 +208,8 @@ namespace RocketMQ.Client
                 return;
             }
 
-            long cachedMessageCount = processQueue.getMsgCount().get();
-            long cachedMessageSizeInMiB = processQueue.getMsgSize().get() / (1024 * 1024);
+            long cachedMessageCount = processQueue.getMsgCount().Get();
+            long cachedMessageSizeInMiB = processQueue.getMsgSize().Get() / (1024 * 1024);
 
             if (cachedMessageCount > this.defaultMQPushConsumer.getPullThresholdForQueue())
             {
@@ -319,13 +319,13 @@ namespace RocketMQ.Client
                                     pullRequest.getMessageQueue().getTopic(), pullRT);
 
                                 long firstMsgOffset = long.MaxValue;
-                                if (pullResult.getMsgFoundList() == null || pullResult.getMsgFoundList().isEmpty())
+                                if (pullResult.getMsgFoundList() == null || pullResult.getMsgFoundList().IsEmpty())
                                 {
                                     executePullRequestImmediately(pullRequest);
                                 }
                                 else
                                 {
-                                    firstMsgOffset = pullResult.getMsgFoundList().get(0).getQueueOffset();
+                                    firstMsgOffset = pullResult.getMsgFoundList().Get(0).getQueueOffset();
 
                                     getConsumerStatsManager().incPullTPS(pullRequest.getConsumerGroup(),
                                         pullRequest.getMessageQueue().getTopic(), pullResult.getMsgFoundList().Count);
@@ -421,7 +421,7 @@ namespace RocketMQ.Client
                     }
                 }
 
-                String subExpression = null;
+                string subExpression = null;
                 bool classFilter = false;
                 //SubscriptionData sd = this.rebalanceImpl.getSubscriptionInner().get(pullRequest.getMessageQueue().getTopic());
                 this.rebalanceImpl.getSubscriptionInner().TryGetValue(pullRequest.getMessageQueue().getTopic(), out SubscriptionData sd);
@@ -505,7 +505,7 @@ namespace RocketMQ.Client
 
         private void correctTagsOffset(PullRequest pullRequest)
         {
-            if (0L == pullRequest.getProcessQueue().getMsgCount().get())
+            if (0L == pullRequest.getProcessQueue().getMsgCount().Get())
             {
                 this.offsetStore.updateOffset(pullRequest.getMessageQueue(), pullRequest.getNextOffset(), true);
             }
@@ -518,14 +518,14 @@ namespace RocketMQ.Client
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end)
+        public QueryResult queryMessage(String topic, string key, int maxNum, long begin, long end)
         {
             return this.mQClientFactory.getMQAdminImpl().queryMessage(topic, key, maxNum, begin, end);
         }
 
         ///<exception cref="MQClientException"/>
         ///<exception cref="InterruptedException"/>
-        public MessageExt queryMessageByUniqKey(String topic, String uniqKey)
+        public MessageExt queryMessageByUniqKey(String topic, string uniqKey)
         {
             return this.mQClientFactory.getMQAdminImpl().queryMessageByUniqKey(topic, uniqKey);
         }
@@ -546,11 +546,11 @@ namespace RocketMQ.Client
         ///<exception cref="MQBrokerException"/>
         ///<exception cref="InterruptedException"/>
         ///<exception cref="MQClientException"/>
-        public void sendMessageBack(MessageExt msg, int delayLevel, String brokerName)
+        public void sendMessageBack(MessageExt msg, int delayLevel, string brokerName)
         {
             try
             {
-                String brokerAddr = (null != brokerName) ? this.mQClientFactory.findBrokerAddressInPublish(brokerName)
+                string brokerAddr = (null != brokerName) ? this.mQClientFactory.findBrokerAddressInPublish(brokerName)
                     : RemotingHelper.parseSocketAddressAddr(msg.getStoreHost());
                 this.mQClientFactory.getMQClientAPIImpl().consumerSendMessageBack(brokerAddr, msg,
                     this.defaultMQPushConsumer.getConsumerGroup(), delayLevel, 5000, getMaxReconsumeTimes());
@@ -561,7 +561,7 @@ namespace RocketMQ.Client
 
                 Message newMsg = new Message(MixAll.getRetryTopic(this.defaultMQPushConsumer.getConsumerGroup()), msg.getBody());
 
-                String originMsgId = MessageAccessor.getOriginMessageId(msg);
+                string originMsgId = MessageAccessor.getOriginMessageId(msg);
                 MessageAccessor.setOriginMessageId(newMsg, UtilAll.isBlank(originMsgId) ? msg.getMsgId() : originMsgId);
 
                 newMsg.setFlag(msg.getFlag());
@@ -740,7 +740,7 @@ namespace RocketMQ.Client
                     null);
             }
 
-            if (null == this.defaultMQPushConsumer.getMessageModel())
+            if (MessageModel.UNKNOWN == this.defaultMQPushConsumer.getMessageModel())
             {
                 throw new MQClientException(
                     "messageModel is null"
@@ -748,7 +748,7 @@ namespace RocketMQ.Client
                     null);
             }
 
-            if (null == this.defaultMQPushConsumer.getConsumeFromWhere())
+            if (ConsumeFromWhere.UNKNOWN == this.defaultMQPushConsumer.getConsumeFromWhere())
             {
                 throw new MQClientException(
                     "consumeFromWhere is null"
@@ -756,7 +756,7 @@ namespace RocketMQ.Client
                     null);
             }
 
-            DateTime dt = UtilAll.parseDate(this.defaultMQPushConsumer.getConsumeTimestamp(), UtilAll.YYYYMMDDHHMMSS);
+            DateTime? dt = UtilAll.parseDate(this.defaultMQPushConsumer.getConsumeTimestamp(), UtilAll.YYYYMMDDHHMMSS);
             if (null == dt)
             {
                 throw new MQClientException(
@@ -921,8 +921,8 @@ namespace RocketMQ.Client
                 {
                     foreach (var entry in sub)
                     {
-                        String topic = entry.Key;
-                        String subString = entry.Value;
+                        string topic = entry.Key;
+                        string subString = entry.Value;
                         SubscriptionData subscriptionData = FilterAPI.buildSubscriptionData(topic, subString);
                         //this.rebalanceImpl.getSubscriptionInner().put(topic, subscriptionData);
                         this.rebalanceImpl.getSubscriptionInner()[topic] = subscriptionData;
@@ -939,7 +939,7 @@ namespace RocketMQ.Client
                     case MessageModel.BROADCASTING:
                         break;
                     case MessageModel.CLUSTERING:
-                        String retryTopic = MixAll.getRetryTopic(this.defaultMQPushConsumer.getConsumerGroup());
+                        string retryTopic = MixAll.getRetryTopic(this.defaultMQPushConsumer.getConsumerGroup());
                         SubscriptionData subscriptionData = FilterAPI.buildSubscriptionData(retryTopic, SubscriptionData.SUB_ALL);
                         //this.rebalanceImpl.getSubscriptionInner().put(retryTopic, subscriptionData);
                         this.rebalanceImpl.getSubscriptionInner()[retryTopic] = subscriptionData;
@@ -966,7 +966,7 @@ namespace RocketMQ.Client
             {
                 foreach (var entry in subTable)
                 {
-                    String topic = entry.Key;
+                    string topic = entry.Key;
                     this.mQClientFactory.updateTopicRouteInfoFromNameServer(topic);
                 }
             }
@@ -978,12 +978,12 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="MQClientException"/>
-        public void subscribe(String topic, String subExpression)
+        public void subscribe(String topic, string subExpression)
         {
             try
             {
                 SubscriptionData subscriptionData = FilterAPI.buildSubscriptionData(topic, subExpression);
-                this.rebalanceImpl.getSubscriptionInner().put(topic, subscriptionData);
+                this.rebalanceImpl.getSubscriptionInner().Put(topic, subscriptionData);
                 if (this.mQClientFactory != null)
                 {
                     this.mQClientFactory.sendHeartbeatToAllBrokerWithLock();
@@ -995,7 +995,7 @@ namespace RocketMQ.Client
             }
         }
         ///<exception cref="MQClientException"/>
-        public void subscribe(String topic, String fullClassName, String filterClassSource)
+        public void subscribe(String topic, string fullClassName, string filterClassSource)
         {
             try
             {
@@ -1003,7 +1003,7 @@ namespace RocketMQ.Client
                 subscriptionData.subString = fullClassName;
                 subscriptionData.classFilterMode = true;
                 subscriptionData.filterClassSource = filterClassSource;
-                this.rebalanceImpl.getSubscriptionInner().put(topic, subscriptionData);
+                this.rebalanceImpl.getSubscriptionInner().Put(topic, subscriptionData);
                 if (this.mQClientFactory != null)
                 {
                     this.mQClientFactory.sendHeartbeatToAllBrokerWithLock();
@@ -1029,7 +1029,7 @@ namespace RocketMQ.Client
                 SubscriptionData subscriptionData = FilterAPI.build(topic,
                     messageSelector.getExpression(), messageSelector.getExpressionType());
 
-                this.rebalanceImpl.getSubscriptionInner().put(topic, subscriptionData);
+                this.rebalanceImpl.getSubscriptionInner().Put(topic, subscriptionData);
                 if (this.mQClientFactory != null)
                 {
                     this.mQClientFactory.sendHeartbeatToAllBrokerWithLock();
@@ -1119,7 +1119,7 @@ namespace RocketMQ.Client
         }
 
         //@Override
-        public String groupName()
+        public string groupName()
         {
             return this.defaultMQPushConsumer.getConsumerGroup();
         }
@@ -1148,7 +1148,7 @@ namespace RocketMQ.Client
             HashSet<SubscriptionData> subSet = new HashSet<SubscriptionData>();
 
             //subSet.addAll(this.rebalanceImpl.getSubscriptionInner().values());
-            subSet.addAll(this.rebalanceImpl.getSubscriptionInner().Values);
+            subSet.AddAll(this.rebalanceImpl.getSubscriptionInner().Values);
 
             return subSet;
         }
@@ -1188,7 +1188,7 @@ namespace RocketMQ.Client
             {
                 if (subTable.ContainsKey(topic))
                 {
-                    this.rebalanceImpl.topicSubscribeInfoTable.put(topic, info);
+                    this.rebalanceImpl.topicSubscribeInfoTable.Put(topic, info);
                 }
             }
         }
@@ -1221,14 +1221,14 @@ namespace RocketMQ.Client
 
             Properties prop = MixAll.object2Properties(this.defaultMQPushConsumer);
 
-            prop.put(ConsumerRunningInfo.PROP_CONSUME_ORDERLY, /*String.valueOf*/(this.consumeOrderly).ToString());
-            prop.put(ConsumerRunningInfo.PROP_THREADPOOL_CORE_SIZE, /*String.valueOf*/(this.consumeMessageService.getCorePoolSize()).ToString());
-            prop.put(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP,/*String.valueOf*/(this.consumerStartTimestamp).ToString());
+            prop.Put(ConsumerRunningInfo.PROP_CONSUME_ORDERLY, /*String.valueOf*/(this.consumeOrderly).ToString());
+            prop.Put(ConsumerRunningInfo.PROP_THREADPOOL_CORE_SIZE, /*String.valueOf*/(this.consumeMessageService.getCorePoolSize()).ToString());
+            prop.Put(ConsumerRunningInfo.PROP_CONSUMER_START_TIMESTAMP,/*String.valueOf*/(this.consumerStartTimestamp).ToString());
 
             info.properties = prop;
 
             HashSet<SubscriptionData> subSet = this.subscriptions();
-            info.subscriptionSet.addAll(subSet);
+            info.subscriptionSet.AddAll(subSet);
 
             //Iterator<Entry<MessageQueue, ProcessQueue>> it = this.rebalanceImpl.getProcessQueueTable().entrySet().iterator();
             //while (it.hasNext())
@@ -1241,13 +1241,13 @@ namespace RocketMQ.Client
                 ProcessQueueInfo pqinfo = new ProcessQueueInfo();
                 pqinfo.setCommitOffset(this.offsetStore.readOffset(mq, ReadOffsetType.MEMORY_FIRST_THEN_STORE));
                 pq.fillProcessQueueInfo(pqinfo);
-                info.mqTable.put(mq, pqinfo);
+                info.mqTable.Put(mq, pqinfo);
             }
 
             foreach (SubscriptionData sd in subSet)
             {
                 ConsumeStatus consumeStatus = this.mQClientFactory.getConsumerStatsManager().consumeStatus(this.groupName(), sd.topic);
-                info.statusTable.put(sd.topic, consumeStatus);
+                info.statusTable.Put(sd.topic, consumeStatus);
             }
 
             return info;
@@ -1322,19 +1322,19 @@ namespace RocketMQ.Client
             TopicRouteData routeData = this.mQClientFactory.getMQClientAPIImpl().getTopicRouteInfoFromNameServer(topic, 3000);
             foreach (BrokerData brokerData in routeData.brokerDatas)
             {
-                String addr = brokerData.selectBrokerAddr();
-                queueTimeSpan.addAll(this.mQClientFactory.getMQClientAPIImpl().queryConsumeTimeSpan(addr, topic, groupName(), 3000));
+                string addr = brokerData.selectBrokerAddr();
+                queueTimeSpan.AddRange(this.mQClientFactory.getMQClientAPIImpl().queryConsumeTimeSpan(addr, topic, groupName(), 3000));
             }
 
             return queueTimeSpan;
         }
 
-        public void resetRetryAndNamespace(List<MessageExt> msgs, String consumerGroup)
+        public void resetRetryAndNamespace(List<MessageExt> msgs, string consumerGroup)
         {
-            String groupTopic = MixAll.getRetryTopic(consumerGroup);
+            string groupTopic = MixAll.getRetryTopic(consumerGroup);
             foreach (MessageExt msg in msgs)
             {
-                String retryTopic = msg.getProperty(MessageConst.PROPERTY_RETRY_TOPIC);
+                string retryTopic = msg.getProperty(MessageConst.PROPERTY_RETRY_TOPIC);
                 if (retryTopic != null && groupTopic.Equals(msg.getTopic()))
                 {
                     msg.setTopic(retryTopic);

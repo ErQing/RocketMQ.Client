@@ -4,7 +4,7 @@ namespace RocketMQ.Client
 {
     public class RTStatsItem : StatsItem
     {
-        public RTStatsItem(String statsName, String statsKey, ScheduledExecutorService scheduledExecutorService, NLog.Logger log)
+        public RTStatsItem(String statsName, string statsKey, ScheduledExecutorService scheduledExecutorService, NLog.Logger log)
             :base(statsName, statsKey, scheduledExecutorService, log)
         {
             
@@ -15,7 +15,7 @@ namespace RocketMQ.Client
          *   And we give a name "AVGRT" rather than AVGPT for value getAvgpt()
           */
         //@Override
-        protected override String statPrintDetail(StatsSnapshot ss)
+        protected override string statPrintDetail(StatsSnapshot ss)
         {
             return String.Format("TIMES: %d AVGRT: %.2f", ss.getTimes(), ss.getAvgpt());
         }

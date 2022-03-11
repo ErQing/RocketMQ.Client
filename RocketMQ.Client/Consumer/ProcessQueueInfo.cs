@@ -163,7 +163,7 @@ namespace RocketMQ.Client
             this.cachedMsgSizeInMiB = cachedMsgSizeInMiB;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "ProcessQueueInfo [commitOffset=" + commitOffset + ", cachedMsgMinOffset="
                 + cachedMsgMinOffset + ", cachedMsgMaxOffset=" + cachedMsgMaxOffset

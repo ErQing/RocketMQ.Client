@@ -9,12 +9,12 @@ namespace RocketMQ.Client
     public class SendMessageResponseHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String msgId{ get; set; }
+        public string msgId{ get; set; }
         [CFNotNull]
         public int queueId{ get; set; }
         [CFNotNull]
         public long queueOffset{ get; set; }
-        public String transactionId{ get; set; }
+        public string transactionId{ get; set; }
 
         public void checkFields()
         {

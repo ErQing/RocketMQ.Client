@@ -6,7 +6,7 @@ namespace RocketMQ.Client
     public class RequestTask : IRunnable
     {
         private readonly Runnable runnable;
-        private readonly ulong createTimestamp = Sys.currentTimeMillisUnsigned();
+        private readonly long createTimestamp = Sys.currentTimeMillis();
         private readonly IChannel channel;
         private readonly RemotingCommand request;
         private bool stopRun = false;
@@ -22,7 +22,8 @@ namespace RocketMQ.Client
         public override int GetHashCode()
         {
             int result = runnable != null ? runnable.GetHashCode() : 0;
-            result = 31 * result + (int)(getCreateTimestamp() ^ (getCreateTimestamp() >> 32)); //ulong
+            //result = 31 * result + (int)(getCreateTimestamp() ^ (getCreateTimestamp() >>> 32)); //ulong
+            result = 31 * result + (int)(getCreateTimestamp() ^ (getCreateTimestamp().UnsignedRightShift(32))); //ulong
             result = 31 * result + (channel != null ? channel.GetHashCode() : 0);
             result = 31 * result + (request != null ? request.GetHashCode() : 0);
             result = 31 * result + (isStopRun() ? 1 : 0);
@@ -71,7 +72,7 @@ namespace RocketMQ.Client
                 this.runnable.Run();
         }
 
-        public void returnResponse(int code, String remark)
+        public void returnResponse(int code, string remark)
         {
             RemotingCommand response = RemotingCommand.createResponseCommand(code, remark);
             response.setOpaque(request.getOpaque());

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace RocketMQ.Client
 {
@@ -6,10 +7,8 @@ namespace RocketMQ.Client
     {
         //private readonly InternalLogger log = ClientLogger.getLog();
         static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
-        //private readonly LinkedBlockingQueue<PullRequest> pullRequestQueue = new LinkedBlockingQueue<PullRequest>();
+        private readonly BlockingQueue<PullRequest> pullRequestQueue = BlockingQueue<PullRequest>.Create();
         private readonly MQClientInstance mQClientFactory;
-
-        protected override Model ExecuteModel => Model.OnDemand;
 
         //private final ScheduledExecutorService scheduledExecutorService = Executors
         //.newSingleThreadScheduledExecutor(new ThreadFactory()
@@ -20,13 +19,11 @@ namespace RocketMQ.Client
         //        return new Thread(r, "PullMessageServiceScheduledThread");
         //    }
         //});
-
-        private readonly ScheduledExecutorService scheduledExecutorService;
+        private readonly ScheduledExecutorService scheduledExecutorService = new ScheduledExecutorService();
 
         public PullMessageService(MQClientInstance mQClientFactory)
         {
             this.mQClientFactory = mQClientFactory;
-            scheduledExecutorService = new ScheduledExecutorService();
         }
 
         public void executePullRequestLater(PullRequest pullRequest, long timeDelay)
@@ -52,8 +49,8 @@ namespace RocketMQ.Client
         {
             try
             {
-                //this.pullRequestQueue.put(pullRequest);
-                Executor.SendAsync(() => { pullMessage(pullRequest); });
+                this.pullRequestQueue.Put(pullRequest);
+                //Executor.SendAsync(() => { pullMessage(pullRequest); });
             }
             catch (Exception e)
             {
@@ -93,36 +90,34 @@ namespace RocketMQ.Client
             }
         }
 
-        public override void run() { throw new NotImplementedException(); }
+        public override void run()
+        {
+            log.Info(this.getServiceName() + " service started");
 
-        //public override void run()
-        //{
-        //    log.Info(this.getServiceName() + " service started");
+            while (!this.isStopped())
+            {
+                try
+                {
+                    PullRequest pullRequest = this.pullRequestQueue.Take();
+                    this.pullMessage(pullRequest);
+                }
+                catch (ThreadInterruptedException ignored)
+                {
+                }
+                catch (Exception e)
+                {
+                    log.Error("Pull Message Service Run Method exception", e.ToString());
+                }
+            }
 
-        //    while (!this.isStopped())
-        //    {
-        //        try
-        //        {
-        //            PullRequest pullRequest = this.pullRequestQueue.take();
-        //            this.pullMessage(pullRequest);
-        //        }
-        //        catch (ThreadInterruptedException ignored)
-        //        {
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            log.Error("Pull Message Service Run Method exception", e.ToString());
-        //        }
-        //    }
-
-        //    log.Info(this.getServiceName() + " service end");
-        //}
+            log.Info(this.getServiceName() + " service end");
+        }
 
         //@Override
-        public void shutdown(bool interrupt)
+        public override void shutdown(bool interrupt)
         {
-            _ = base.Shutdown(interrupt);
-            //ThreadUtils.shutdownGracefully(this.scheduledExecutorService, 1000, TimeUnit.MILLISECONDS);
+            base.shutdown(interrupt);
+            ThreadUtils.shutdownGracefully(this.scheduledExecutorService, 1000, TimeUnit.MILLISECONDS);
         }
 
         //@Override

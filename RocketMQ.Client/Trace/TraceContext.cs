@@ -10,12 +10,12 @@ namespace RocketMQ.Client
     {
         private TraceType traceType;
         private long timeStamp = Sys.currentTimeMillis();
-        private String regionId = "";
-        private String regionName = "";
-        private String groupName = "";
+        private string regionId = "";
+        private string regionName = "";
+        private string groupName = "";
         private int costTime = 0;
         private bool isSuccess = true;
-        private String requestId = MessageClientIDSetter.createUniqID();
+        private string requestId = MessageClientIDSetter.createUniqID();
         private int contextCode = 0;
         private List<TraceBean> traceBeans;
 
@@ -39,7 +39,7 @@ namespace RocketMQ.Client
             this.traceBeans = traceBeans;
         }
 
-        public String getRegionId()
+        public string getRegionId()
         {
             return regionId;
         }
@@ -69,7 +69,7 @@ namespace RocketMQ.Client
             this.timeStamp = timeStamp;
         }
 
-        public String getGroupName()
+        public string getGroupName()
         {
             return groupName;
         }
@@ -99,7 +99,7 @@ namespace RocketMQ.Client
             isSuccess = success;
         }
 
-        public String getRequestId()
+        public string getRequestId()
         {
             return requestId;
         }
@@ -109,7 +109,7 @@ namespace RocketMQ.Client
             this.requestId = requestId;
         }
 
-        public String getRegionName()
+        public string getRegionName()
         {
             return regionName;
         }
@@ -126,7 +126,7 @@ namespace RocketMQ.Client
         }
 
         //@Override
-        public override String ToString()
+        public override string ToString()
         {
             StringBuilder sb = new StringBuilder(1024);
             sb.Append(traceType).Append("_").Append(groupName)

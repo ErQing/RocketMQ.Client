@@ -1,9 +1,6 @@
 ﻿using DotNetty.Transport.Channels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace RocketMQ.Client
 {
@@ -15,7 +12,8 @@ namespace RocketMQ.Client
         private readonly InvokeCallback invokeCallback;
         private readonly long beginTimestamp = Sys.currentTimeMillis();
         //private readonly CountDownLatch countDownLatch = new CountDownLatch(1);
-        private TaskCompletionSource<RemotingCommand> countDownLatch = new TaskCompletionSource<RemotingCommand>();
+        //private TaskCompletionSource<RemotingCommand> countDownLatch = new TaskCompletionSource<RemotingCommand>();
+        private CountdownEvent countDownLatch = new CountdownEvent(1);
         //private readonly SemaphoreReleaseOnlyOnce once;
 
         private readonly AtomicBoolean executeCallbackOnlyOnce = new AtomicBoolean(false);
@@ -36,7 +34,7 @@ namespace RocketMQ.Client
         {
             if (invokeCallback != null)
             {
-                if (this.executeCallbackOnlyOnce.compareAndSet(false, true))
+                if (this.executeCallbackOnlyOnce.CompareAndSet(false, true))
                 {
                     invokeCallback.OperationComplete(this);
                 }
@@ -58,22 +56,25 @@ namespace RocketMQ.Client
         }
 
         ///<exception cref="ThreadInterruptedException"/>
-        //public RemotingCommand waitResponse(long timeoutMillis)
-        //{
-        //    this.countDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
-        //    return this.responseCommand;
-        //}
-
-        public async Task<RemotingCommand> waitResponse(long timeoutMillis)
+        public RemotingCommand waitResponse(long timeoutMillis)
         {
-            return await countDownLatch.Task.WaitAsync(TimeSpan.FromMilliseconds(timeoutMillis));
+            //this.countDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
+            //return this.responseCommand;
+            this.countDownLatch.Wait((int)timeoutMillis);
+            return this.responseCommand;
         }
+
+        //public async Task<RemotingCommand> waitResponse(long timeoutMillis)
+        //{
+        //    return await countDownLatch.Task.WaitAsync(TimeSpan.FromMilliseconds(timeoutMillis));
+        //}
 
         public void putResponse(RemotingCommand responseCommand)
         {
             this.responseCommand = responseCommand;
+            this.countDownLatch.Signal();
             //this.countDownLatch.countDown();
-            countDownLatch.TrySetResult(responseCommand);
+            //countDownLatch.TrySetResult(responseCommand);
         }
 
         public long getBeginTimestamp()
@@ -131,7 +132,7 @@ namespace RocketMQ.Client
             return processChannel;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "ResponseFuture [responseCommand=" + responseCommand
                 + ", sendRequestOK=" + sendRequestOK

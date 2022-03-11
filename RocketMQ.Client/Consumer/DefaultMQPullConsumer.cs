@@ -15,7 +15,7 @@ namespace RocketMQ.Client//.Consumer
         /**
          * Do the same thing for the same Group, the application must be set,and guarantee Globally unique
          */
-        private String consumerGroup;
+        private string consumerGroup;
         /**
          * Long polling mode, the Consumer connection max suspend time, it is not recommended to modify
          */
@@ -76,7 +76,7 @@ namespace RocketMQ.Client//.Consumer
 
         }
 
-        public DefaultMQPullConsumer(String nameSpace, String consumerGroup) : this(nameSpace, consumerGroup, null)
+        public DefaultMQPullConsumer(String nameSpace, string consumerGroup) : this(nameSpace, consumerGroup, null)
         {
 
         }
@@ -86,7 +86,7 @@ namespace RocketMQ.Client//.Consumer
          * @param consumerGroup Consumer group.
          * @param rpcHook RPC hook to execute before each remoting command.
          */
-        public DefaultMQPullConsumer(String nameSpace, String consumerGroup, RPCHook rpcHook)
+        public DefaultMQPullConsumer(String nameSpace, string consumerGroup, RPCHook rpcHook)
         {
             this.nameSpace = nameSpace;
             this.consumerGroup = consumerGroup;
@@ -97,7 +97,7 @@ namespace RocketMQ.Client//.Consumer
          * This method will be removed in a certain version after April 5, 2020, so please do not use this method.
          */
         [Obsolete]//@Deprecated @Override
-        public void createTopic(String key, String newTopic, int queueNum)
+        public void createTopic(String key, string newTopic, int queueNum)
         {
             createTopic(key, withNamespace(newTopic), queueNum, 0);
         }
@@ -106,7 +106,7 @@ namespace RocketMQ.Client//.Consumer
          * This method will be removed in a certain version after April 5, 2020, so please do not use this method.
          */
         [Obsolete]//@Deprecated @Override
-        public void createTopic(String key, String newTopic, int queueNum, int topicSysFlag)
+        public void createTopic(String key, string newTopic, int queueNum, int topicSysFlag)
         {
             this.defaultMQPullConsumerImpl.createTopic(key, withNamespace(newTopic), queueNum, topicSysFlag);
         }
@@ -160,7 +160,7 @@ namespace RocketMQ.Client//.Consumer
          * This method will be removed in a certain version after April 5, 2020, so please do not use this method.
          */
         [Obsolete]//@Deprecated @Override
-        public QueryResult queryMessage(String topic, String key, int maxNum, long begin, long end)
+        public QueryResult queryMessage(String topic, string key, int maxNum, long begin, long end)
         {
             return this.defaultMQPullConsumerImpl.queryMessage(withNamespace(topic), key, maxNum, begin, end);
         }
@@ -189,7 +189,7 @@ namespace RocketMQ.Client//.Consumer
             this.brokerSuspendMaxTimeMillis = brokerSuspendMaxTimeMillis;
         }
 
-        public String getConsumerGroup()
+        public string getConsumerGroup()
         {
             return consumerGroup;
         }
@@ -265,7 +265,7 @@ namespace RocketMQ.Client//.Consumer
          * please do not use this method.
          */
         [Obsolete]//@Deprecated @Override
-        public void sendMessageBack(MessageExt msg, int delayLevel, String brokerName)
+        public void sendMessageBack(MessageExt msg, int delayLevel, string brokerName)
         {
             msg.setTopic(withNamespace(msg.getTopic()));
             this.defaultMQPullConsumerImpl.sendMessageBack(msg, delayLevel, brokerName);
@@ -304,13 +304,13 @@ namespace RocketMQ.Client//.Consumer
         }
 
         //@Override
-        public PullResult pull(MessageQueue mq, String subExpression, long offset, int maxNums)
+        public PullResult pull(MessageQueue mq, string subExpression, long offset, int maxNums)
         {
             return this.defaultMQPullConsumerImpl.pull(queueWithNamespace(mq), subExpression, offset, maxNums);
         }
 
         //@Override
-        public PullResult pull(MessageQueue mq, String subExpression, long offset, int maxNums, long timeout)
+        public PullResult pull(MessageQueue mq, string subExpression, long offset, int maxNums, long timeout)
         {
             return this.defaultMQPullConsumerImpl.pull(queueWithNamespace(mq), subExpression, offset, maxNums, timeout);
         }
@@ -328,13 +328,13 @@ namespace RocketMQ.Client//.Consumer
         }
 
         //@Override
-        public void pull(MessageQueue mq, String subExpression, long offset, int maxNums, PullCallback pullCallback)
+        public void pull(MessageQueue mq, string subExpression, long offset, int maxNums, PullCallback pullCallback)
         {
             this.defaultMQPullConsumerImpl.pull(queueWithNamespace(mq), subExpression, offset, maxNums, pullCallback);
         }
 
         //@Override
-        public void pull(MessageQueue mq, String subExpression, long offset, int maxNums, PullCallback pullCallback,
+        public void pull(MessageQueue mq, string subExpression, long offset, int maxNums, PullCallback pullCallback,
             long timeout)
         {
             this.defaultMQPullConsumerImpl.pull(queueWithNamespace(mq), subExpression, offset, maxNums, pullCallback, timeout);
@@ -355,13 +355,13 @@ namespace RocketMQ.Client//.Consumer
         }
 
         //@Override
-        public PullResult pullBlockIfNotFound(MessageQueue mq, String subExpression, long offset, int maxNums)
+        public PullResult pullBlockIfNotFound(MessageQueue mq, string subExpression, long offset, int maxNums)
         {
             return this.defaultMQPullConsumerImpl.pullBlockIfNotFound(queueWithNamespace(mq), subExpression, offset, maxNums);
         }
 
         //@Override
-        public void pullBlockIfNotFound(MessageQueue mq, String subExpression, long offset, int maxNums,
+        public void pullBlockIfNotFound(MessageQueue mq, string subExpression, long offset, int maxNums,
             PullCallback pullCallback)
         {
             this.defaultMQPullConsumerImpl.pullBlockIfNotFound(queueWithNamespace(mq), subExpression, offset, maxNums, pullCallback);
@@ -387,7 +387,7 @@ namespace RocketMQ.Client//.Consumer
 
         //@Override
         public MessageExt viewMessage(String topic,
-            String uniqKey)
+            string uniqKey)
         {
             try
             {
@@ -402,7 +402,7 @@ namespace RocketMQ.Client//.Consumer
         }
 
         //@Override
-        public void sendMessageBack(MessageExt msg, int delayLevel, String brokerName, String consumerGroup)
+        public void sendMessageBack(MessageExt msg, int delayLevel, string brokerName, string consumerGroup)
         {
             msg.setTopic(withNamespace(msg.getTopic()));
             this.defaultMQPullConsumerImpl.sendMessageBack(msg, delayLevel, brokerName, consumerGroup);

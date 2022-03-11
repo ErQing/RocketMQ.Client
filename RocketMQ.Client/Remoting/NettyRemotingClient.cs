@@ -225,7 +225,7 @@ namespace RocketMQ.Client
 
                 if (this.nettyEventExecutor != null)
                 {
-                    this.nettyEventExecutor.Shutdown();
+                    this.nettyEventExecutor.shutdown();
                 }
 
                 if (this.defaultEventExecutorGroup != null)
@@ -256,7 +256,7 @@ namespace RocketMQ.Client
             if (null == channel)
                 return;
 
-            String addrRemote = null == addr ? RemotingHelper.parseChannelRemoteAddr(channel) : addr;
+            string addrRemote = null == addr ? RemotingHelper.parseChannelRemoteAddr(channel) : addr;
 
             try
             {
@@ -266,7 +266,7 @@ namespace RocketMQ.Client
                     try
                     {
                         bool removeItemFromTable = true;
-                        ChannelWrapper prevCW = this.channelTables.get(addrRemote);
+                        ChannelWrapper prevCW = this.channelTables.Get(addrRemote);
 
                         log.Info("closeChannel: begin close the channel[{}] Found: {}", addrRemote, prevCW != null);
 
@@ -284,7 +284,7 @@ namespace RocketMQ.Client
 
                         if (removeItemFromTable)
                         {
-                            this.channelTables.remove(addrRemote);
+                            this.channelTables.JavaRemove(addrRemote);
                             log.Info("closeChannel: the channel[{}] was removed from channel table", addrRemote);
                         }
 
@@ -334,10 +334,10 @@ namespace RocketMQ.Client
                     {
                         bool removeItemFromTable = true;
                         ChannelWrapper prevCW = null;
-                        String addrRemote = null;
+                        string addrRemote = null;
                         foreach (var entry in channelTables)
                         {
-                            String key = entry.Key;
+                            string key = entry.Key;
                             ChannelWrapper prev = entry.Value;
                             if (prev.getChannel() != null)
                             {
@@ -358,7 +358,7 @@ namespace RocketMQ.Client
 
                         if (removeItemFromTable)
                         {
-                            this.channelTables.remove(addrRemote);
+                            this.channelTables.JavaRemove(addrRemote);
                             log.Info("closeChannel: the channel[{}] was removed from channel table", addrRemote);
                             RemotingUtil.closeChannel(channel);
                         }
@@ -391,7 +391,7 @@ namespace RocketMQ.Client
             List<String> old = this.namesrvAddrList.Value;
             bool update = false;
 
-            if (!addrs.isEmpty())
+            if (!addrs.IsEmpty())
             {
                 if (null == old)
                 {
@@ -405,7 +405,7 @@ namespace RocketMQ.Client
                 {
                     for (int i = 0; i < addrs.Count && !update; i++)
                     {
-                        if (!old.Contains(addrs.get(i)))
+                        if (!old.Contains(addrs.Get(i)))
                         {
                             update = true;
                         }
@@ -415,7 +415,7 @@ namespace RocketMQ.Client
                 if (update)
                 {
                     //Collections.shuffle(addrs);
-                    addrs.shuffle();
+                    addrs = addrs.Shuffle();  //???
                     log.Info("name server address updated. NEW : {} , OLD: {}", addrs, old);
                     //this.namesrvAddrList.set(addrs);
                     namesrvAddrList.Value = addrs;
@@ -484,7 +484,7 @@ namespace RocketMQ.Client
                 return await getAndCreateNameserverChannel();
             }
 
-            ChannelWrapper cw = this.channelTables.get(addr);
+            ChannelWrapper cw = this.channelTables.Get(addr);
             if (cw != null && cw.isOK())
             {
                 return cw.getChannel();
@@ -500,7 +500,7 @@ namespace RocketMQ.Client
             string addr = this.namesrvAddrChoosed.Value;
             if (addr != null)
             {
-                ChannelWrapper cw = this.channelTables.get(addr);
+                ChannelWrapper cw = this.channelTables.Get(addr);
                 if (cw != null && cw.isOK())
                 {
                     return cw.getChannel();
@@ -517,21 +517,21 @@ namespace RocketMQ.Client
                     addr = this.namesrvAddrChoosed.Value;
                     if (addr != null)
                     {
-                        ChannelWrapper cw = this.channelTables.get(addr);
+                        ChannelWrapper cw = this.channelTables.Get(addr);
                         if (cw != null && cw.isOK())
                         {
                             return cw.getChannel();
                         }
                     }
 
-                    if (addrList != null && !addrList.isEmpty())
+                    if (addrList != null && !addrList.IsEmpty())
                     {
                         for (int i = 0; i < addrList.Count; i++)
                         {
                             int index = this.namesrvIndex.incrementAndGet();
                             index = Math.Abs(index);
                             index = index % addrList.Count;
-                            string newAddr = addrList.get(index);
+                            string newAddr = addrList.Get(index);
 
                             this.namesrvAddrChoosed.Value = newAddr;
                             log.Info("new name server is chosen. OLD: {} , NEW: {}. namesrvIndex = {}", addr, newAddr, namesrvIndex);
@@ -560,7 +560,7 @@ namespace RocketMQ.Client
         ///<exception cref="ThreadInterruptedException"/>
         private async Task<IChannel> createChannel(string addr)
         {
-            ChannelWrapper cw = this.channelTables.get(addr);
+            ChannelWrapper cw = this.channelTables.Get(addr);
             if (cw != null && cw.isOK())
             {
                 return cw.getChannel();
@@ -572,7 +572,7 @@ namespace RocketMQ.Client
                 try
                 {
                     bool createNewConnection;
-                    cw = this.channelTables.get(addr);
+                    cw = this.channelTables.Get(addr);
                     if (cw != null)
                     {
 
@@ -587,7 +587,7 @@ namespace RocketMQ.Client
                         }
                         else
                         {
-                            this.channelTables.remove(addr);
+                            this.channelTables.JavaRemove(addr);
                             createNewConnection = true;
                         }
                     }
@@ -602,7 +602,7 @@ namespace RocketMQ.Client
                         //ChannelFuture channelFuture = this.bootstrap.connect(RemotingHelper.string2SocketAddress(addr));
                         log.Info("createChannel: begin to connect remote host[{}] asynchronously", addr);
                         cw = new ChannelWrapper(channelFuture);
-                        this.channelTables.put(addr, cw);
+                        this.channelTables.Put(addr, cw);
                     }
                 }
                 catch (Exception e)
@@ -722,13 +722,13 @@ namespace RocketMQ.Client
             }
 
             Pair<NettyRequestProcessor, ExecutorService> pair = new Pair<NettyRequestProcessor, ExecutorService>(processor, executorThis);
-            this.processorTable.put(requestCode, pair);
+            this.processorTable.Put(requestCode, pair);
         }
 
         //@Override
         public bool isChannelWritable(String addr)
         {
-            ChannelWrapper cw = this.channelTables.get(addr);
+            ChannelWrapper cw = this.channelTables.Get(addr);
             if (cw != null && cw.isOK())
             {
                 return cw.isWritable();
@@ -840,7 +840,7 @@ namespace RocketMQ.Client
             public override Task DisconnectAsync(IChannelHandlerContext ctx)
             {
                 //return base.DisconnectAsync(context);
-                String remoteAddress = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
+                string remoteAddress = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
                 log.Info("NETTY CLIENT PIPELINE: DISCONNECT {}", remoteAddress);
                 owner.closeChannel(ctx.Channel);
 
@@ -856,7 +856,7 @@ namespace RocketMQ.Client
             public override Task CloseAsync(IChannelHandlerContext ctx)
             {
                 //return base.CloseAsync(context);
-                String remoteAddress = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
+                string remoteAddress = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
                 log.Info("NETTY CLIENT PIPELINE: CLOSE {}", remoteAddress);
                 owner.closeChannel(ctx.Channel);
 
@@ -877,7 +877,7 @@ namespace RocketMQ.Client
                     IdleStateEvent ievt = (IdleStateEvent)evt;
                     if (ievt.State.Equals(IdleState.AllIdle))
                     {
-                        String remoteAddress = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
+                        string remoteAddress = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
                         log.Warn("NETTY CLIENT PIPELINE: IDLE exception [{}]", remoteAddress);
 
                         owner.closeChannel(ctx.Channel);
@@ -893,7 +893,7 @@ namespace RocketMQ.Client
 
             public override void ExceptionCaught(IChannelHandlerContext ctx, Exception cause)
             {
-                String remoteAddress = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
+                string remoteAddress = RemotingHelper.parseChannelRemoteAddr(ctx.Channel);
                 log.Warn("NETTY CLIENT PIPELINE: exceptionCaught {}", remoteAddress);
                 log.Warn("NETTY CLIENT PIPELINE: exceptionCaught exception.", cause.ToString());
                 owner.closeChannel(ctx.Channel);

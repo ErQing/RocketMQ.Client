@@ -5,9 +5,9 @@ namespace RocketMQ.Client
     class DeleteKVConfigRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String nameSpace { get; set; }
+        public string nameSpace { get; set; }
         [CFNotNull]
-        public String key { get; set; }
+        public string key { get; set; }
 
         public void checkFields() { }
     }

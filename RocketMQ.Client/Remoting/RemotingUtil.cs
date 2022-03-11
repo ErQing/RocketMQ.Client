@@ -125,7 +125,7 @@ namespace RocketMQ.Client
                 }
 
                 // prefer ipv4
-                if (!ipv4Result.isEmpty())
+                if (!ipv4Result.IsEmpty())
                 {
                     foreach (String ip in ipv4Result)
                     {
@@ -137,11 +137,11 @@ namespace RocketMQ.Client
                         return ip;
                     }
 
-                    return ipv4Result.get(ipv4Result.Count - 1);
+                    return ipv4Result.Get(ipv4Result.Count - 1);
                 }
-                else if (!ipv6Result.isEmpty())
+                else if (!ipv6Result.IsEmpty())
                 {
-                    return ipv6Result.get(0);
+                    return ipv6Result.Get(0);
                 }
                 //If failed to find,fall back to localhost
                 return normalizeHostAddress(IPAddress.Loopback);
@@ -192,7 +192,7 @@ namespace RocketMQ.Client
             return sb.ToString();
         }
 
-        public static String convert2IpString(String addr)
+        public static string convert2IpString(String addr)
         {
             return socketAddress2String(string2SocketAddress(addr));
         }
@@ -262,7 +262,7 @@ namespace RocketMQ.Client
 
         public static void closeChannel(IChannel channel)
         {
-            String addrRemote = RemotingHelper.parseChannelRemoteAddr(channel);
+            string addrRemote = RemotingHelper.parseChannelRemoteAddr(channel);
             //    channel.close().addListener(new ChannelFutureListener() {
             //    @Override
             //    public void operationComplete(ChannelFuture future) throws Exception {

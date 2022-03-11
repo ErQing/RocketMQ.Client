@@ -9,7 +9,7 @@ namespace RocketMQ.Client
     public class NotifyConsumerIdsChangedRequestHeader : CommandCustomHeader
     {
         [CFNotNull]
-        public String consumerGroup { get; set; }
+        public string consumerGroup { get; set; }
 
         //@Override
         public void checkFields()
