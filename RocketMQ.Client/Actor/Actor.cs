@@ -12,15 +12,16 @@ namespace RocketMQ.Client
     {
         readonly static NLog.Logger LOGGER = NLog.LogManager.GetCurrentClassLogger();
         public const int TIME_OUT = 10000;
-
+        private bool reentrant = true;   //是否可重入
         /// <summary>
         /// 当前调用链id
         /// </summary>
         internal long curCallChainId;   
         private static long idCounter = 1;
         //public virtual long ActorId { get; set; }
-        public Actor(int parallelism = 1, int capacity=-1)
+        public Actor(int parallelism = 1, int capacity=-1, bool reentrant=true)
         {
+            this.reentrant = reentrant;
             actionBlock = new ActionBlock<WorkWrapper>(InnerRun, 
                 new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = parallelism, BoundedCapacity = capacity });
         }
@@ -63,20 +64,10 @@ namespace RocketMQ.Client
             return Interlocked.Increment(ref idCounter);
         }
 
-        internal Task Enqueue(Action work, long callChainId, int timeOut = TIME_OUT)
-        {
-            ActionWrapper at = new ActionWrapper(work);
-            at.Owner = this;
-            at.TimeOut = timeOut;
-            at.CallChainId = callChainId;
-            actionBlock.SendAsync(at);
-            return at.Tcs.Task;
-        }
-
         public Task SendAsync(Action work, bool isAwait = true, int timeOut = TIME_OUT)
         {
             bool needEnqueue;
-            if (!isAwait)
+            if (!isAwait || !reentrant)
                 needEnqueue = true;
             else
                 needEnqueue = IsNeedEnqueue() > 0;
@@ -96,20 +87,10 @@ namespace RocketMQ.Client
             }
         }
 
-        internal Task<T> Enqueue<T>(Func<T> work, long callChainId, int timeOut = TIME_OUT)
-        {
-            FuncWrapper<T> at = new FuncWrapper<T>(work);
-            at.Owner = this;
-            at.TimeOut = timeOut;
-            at.CallChainId = callChainId;
-            actionBlock.SendAsync(at);
-            return at.Tcs.Task;
-        }
-
         public Task<T> SendAsync<T>(Func<T> work, bool isAwait = true, int timeOut = TIME_OUT)
         {
             bool needEnqueue;
-            if (!isAwait)
+            if (!isAwait || !reentrant)
                 needEnqueue = true;
             else
                 needEnqueue = IsNeedEnqueue() > 0;
@@ -128,20 +109,10 @@ namespace RocketMQ.Client
             }
         }
 
-        internal Task Enqueue(Func<Task> work, long callChainId, int timeOut = TIME_OUT)
-        {
-            ActionAsyncWrapper at = new ActionAsyncWrapper(work);
-            at.Owner = this;
-            at.TimeOut = timeOut;
-            at.CallChainId = callChainId;
-            actionBlock.SendAsync(at);
-            return at.Tcs.Task;
-        }
-
         public Task SendAsync(Func<Task> work, bool isAwait = true, int timeOut = TIME_OUT)
         {
             bool needEnqueue;
-            if (!isAwait)
+            if (!isAwait || !reentrant)
                 needEnqueue = true;
             else
                 needEnqueue = IsNeedEnqueue() > 0;
@@ -160,20 +131,10 @@ namespace RocketMQ.Client
             }
         }
 
-        internal Task<T> Enqueue<T>(Func<Task<T>> work, long callChainId, int timeOut = TIME_OUT)
-        {
-            FuncAsyncWrapper<T> at = new FuncAsyncWrapper<T>(work);
-            at.Owner = this;
-            at.TimeOut = timeOut;
-            at.CallChainId = callChainId;
-            actionBlock.SendAsync(at);
-            return at.Tcs.Task;
-        }
-
         public Task<T> SendAsync<T>(Func<Task<T>> work, bool isAwait = true, int timeOut = TIME_OUT)
         {
             bool needEnqueue;
-            if (!isAwait)
+            if (!isAwait || !reentrant)
                 needEnqueue = true;
             else
                 needEnqueue = IsNeedEnqueue() > 0;
