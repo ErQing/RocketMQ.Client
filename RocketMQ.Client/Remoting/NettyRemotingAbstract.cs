@@ -553,7 +553,7 @@ namespace RocketMQ.Client
                 try
                 {
                     var task = channel.WriteAndFlushAsync(request);
-                    task.Wait();
+                    task.Wait();  //??? 需要优化，这里是阻塞式等待
                     //await task;
                     if (task.IsCompletedSuccessfully)
                     {
