@@ -11,4 +11,4 @@ It is under way, wait please!
 
 netcore版本：必须使用5.0以上（主要原因有几个地方对Dictionary和HashSet进行一边遍历一边删除，3.1会报错）
 
-
+寻求志同道合的朋友来完善它！
