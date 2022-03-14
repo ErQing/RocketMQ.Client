@@ -10,4 +10,4 @@ It is under way, wait please!
 第一阶段：翻译工作 -- 已完成！
 第二阶段：查漏补缺和调试 -- 进行中.......
 
-netcore版本：必须使用5.0以上（主要原因有几个地方对Dictionary和HashSet进行一边遍历一边删除，3.1会报错）
+netcore版本：必须使用5.0以上（主要原因有几个地方对Dictionary和HashSet进行一边遍历一边删除，3.1不支持）
